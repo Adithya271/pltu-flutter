@@ -124,7 +124,6 @@ class _BrowseAreaState extends State<BrowseArea> {
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
