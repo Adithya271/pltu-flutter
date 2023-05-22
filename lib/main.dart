@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pltu/page/area/BrowseArea.dart';
 import 'package:pltu/page/home.dart';
 import 'package:pltu/signup_login/sign_in.dart';
 

@@ -48,14 +48,14 @@ class _SignInState extends State<SignIn> {
     }
 
     final loginResult = await APIService.login(email, password);
-
+    print('Login: '+loginResult["success"].toString());
 
     try {
-      if (loginResult['success'] != null && loginResult['success']) {
+      if ( loginResult['success']) {
         // Login successful
 
         // Print record data
-        print('Login Result: $loginResult');
+        print('Login Result:[success] $loginResult');
 
         // Navigate to the HomePage
         Navigator.pushReplacement(

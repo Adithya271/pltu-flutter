@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 import 'package:pltu/page/area/FormArea.dart';
+import 'package:pltu/services/api_services.dart';
 
 class BrowseArea extends StatefulWidget {
   const BrowseArea({Key? key}) : super(key: key);
@@ -12,6 +13,7 @@ class BrowseArea extends StatefulWidget {
 }
 
 class _BrowseAreaState extends State<BrowseArea> {
+  String dataurl = "https://digitm.isoae.com/api/area";
   List<dynamic> dataArea = [];
   String mode = 'browse';
   Map<String, dynamic> queryData = {
@@ -103,9 +105,15 @@ class _BrowseAreaState extends State<BrowseArea> {
     loadData();
   }
 
-  Future<void> loadData() async {
+ Future<void> loadData() async {
     const url = "https://digitm.isoae.com/api/area";
-    final response = await http.get(Uri.parse(url));
+    final headers = {
+      "Content-Type": "application/json",
+      "Accept": "application/json",
+      "Authorization": "Bearer ${APIService.token}",
+    };
+
+    final response = await http.get(Uri.parse(url), headers: headers);
 
     if (response.statusCode == 200) {
       final jsonData = json.decode(response.body);
@@ -123,6 +131,7 @@ class _BrowseAreaState extends State<BrowseArea> {
       });
     }
   }
+
 
   @override
   Widget build(BuildContext context) {
