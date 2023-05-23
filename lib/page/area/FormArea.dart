@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:pltu/services/api_services.dart';
+import 'dart:convert';
+
 
 class FormArea extends StatefulWidget {
   final dynamic selectedData;
@@ -24,6 +28,8 @@ class FormAreaState extends State<FormArea> {
     getOptionDivisi();
     if (widget.selectedData != null) {
       selectData(widget.selectedData);
+    } else {
+      newData();
     }
   }
 
@@ -62,17 +68,66 @@ class FormAreaState extends State<FormArea> {
   }
 
   void saveData() {
-    if (_formKey.currentState?.validate() ?? false) {
-      // Perform save operation using API or other data source
-      // ...
-      widget.onFinish();
+    if (formData['id'] != null) {
+      // Data mempunyai id ,maka akan diedit
+      final url = Uri.parse(
+          "https://digitm.isoae.com/api/area/" + formData['id'].toString());
+      final headers = {
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+        "Authorization": "Bearer ${APIService.token}",
+      };
+
+      http
+          .put(url, headers: headers, body: jsonEncode(formData))
+          .then((response) {
+        if (response.statusCode == 200) {
+          clearForm();
+          setState(() {
+            show = false;
+          });
+          widget.onFinish();
+        } else if (response.statusCode == 422) {
+          setState(() {
+            errors = jsonDecode(response.body)['errors'];
+          });
+        }
+      }).catchError((error) {
+        // Handle error
+      });
+    } else {
+      // New data
+      final url = Uri.parse("https://digitm.isoae.com/api/area");
+      final headers = {
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+        "Authorization": "Bearer ${APIService.token}",
+      };
+
+      http
+          .post(url, headers: headers, body: jsonEncode(formData))
+          .then((response) {
+        if (response.statusCode == 200) {
+          clearForm();
+          setState(() {
+            show = false;
+          });
+          widget.onFinish();
+        } else if (response.statusCode == 422) {
+          setState(() {
+            errors = jsonDecode(response.body)['errors'];
+          });
+        }
+      }).catchError((error) {
+        // Handle error
+      });
     }
   }
+
 
   void clearForm() {
     setState(() {
       show = false;
-      widget.onFinish();
       formData = {
         'id': null,
         'division_id': '',
@@ -81,6 +136,7 @@ class FormAreaState extends State<FormArea> {
       };
       errors = [];
     });
+    widget.onFinish();
   }
 
   @override
@@ -93,7 +149,7 @@ class FormAreaState extends State<FormArea> {
               child: Column(
                 children: [
                   TextFormField(
-                    decoration: InputDecoration(labelText: 'Division'),
+                    decoration: const InputDecoration(labelText: 'Division'),
                     initialValue: formData['division_id'].toString(),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
@@ -108,7 +164,7 @@ class FormAreaState extends State<FormArea> {
                     },
                   ),
                   TextFormField(
-                    decoration: InputDecoration(labelText: 'Name'),
+                    decoration: const InputDecoration(labelText: 'Name'),
                     initialValue: formData['name'],
                     validator: (value) {
                       if (value == null || value.isEmpty) {
@@ -123,7 +179,7 @@ class FormAreaState extends State<FormArea> {
                     },
                   ),
                   TextFormField(
-                    decoration: InputDecoration(labelText: 'Description'),
+                    decoration: const InputDecoration(labelText: 'Description'),
                     initialValue: formData['description'],
                     onChanged: (value) {
                       setState(() {
@@ -133,16 +189,25 @@ class FormAreaState extends State<FormArea> {
                   ),
                   ElevatedButton(
                     onPressed: saveData,
-                    child: Text('Save'),
+                    child: const Text('Save'),
                   ),
                   ElevatedButton(
                     onPressed: clearForm,
-                    child: Text('Clear'),
+                    child: const Text('Clear'),
                   ),
                 ],
               ),
             ),
           )
-        : Container();
+        : Container(
+            // Replace with your view UI
+            child: Column(
+              children: [
+                Text('Division: ${formData['division_id']}'),
+                Text('Name: ${formData['name']}'),
+                Text('Description: ${formData['description']}'),
+              ],
+            ),
+          );
   }
 }

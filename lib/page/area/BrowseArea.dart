@@ -13,7 +13,7 @@ class BrowseArea extends StatefulWidget {
 }
 
 class _BrowseAreaState extends State<BrowseArea> {
-  String dataurl = "https://digitm.isoae.com/api/area";
+
   List<dynamic> dataArea = [];
   String mode = 'browse';
   Map<String, dynamic> queryData = {
@@ -105,15 +105,27 @@ class _BrowseAreaState extends State<BrowseArea> {
     loadData();
   }
 
- Future<void> loadData() async {
-    const url = "https://digitm.isoae.com/api/area";
+
+  Future<void> loadData() async {
+    final url = Uri.parse("https://digitm.isoae.com/api/area");
     final headers = {
       "Content-Type": "application/json",
       "Accept": "application/json",
       "Authorization": "Bearer ${APIService.token}",
     };
 
-    final response = await http.get(Uri.parse(url), headers: headers);
+    // Construct the query parameters
+    final queryParameters = {
+      'page': queryData['page'].toString(),
+      'name': queryData['name'],
+      'limit': queryData['limit'].toString(),
+      'order_col': queryData['order_col'],
+      'order_type': queryData['order_type'],
+    };
+
+    final urlWithQuery = url.replace(queryParameters: queryParameters);
+
+    final response = await http.get(urlWithQuery, headers: headers);
 
     if (response.statusCode == 200) {
       final jsonData = json.decode(response.body);
@@ -163,38 +175,38 @@ class _BrowseAreaState extends State<BrowseArea> {
                     ),
                     const SizedBox(height: 12),
                     if (dataArea.isNotEmpty)
-                      ListView.builder(
-                        shrinkWrap: true,
-                        itemCount: dataArea.length,
-                        itemBuilder: (context, index) {
-                          final a = dataArea[index];
+                      DataTable(
+                        columns: const [
+                          DataColumn(label: Text('Nama')),
+                          DataColumn(label: Text('Nama Divisi')),
+                          DataColumn(label: Text('Deskripsi')),
+                          DataColumn(label: Text('Aksi')),
+                        ],
+                        rows: dataArea.map((a) {
                           final nama = a['name'].toString();
                           final deskripsi = a['description'].toString();
+                          final namadivisi = a['division']['name'].toString();
 
-                          return ListTile(
-                            title: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const Text("Nama:"),
-                                Text(nama),
-                              ],
+                          return DataRow(cells: [
+                            DataCell(Text(nama)),
+                            DataCell(Text(namadivisi)),
+                            DataCell(Text(deskripsi)),
+                            DataCell(
+                              Row(
+                                children: [
+                                  TextButton(
+                                    onPressed: () => onSelect(a),
+                                    child: const Text('Pilih'),
+                                  ),
+                                  TextButton(
+                                    onPressed: () => onDelete(a),
+                                    child: const Text('Hapus'),
+                                  ),
+                                ],
+                              ),
                             ),
-                            subtitle: Text("Deskripsi: $deskripsi"),
-                            trailing: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                TextButton(
-                                  onPressed: () => onSelect(a),
-                                  child: const Text('Pilih'),
-                                ),
-                                TextButton(
-                                  onPressed: () => onDelete(a),
-                                  child: const Text('Hapus'),
-                                ),
-                              ],
-                            ),
-                          );
-                        },
+                          ]);
+                        }).toList(),
                       ),
                   ],
                 ),
