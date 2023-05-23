@@ -13,7 +13,6 @@ class BrowseArea extends StatefulWidget {
 }
 
 class _BrowseAreaState extends State<BrowseArea> {
-
   List<dynamic> dataArea = [];
   String mode = 'browse';
   Map<String, dynamic> queryData = {
@@ -38,10 +37,13 @@ class _BrowseAreaState extends State<BrowseArea> {
     loadData();
   }
 
+  void onDelete(data) {
+    // Delete data pakai api
+    // ...
+    loadData();
+  }
+
   void addData() {
-    setState(() {
-      mode = 'form';
-    });
     final formAreaKey = GlobalKey<FormAreaState>();
     showDialog(
       context: context,
@@ -50,50 +52,26 @@ class _BrowseAreaState extends State<BrowseArea> {
           key: formAreaKey,
           onFinish: () {
             Navigator.pop(context);
+            onFormClose();
           },
         ),
-        actions: [
-          ElevatedButton(
-            onPressed: () {
-              formAreaKey.currentState?.saveData();
-              Navigator.pop(context);
-            },
-            child: const Text('Save'),
-          ),
-        ],
       ),
     );
   }
 
-  void onDelete(data) {
-    // Delete data using API or database
-    // ...
-    loadData();
-  }
-
   void onSelect(data) {
-    setState(() {
-      mode = 'form';
-    });
     final formAreaKey = GlobalKey<FormAreaState>();
     showDialog(
       context: context,
       builder: (BuildContext context) => AlertDialog(
         content: FormArea(
-          selectedData: data, // Provide the selected data if necessary
+          key: formAreaKey,
+          selectedData: data,
           onFinish: () {
             Navigator.pop(context);
+            onFormClose();
           },
         ),
-        actions: [
-          ElevatedButton(
-            onPressed: () {
-              formAreaKey.currentState?.saveData();
-              Navigator.pop(context);
-            },
-            child: const Text('Save'),
-          ),
-        ],
       ),
     );
   }
@@ -104,7 +82,6 @@ class _BrowseAreaState extends State<BrowseArea> {
     });
     loadData();
   }
-
 
   Future<void> loadData() async {
     final url = Uri.parse("https://digitm.isoae.com/api/area");
@@ -143,7 +120,6 @@ class _BrowseAreaState extends State<BrowseArea> {
       });
     }
   }
-
 
   @override
   Widget build(BuildContext context) {

@@ -3,7 +3,6 @@ import 'package:http/http.dart' as http;
 import 'package:pltu/services/api_services.dart';
 import 'dart:convert';
 
-
 class FormArea extends StatefulWidget {
   final dynamic selectedData;
   final Function onFinish;
@@ -26,101 +25,146 @@ class FormAreaState extends State<FormArea> {
   void initState() {
     super.initState();
     getOptionDivisi();
-    if (widget.selectedData != null) {
-      selectData(widget.selectedData);
-    } else {
-      newData();
-    }
+    newData(); // Move the selection logic inside newData()
   }
 
-  void getOptionDivisi() {
-    // Fetch division options using API or other data source
-    // ...
-    setState(() {
-      listDivisi = [];
-    });
+  void getOptionDivisi() async {
+    final url = Uri.parse("https://digitm.isoae.com/api/division");
+    final headers = {
+      "Content-Type": "application/json",
+      "Accept": "application/json",
+      "Authorization": "Bearer ${APIService.token}",
+    };
+
+    final response = await http.get(url, headers: headers);
+
+    if (response.statusCode == 200) {
+      try {
+        final jsonData = json.decode(response.body);
+        final responseData = jsonData['data'];
+
+        if (responseData is List<dynamic>) {
+          setState(() {
+            listDivisi = responseData;
+          });
+        } else if (responseData is Map<String, dynamic>) {
+          setState(() {
+            listDivisi = [responseData];
+          });
+        } else {
+          print('Error: Invalid response data');
+          setState(() {
+            listDivisi = [];
+          });
+        }
+      } catch (e) {
+        print('Error decoding response body: $e');
+        setState(() {
+          listDivisi = [];
+        });
+      }
+    } else {
+      print('Error: ${response.statusCode}');
+      setState(() {
+        listDivisi = [];
+      });
+    }
   }
 
   void newData() {
     setState(() {
       show = true;
       formData = {
-        'id': null,
-        'division_id': '',
-        'name': '',
-        'description': '',
+        'id': widget.selectedData != null ? widget.selectedData['id'] : null,
+        'division_id': widget.selectedData != null
+            ? widget.selectedData['division_id']
+            : '',
+        'name': widget.selectedData != null ? widget.selectedData['name'] : '',
+        'description': widget.selectedData != null
+            ? widget.selectedData['description']
+            : '',
       };
       errors = [];
     });
   }
 
-  void selectData(dynamic data) {
-    setState(() {
-      show = true;
-      formData = {
-        'id': data['id'],
-        'division_id': data['division_id'],
-        'name': data['name'],
-        'description': data['description'],
-      };
-      errors = [];
-    });
-  }
+ void saveData() async {
+    if (_formKey.currentState!.validate()) {
+      _formKey.currentState!.save();
 
-  void saveData() {
-    if (formData['id'] != null) {
-      // Data mempunyai id ,maka akan diedit
-      final url = Uri.parse(
-          "https://digitm.isoae.com/api/area/" + formData['id'].toString());
-      final headers = {
-        "Content-Type": "application/json",
-        "Accept": "application/json",
-        "Authorization": "Bearer ${APIService.token}",
-      };
+      if (formData['id'] != null) {
+        // Data has an ID, so it's an edit
+        final url =
+            Uri.parse("https://digitm.isoae.com/api/area/${formData['id']}");
+        final headers = {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+          "Authorization": "Bearer ${APIService.token}",
+        };
 
-      http
-          .put(url, headers: headers, body: jsonEncode(formData))
-          .then((response) {
-        if (response.statusCode == 200) {
-          clearForm();
-          setState(() {
-            show = false;
-          });
-          widget.onFinish();
-        } else if (response.statusCode == 422) {
-          setState(() {
-            errors = jsonDecode(response.body)['errors'];
-          });
+        try {
+          final response = await http.put(
+            url,
+            headers: headers,
+            body: jsonEncode(formData),
+          );
+
+          if (response.statusCode == 200) {
+            clearForm();
+          } else if (response.statusCode == 422) {
+            final responseData = jsonDecode(response.body);
+            if (responseData is Map<String, dynamic>) {
+              setState(() {
+                errors = responseData['errors'] as List<dynamic>;
+              });
+            } else {
+              print('Error: Invalid response data');
+            }
+          } else {
+            print('Error: ${response.statusCode}');
+            // Handle other status codes
+          }
+        } catch (error) {
+          print('Error: $error');
+          // Handle error
         }
-      }).catchError((error) {
-        // Handle error
-      });
-    } else {
-      // New data
-      final url = Uri.parse("https://digitm.isoae.com/api/area");
-      final headers = {
-        "Content-Type": "application/json",
-        "Accept": "application/json",
-        "Authorization": "Bearer ${APIService.token}",
-      };
+      } else {
+        // New data
+        final url = Uri.parse("https://digitm.isoae.com/api/area");
+        final headers = {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+          "Authorization": "Bearer ${APIService.token}",
+        };
 
-      http
-          .post(url, headers: headers, body: jsonEncode(formData))
-          .then((response) {
-        if (response.statusCode == 200) {
-          clearForm();
-          setState(() {
-            show = false;
-          });
-          widget.onFinish();
-        } else if (response.statusCode == 422) {
-          setState(() {
-            errors = jsonDecode(response.body)['errors'];
-          });
+        try {
+          final response = await http.post(
+            url,
+            headers: headers,
+            body: jsonEncode(formData),
+          );
+
+          if (response.statusCode == 200) {
+            clearForm();
+            // Add any additional logic you want to execute after successfully adding data
+          } else if (response.statusCode == 422) {
+            final responseData = jsonDecode(response.body);
+            if (responseData is Map<String, dynamic>) {
+              setState(() {
+                errors = responseData['errors'] as List<dynamic>;
+              });
+            } else {
+              print('Error: Invalid response data');
+            }
+          } else {
+            print('Error: ${response.statusCode}');
+            // Handle other status codes
+          }
+        } catch (error) {
+          print('Error: $error');
+          // Handle error
         }
-      }).catchError((error) {
-        // Handle error
-      });
+      }
     }
   }
 
@@ -143,39 +187,47 @@ class FormAreaState extends State<FormArea> {
   Widget build(BuildContext context) {
     return show
         ? Container(
-            // Replace with your form UI
             child: Form(
               key: _formKey,
               child: Column(
                 children: [
-                  TextFormField(
-                    decoration: const InputDecoration(labelText: 'Division'),
-                    initialValue: formData['division_id'].toString(),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter the division';
-                      }
-                      return null;
-                    },
-                    onChanged: (value) {
-                      setState(() {
-                        formData['division_id'] = value;
-                      });
+                  FormField<String>(
+                    builder: (FormFieldState<String> state) {
+                      return TextFormField(
+                        decoration:
+                            const InputDecoration(labelText: 'Division'),
+                        initialValue: formData['division_id'].toString(),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter the division';
+                          }
+                          return null;
+                        },
+                        onChanged: (value) {
+                          setState(() {
+                            formData['division_id'] = value;
+                          });
+                        },
+                      );
                     },
                   ),
-                  TextFormField(
-                    decoration: const InputDecoration(labelText: 'Name'),
-                    initialValue: formData['name'],
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter the name';
-                      }
-                      return null;
-                    },
-                    onChanged: (value) {
-                      setState(() {
-                        formData['name'] = value;
-                      });
+                  FormField<String>(
+                    builder: (FormFieldState<String> state) {
+                      return TextFormField(
+                        decoration: const InputDecoration(labelText: 'Name'),
+                        initialValue: formData['name'],
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter the name';
+                          }
+                          return null;
+                        },
+                        onChanged: (value) {
+                          setState(() {
+                            formData['name'] = value;
+                          });
+                        },
+                      );
                     },
                   ),
                   TextFormField(
@@ -188,26 +240,23 @@ class FormAreaState extends State<FormArea> {
                     },
                   ),
                   ElevatedButton(
-                    onPressed: saveData,
+                    onPressed: () {
+                      saveData();
+                    },
                     child: const Text('Save'),
                   ),
                   ElevatedButton(
-                    onPressed: clearForm,
-                    child: const Text('Clear'),
+                    onPressed: () {
+                      setState(() {
+                        clearForm();
+                      });
+                    },
+                    child: const Text('Exit'),
                   ),
                 ],
               ),
             ),
           )
-        : Container(
-            // Replace with your view UI
-            child: Column(
-              children: [
-                Text('Division: ${formData['division_id']}'),
-                Text('Name: ${formData['name']}'),
-                Text('Description: ${formData['description']}'),
-              ],
-            ),
-          );
+        : Container();
   }
 }
