@@ -43,13 +43,11 @@ class FormAreaState extends State<FormArea> {
         final jsonData = json.decode(response.body);
         final responseData = jsonData['data'];
 
-        if (responseData is List<dynamic>) {
+        if (responseData is Map<String, dynamic> &&
+            responseData.containsKey('records')) {
+          final records = responseData['records'] as List<dynamic>;
           setState(() {
-            listDivisi = responseData;
-          });
-        } else if (responseData is Map<String, dynamic>) {
-          setState(() {
-            listDivisi = [responseData];
+            listDivisi = records;
           });
         } else {
           print('Error: Invalid response data');
@@ -77,8 +75,10 @@ class FormAreaState extends State<FormArea> {
       formData = {
         'id': widget.selectedData != null ? widget.selectedData['id'] : null,
         'division_id': widget.selectedData != null
-            ? widget.selectedData['division_id']
-            : '',
+            ? widget.selectedData['division_id'].toString()
+            : listDivisi.isNotEmpty
+                ? listDivisi[0]['id'].toString()
+                : null,
         'name': widget.selectedData != null ? widget.selectedData['name'] : '',
         'description': widget.selectedData != null
             ? widget.selectedData['description']
@@ -88,7 +88,7 @@ class FormAreaState extends State<FormArea> {
     });
   }
 
- void saveData() async {
+  void saveData() async {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
 
@@ -168,7 +168,6 @@ class FormAreaState extends State<FormArea> {
     }
   }
 
-
   void clearForm() {
     setState(() {
       show = false;
@@ -191,24 +190,25 @@ class FormAreaState extends State<FormArea> {
               key: _formKey,
               child: Column(
                 children: [
-                  FormField<String>(
-                    builder: (FormFieldState<String> state) {
-                      return TextFormField(
-                        decoration:
-                            const InputDecoration(labelText: 'Division'),
-                        initialValue: formData['division_id'].toString(),
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please enter the division';
-                          }
-                          return null;
-                        },
-                        onChanged: (value) {
-                          setState(() {
-                            formData['division_id'] = value;
-                          });
-                        },
+                  DropdownButtonFormField<String>(
+                    decoration: const InputDecoration(labelText: 'Division'),
+                    value: formData['division_id'],
+                    items: listDivisi.map((division) {
+                      return DropdownMenuItem<String>(
+                        value: division['id'].toString(),
+                        child: Text(division['name']),
                       );
+                    }).toList(),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please select a division';
+                      }
+                      return null;
+                    },
+                    onChanged: (value) {
+                      setState(() {
+                        formData['division_id'] = value;
+                      });
                     },
                   ),
                   FormField<String>(

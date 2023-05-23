@@ -37,10 +37,26 @@ class _BrowseAreaState extends State<BrowseArea> {
     loadData();
   }
 
-  void onDelete(data) {
-    // Delete data pakai api
-    // ...
-    loadData();
+  void onDelete(data) async {
+    final url = Uri.parse("https://digitm.isoae.com/api/area/${data['id']}");
+    final headers = {
+      "Content-Type": "application/json",
+      "Accept": "application/json",
+      "Authorization": "Bearer ${APIService.token}",
+    };
+
+    try {
+      final response = await http.delete(url, headers: headers);
+
+      if (response.statusCode == 200) {
+        print('Data deleted successfully');
+        loadData(); // Refresh the data after deletion
+      } else {
+        print('Error: ${response.statusCode}');
+      }
+    } catch (error) {
+      print('Error: $error');
+    }
   }
 
   void addData() {
