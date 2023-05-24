@@ -2,18 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-import 'package:pltu/page/area/FormArea.dart';
+import 'package:pltu/page/divisi/FormDivisi.dart';
 import 'package:pltu/services/api_services.dart';
 
-class BrowseArea extends StatefulWidget {
-  const BrowseArea({Key? key}) : super(key: key);
+class BrowseDivisi extends StatefulWidget {
+  const BrowseDivisi({Key? key}) : super(key: key);
 
   @override
-  State<BrowseArea> createState() => _BrowseAreaState();
+  State<BrowseDivisi> createState() => _BrowseDivisiState();
 }
 
-class _BrowseAreaState extends State<BrowseArea> {
-  List<dynamic> dataArea = [];
+class _BrowseDivisiState extends State<BrowseDivisi> {
+  List<dynamic> dataDivisi = [];
   String mode = 'browse';
   Map<String, dynamic> paginationData = {};
   Map<String, dynamic> queryData = {
@@ -38,7 +38,7 @@ class _BrowseAreaState extends State<BrowseArea> {
   }
 
   void onDelete(data) async {
-    final url = Uri.parse("https://digitm.isoae.com/api/area/${data['id']}");
+    final url = Uri.parse("https://digitm.isoae.com/api/division/${data['id']}");
     final headers = {
       "Content-Type": "application/json",
       "Accept": "application/json",
@@ -60,12 +60,12 @@ class _BrowseAreaState extends State<BrowseArea> {
   }
 
   void addData() {
-    final formAreaKey = GlobalKey<FormAreaState>();
+    final formDivisiKey = GlobalKey<FormDivisiState>();
     showDialog(
       context: context,
       builder: (BuildContext context) => AlertDialog(
-        content: FormArea(
-          key: formAreaKey,
+        content: FormDivisi(
+          key: formDivisiKey,
           onFinish: () {
             Navigator.pop(context);
             onFormClose();
@@ -76,12 +76,12 @@ class _BrowseAreaState extends State<BrowseArea> {
   }
 
   void onSelect(data) {
-    final formAreaKey = GlobalKey<FormAreaState>();
+    final formDivisiKey = GlobalKey<FormDivisiState>();
     showDialog(
       context: context,
       builder: (BuildContext context) => AlertDialog(
-        content: FormArea(
-          key: formAreaKey,
+        content: FormDivisi(
+          key: formDivisiKey,
           selectedData: data,
           onFinish: () {
             Navigator.pop(context);
@@ -100,7 +100,7 @@ class _BrowseAreaState extends State<BrowseArea> {
   }
 
   Future<void> loadData() async {
-    final url = Uri.parse("https://digitm.isoae.com/api/area");
+    final url = Uri.parse("https://digitm.isoae.com/api/division");
     final headers = {
       "Content-Type": "application/json",
       "Accept": "application/json",
@@ -125,13 +125,13 @@ class _BrowseAreaState extends State<BrowseArea> {
       final responseData = jsonData['data'];
 
       setState(() {
-        dataArea = responseData['records'];
+        dataDivisi = responseData['records'];
         paginationData = responseData['paging'];
       });
     } else {
       print('Error: ${response.statusCode}');
       setState(() {
-        dataArea = [];
+        dataDivisi = [];
         paginationData = {};
       });
     }
@@ -147,7 +147,7 @@ class _BrowseAreaState extends State<BrowseArea> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Text(
-                'Area',
+                'Divisi',
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 12),
@@ -166,13 +166,13 @@ class _BrowseAreaState extends State<BrowseArea> {
                       child: const Text('Tambah Data'),
                     ),
                     const SizedBox(height: 12),
-                    if (dataArea.isNotEmpty)
+                    if (dataDivisi.isNotEmpty)
                       SingleChildScrollView(
                         child: Column(
-                          children: dataArea.map((a) {
+                          children: dataDivisi.map((a) {
                             final nama = a['name'].toString();
                             final deskripsi = a['description'].toString();
-                            final namadivisi = a['division']['name'].toString();
+                           
 
                             return Card(
                               margin: const EdgeInsets.symmetric(vertical: 8.0),
@@ -185,10 +185,7 @@ class _BrowseAreaState extends State<BrowseArea> {
                                     const SizedBox(
                                       height: 8,
                                     ),
-                                    Text('Nama Divisi: $namadivisi'),
-                                    const SizedBox(
-                                      height: 8,
-                                    ),
+                                    
                                     Text('Deskripsi: $deskripsi'),
                                     Row(
                                       mainAxisAlignment: MainAxisAlignment.end,
@@ -215,7 +212,7 @@ class _BrowseAreaState extends State<BrowseArea> {
                 ),
               const SizedBox(height: 12),
               if (mode == 'form')
-                FormArea(
+                FormDivisi(
                   selectedData: null, // Pass the selected data here if needed
                   onFinish: () => onFormClose(),
                 ),

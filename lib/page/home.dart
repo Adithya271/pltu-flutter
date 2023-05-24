@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:pltu/page/divisi/BrowseDivisi.dart';
+import 'package:pltu/page/groupEquipment/BrowseGroupEquipment.dart';
 import 'package:pltu/page/sidebar.dart';
 import 'area/BrowseArea.dart';
 
@@ -15,9 +17,9 @@ class _HomePageState extends State<HomePage> {
 
   static const List<Widget> _pages = <Widget>[
     Center(child: Text('Dashboard')),
-    const BrowseArea(),
-    Center(child: Text('Divisi')),
-    Center(child: Text('Equipment')),
+    BrowseArea(),
+    BrowseDivisi(),
+    BrowseGroupEquipment()
   ];
 
   void _onSidebarItemTapped(int index) {

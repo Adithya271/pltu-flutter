@@ -52,7 +52,7 @@ class SidebarMenu extends StatelessWidget {
             selected: selectedIndex == 2,
           ),
           ListTile(
-            title: const Text('Equipment'),
+            title: const Text('GroupEquipment'),
             onTap: () {
               onSidebarItemTapped(3);
             },
