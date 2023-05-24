@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pltu/page/divisi/BrowseDivisi.dart';
 import 'package:pltu/page/groupEquipment/BrowseGroupEquipment.dart';
+import 'package:pltu/page/profil.dart';
 import 'package:pltu/page/sidebar.dart';
 import 'area/BrowseArea.dart';
 
@@ -13,24 +14,27 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int _sidebarIndex = 0;
-  int _bottomBarIndex = 0; // Add a separate index for the bottom navigation bar
+  int _bottomBarIndex = 0;
 
   static const List<Widget> _pages = <Widget>[
     Center(child: Text('Dashboard')),
+    ProfilPage(),
     BrowseArea(),
     BrowseDivisi(),
-    BrowseGroupEquipment()
+    BrowseGroupEquipment(),
   ];
 
   void _onSidebarItemTapped(int index) {
     setState(() {
       _sidebarIndex = index;
     });
+    Navigator.pop(context); // Close the sidebar after selecting an item
   }
 
   void _onBottomBarItemTapped(int index) {
     setState(() {
       _bottomBarIndex = index;
+      _sidebarIndex = index; // Update the sidebar index as well
     });
   }
 
@@ -45,23 +49,40 @@ class _HomePageState extends State<HomePage> {
         selectedIndex: _sidebarIndex,
         onSidebarItemTapped: _onSidebarItemTapped,
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profile',
-          ),
-        ],
-        currentIndex:
-            _bottomBarIndex, // Use the separate index for the bottom navigation bar
-        selectedItemColor: Colors.blue,
-        onTap:
-            _onBottomBarItemTapped, // Use a separate handler for the bottom navigation bar
+      bottomNavigationBar: BottomBar(
+        currentIndex: _bottomBarIndex,
+        onBottomBarItemTapped: _onBottomBarItemTapped,
       ),
+    );
+  }
+}
+
+class BottomBar extends StatelessWidget {
+  const BottomBar({
+    Key? key,
+    required this.currentIndex,
+    required this.onBottomBarItemTapped,
+  }) : super(key: key);
+
+  final int currentIndex;
+  final Function(int) onBottomBarItemTapped;
+
+  @override
+  Widget build(BuildContext context) {
+    return BottomNavigationBar(
+      items: const <BottomNavigationBarItem>[
+        BottomNavigationBarItem(
+          icon: Icon(Icons.home),
+          label: 'Home',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.person),
+          label: 'Profile',
+        ),
+      ],
+      currentIndex: currentIndex,
+      selectedItemColor: Colors.blue,
+      onTap: onBottomBarItemTapped,
     );
   }
 }
