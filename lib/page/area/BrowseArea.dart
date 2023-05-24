@@ -167,38 +167,43 @@ class _BrowseAreaState extends State<BrowseArea> {
                     ),
                     const SizedBox(height: 12),
                     if (dataArea.isNotEmpty)
-                      DataTable(
-                        columns: const [
-                          DataColumn(label: Text('Nama')),
-                          DataColumn(label: Text('Nama Divisi')),
-                          DataColumn(label: Text('Deskripsi')),
-                          DataColumn(label: Text('Aksi')),
-                        ],
-                        rows: dataArea.map((a) {
-                          final nama = a['name'].toString();
-                          final deskripsi = a['description'].toString();
-                          final namadivisi = a['division']['name'].toString();
+                      SingleChildScrollView(
+                        child: Column(
+                          children: dataArea.map((a) {
+                            final nama = a['name'].toString();
+                            final deskripsi = a['description'].toString();
+                            final namadivisi = a['division']['name'].toString();
 
-                          return DataRow(cells: [
-                            DataCell(Text(nama)),
-                            DataCell(Text(namadivisi)),
-                            DataCell(Text(deskripsi)),
-                            DataCell(
-                              Row(
-                                children: [
-                                  TextButton(
-                                    onPressed: () => onSelect(a),
-                                    child: const Text('Pilih'),
-                                  ),
-                                  TextButton(
-                                    onPressed: () => onDelete(a),
-                                    child: const Text('Hapus'),
-                                  ),
-                                ],
+                            return Card(
+                              margin: const EdgeInsets.symmetric(vertical: 8.0),
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text('Nama: $nama'),
+                                    Text('Nama Divisi: $namadivisi'),
+                                    Text('Deskripsi: $deskripsi'),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      children: [
+                                        TextButton(
+                                          onPressed: () => onSelect(a),
+                                          child: const Text('Pilih'),
+                                        ),
+                                        const SizedBox(width: 8.0),
+                                        TextButton(
+                                          onPressed: () => onDelete(a),
+                                          child: const Text('Hapus'),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
                               ),
-                            ),
-                          ]);
-                        }).toList(),
+                            );
+                          }).toList(),
+                        ),
                       ),
                   ],
                 ),

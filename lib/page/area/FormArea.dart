@@ -93,7 +93,7 @@ class FormAreaState extends State<FormArea> {
       _formKey.currentState!.save();
 
       if (formData['id'] != null) {
-        // Data has an ID, so it's an edit
+        // Data memiliki id,jadinya edit
         final url =
             Uri.parse("https://digitm.isoae.com/api/area/${formData['id']}");
         final headers = {
@@ -146,7 +146,7 @@ class FormAreaState extends State<FormArea> {
 
           if (response.statusCode == 200) {
             clearForm();
-            // Add any additional logic you want to execute after successfully adding data
+            // bisa tambah logic ketika sudah berhasil tambah data
           } else if (response.statusCode == 422) {
             final responseData = jsonDecode(response.body);
             if (responseData is Map<String, dynamic>) {
@@ -233,6 +233,12 @@ class FormAreaState extends State<FormArea> {
                   TextFormField(
                     decoration: const InputDecoration(labelText: 'Description'),
                     initialValue: formData['description'],
+                    validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter the name';
+                          }
+                          return null;
+                        },
                     onChanged: (value) {
                       setState(() {
                         formData['description'] = value;
