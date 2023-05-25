@@ -3,6 +3,7 @@ import 'package:pltu/page/divisi/BrowseDivisi.dart';
 import 'package:pltu/page/groupEquipment/BrowseGroupEquipment.dart';
 import 'package:pltu/page/profil.dart';
 import 'package:pltu/page/sidebar.dart';
+import 'package:pltu/page/type/BrowseType.dart';
 import 'area/BrowseArea.dart';
 
 class HomePage extends StatefulWidget {
@@ -22,6 +23,7 @@ class _HomePageState extends State<HomePage> {
     BrowseArea(),
     BrowseDivisi(),
     BrowseGroupEquipment(),
+    BrowseType(),
   ];
 
   void _onSidebarItemTapped(int index) {
@@ -42,7 +44,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Home'),
+        title: const Text('PLTU'),
       ),
       body: _pages[_sidebarIndex],
       drawer: SidebarMenu(

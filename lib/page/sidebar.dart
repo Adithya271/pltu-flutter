@@ -71,6 +71,14 @@ class SidebarMenu extends StatelessWidget {
             },
             selected: selectedIndex == 4,
           ),
+          ListTile(
+            leading: const Icon(Icons.type_specimen),
+            title: const Text('Type'),
+            onTap: () {
+              onSidebarItemTapped(5);
+            },
+            selected: selectedIndex == 5,
+          ),
         ],
       ),
     );
