@@ -2,18 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-import 'package:pltu/page/divisi/FormDivisi.dart';
+import 'package:pltu/page/Equipment/FormEquipment.dart';
 import 'package:pltu/services/api_services.dart';
 
-class BrowseDivisi extends StatefulWidget {
-  const BrowseDivisi({Key? key}) : super(key: key);
+class BrowseEquipment extends StatefulWidget {
+  const BrowseEquipment({Key? key}) : super(key: key);
 
   @override
-  State<BrowseDivisi> createState() => _BrowseDivisiState();
+  State<BrowseEquipment> createState() => _BrowseEquipmentState();
 }
 
-class _BrowseDivisiState extends State<BrowseDivisi> {
-  List<dynamic> dataDivisi = [];
+class _BrowseEquipmentState extends State<BrowseEquipment> {
+  List<dynamic> dataGroupEquipment = [];
   String mode = 'browse';
   Map<String, dynamic> paginationData = {};
   Map<String, dynamic> queryData = {
@@ -38,7 +38,8 @@ class _BrowseDivisiState extends State<BrowseDivisi> {
   }
 
   void onDelete(data) async {
-    final url = Uri.parse("https://digitm.isoae.com/api/division/${data['id']}");
+    final url =
+        Uri.parse("https://digitm.isoae.com/api/equipment/${data['id']}");
     final headers = {
       "Content-Type": "application/json",
       "Accept": "application/json",
@@ -60,12 +61,12 @@ class _BrowseDivisiState extends State<BrowseDivisi> {
   }
 
   void addData() {
-    final formDivisiKey = GlobalKey<FormDivisiState>();
+    final formGroupEquipmentKey = GlobalKey<FormEquipmentState>();
     showDialog(
       context: context,
       builder: (BuildContext context) => AlertDialog(
-        content: FormDivisi(
-          key: formDivisiKey,
+        content: FormEquipment(
+          key: formGroupEquipmentKey,
           onFinish: () {
             Navigator.pop(context);
             onFormClose();
@@ -76,12 +77,12 @@ class _BrowseDivisiState extends State<BrowseDivisi> {
   }
 
   void onSelect(data) {
-    final formDivisiKey = GlobalKey<FormDivisiState>();
+    final formGroupEquipmentKey = GlobalKey<FormEquipmentState>();
     showDialog(
       context: context,
       builder: (BuildContext context) => AlertDialog(
-        content: FormDivisi(
-          key: formDivisiKey,
+        content: FormEquipment(
+          key: formGroupEquipmentKey,
           selectedData: data,
           onFinish: () {
             Navigator.pop(context);
@@ -100,7 +101,7 @@ class _BrowseDivisiState extends State<BrowseDivisi> {
   }
 
   Future<void> loadData() async {
-    final url = Uri.parse("https://digitm.isoae.com/api/division");
+    final url = Uri.parse("https://digitm.isoae.com/api/equipment");
     final headers = {
       "Content-Type": "application/json",
       "Accept": "application/json",
@@ -125,13 +126,13 @@ class _BrowseDivisiState extends State<BrowseDivisi> {
       final responseData = jsonData['data'];
 
       setState(() {
-        dataDivisi = responseData['records'];
+        dataGroupEquipment = responseData['records'];
         paginationData = responseData['paging'];
       });
     } else {
       print('Error: ${response.statusCode}');
       setState(() {
-        dataDivisi = [];
+        dataGroupEquipment = [];
         paginationData = {};
       });
     }
@@ -147,7 +148,7 @@ class _BrowseDivisiState extends State<BrowseDivisi> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Text(
-                'Divisi',
+                'Equipment',
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 12),
@@ -166,13 +167,15 @@ class _BrowseDivisiState extends State<BrowseDivisi> {
                       child: const Text('Tambah Data'),
                     ),
                     const SizedBox(height: 12),
-                    if (dataDivisi.isNotEmpty)
+                    if (dataGroupEquipment.isNotEmpty)
                       SingleChildScrollView(
                         child: Column(
-                          children: dataDivisi.map((a) {
+                          children: dataGroupEquipment.map((a) {
                             final nama = a['name'].toString();
                             final deskripsi = a['description'].toString();
-                           
+                            final namadivisi = a['division']['name'].toString();
+                            final namaarea = a['area']['name'].toString();
+                            final namagrup_equipment = a['group_equipment']['name'].toString();
 
                             return Card(
                               margin: const EdgeInsets.symmetric(vertical: 8.0),
@@ -185,7 +188,18 @@ class _BrowseDivisiState extends State<BrowseDivisi> {
                                     const SizedBox(
                                       height: 8,
                                     ),
-                                    
+                                    Text('Nama Divisi: $namadivisi'),
+                                    const SizedBox(
+                                      height: 8,
+                                    ),
+                                    Text('Nama Area: $namaarea'),
+                                    const SizedBox(
+                                      height: 8,
+                                    ),
+                                    Text('Nama Grup: $namagrup_equipment'),
+                                    const SizedBox(
+                                      height: 8,
+                                    ),
                                     Text('Deskripsi: $deskripsi'),
                                     Row(
                                       mainAxisAlignment: MainAxisAlignment.end,
@@ -195,7 +209,7 @@ class _BrowseDivisiState extends State<BrowseDivisi> {
                                           child: const Text('Pilih'),
                                         ),
                                         const SizedBox(width: 8.0),
-                                       TextButton(
+                                        TextButton(
                                           onPressed: () => onDelete(a),
                                           child: const Text('Hapus',
                                               style:
@@ -214,7 +228,7 @@ class _BrowseDivisiState extends State<BrowseDivisi> {
                 ),
               const SizedBox(height: 12),
               if (mode == 'form')
-                FormDivisi(
+                FormEquipment(
                   selectedData: null, // Pass the selected data here if needed
                   onFinish: () => onFormClose(),
                 ),
