@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pltu/page/divisi/BrowseDivisi.dart';
+import 'package:pltu/page/equipment/BrowseEquipment.dart';
 import 'package:pltu/page/groupEquipment/BrowseGroupEquipment.dart';
 import 'package:pltu/page/profil.dart';
 import 'package:pltu/page/sidebar.dart';
@@ -22,6 +23,7 @@ class _HomePageState extends State<HomePage> {
     BrowseArea(),
     BrowseDivisi(),
     BrowseGroupEquipment(),
+    BrowseEquipment(),
   ];
 
   void _onSidebarItemTapped(int index) {
