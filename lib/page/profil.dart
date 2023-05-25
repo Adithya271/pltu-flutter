@@ -11,7 +11,14 @@ class _ProfilPageState extends State<ProfilPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Text('profil'),
+      body: 
+      CircleAvatar(
+                    backgroundColor: Colors.white,
+                    radius: 100,
+                    backgroundImage: AssetImage('img/profile.jpg')
+      
+      ),
+      
     );
   }
 }

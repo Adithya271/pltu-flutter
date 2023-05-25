@@ -335,20 +335,33 @@ class FormGroupEquipmentState extends State<FormGroupEquipment> {
                       });
                     },
                   ),
-                  ElevatedButton(
-                    onPressed: () {
-                      saveData();
-                    },
-                    child: const Text('Save'),
-                  ),
-                  ElevatedButton(
-                    onPressed: () {
-                      setState(() {
-                        clearForm();
-                      });
-                    },
-                    child: const Text('Exit'),
-                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 10),
+                    child: Row(
+                      children: [
+                        ElevatedButton(
+                          onPressed: () {
+                            saveData();
+                          },
+                          child: const Text('Save'),
+                        ),
+                        const SizedBox(width: 15.0),
+                       ElevatedButton(
+                          onPressed: () {
+                            setState(() {
+                              clearForm();
+                            });
+                          },
+                          child: const Text('Exit'),
+                          style: ButtonStyle(
+                            backgroundColor:
+                                MaterialStateProperty.all(Colors.red),
+                          ),
+                        )
+
+                      ],
+                    ),
+                  )
                 ],
               ),
             ),

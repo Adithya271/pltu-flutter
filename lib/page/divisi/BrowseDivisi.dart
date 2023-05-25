@@ -197,7 +197,7 @@ class _BrowseDivisiState extends State<BrowseDivisi> {
                                         const SizedBox(width: 8.0),
                                         TextButton(
                                           onPressed: () => onDelete(a),
-                                          child: const Text('Hapus', style: TextStyle(color: Colors.red),),
+                                          child: const Text('Hapus'),
                                         ),
                                       ],
                                     ),

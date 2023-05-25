@@ -206,7 +206,7 @@ class _BrowseGroupEquipmentState extends State<BrowseGroupEquipment> {
                                         const SizedBox(width: 8.0),
                                         TextButton(
                                           onPressed: () => onDelete(a),
-                                          child: const Text('Hapus'),
+                                          child: const Text('Hapus',style: TextStyle(color: Colors.red),),
                                         ),
                                       ],
                                     ),
