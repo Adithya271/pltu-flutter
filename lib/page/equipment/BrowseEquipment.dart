@@ -2,18 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-import 'package:pltu/page/area/FormArea.dart';
+import 'package:pltu/page/Equipment/FormEquipment.dart';
 import 'package:pltu/services/api_services.dart';
 
-class BrowseArea extends StatefulWidget {
-  const BrowseArea({Key? key}) : super(key: key);
+class BrowseEquipment extends StatefulWidget {
+  const BrowseEquipment({Key? key}) : super(key: key);
 
   @override
-  State<BrowseArea> createState() => _BrowseAreaState();
+  State<BrowseEquipment> createState() => _BrowseEquipmentState();
 }
 
-class _BrowseAreaState extends State<BrowseArea> {
-  List<dynamic> dataArea = [];
+class _BrowseEquipmentState extends State<BrowseEquipment> {
+  List<dynamic> dataGroupEquipment = [];
   String mode = 'browse';
   Map<String, dynamic> paginationData = {};
   Map<String, dynamic> queryData = {
@@ -38,7 +38,8 @@ class _BrowseAreaState extends State<BrowseArea> {
   }
 
   void onDelete(data) async {
-    final url = Uri.parse("https://digitm.isoae.com/api/area/${data['id']}");
+    final url =
+        Uri.parse("https://digitm.isoae.com/api/equipment/${data['id']}");
     final headers = {
       "Content-Type": "application/json",
       "Accept": "application/json",
@@ -60,12 +61,12 @@ class _BrowseAreaState extends State<BrowseArea> {
   }
 
   void addData() {
-    final formAreaKey = GlobalKey<FormAreaState>();
+    final formGroupEquipmentKey = GlobalKey<FormEquipmentState>();
     showDialog(
       context: context,
       builder: (BuildContext context) => AlertDialog(
-        content: FormArea(
-          key: formAreaKey,
+        content: FormEquipment(
+          key: formGroupEquipmentKey,
           onFinish: () {
             Navigator.pop(context);
             onFormClose();
@@ -76,12 +77,12 @@ class _BrowseAreaState extends State<BrowseArea> {
   }
 
   void onSelect(data) {
-    final formAreaKey = GlobalKey<FormAreaState>();
+    final formGroupEquipmentKey = GlobalKey<FormEquipmentState>();
     showDialog(
       context: context,
       builder: (BuildContext context) => AlertDialog(
-        content: FormArea(
-          key: formAreaKey,
+        content: FormEquipment(
+          key: formGroupEquipmentKey,
           selectedData: data,
           onFinish: () {
             Navigator.pop(context);
@@ -100,7 +101,7 @@ class _BrowseAreaState extends State<BrowseArea> {
   }
 
   Future<void> loadData() async {
-    final url = Uri.parse("https://digitm.isoae.com/api/area");
+    final url = Uri.parse("https://digitm.isoae.com/api/equipment");
     final headers = {
       "Content-Type": "application/json",
       "Accept": "application/json",
@@ -125,13 +126,13 @@ class _BrowseAreaState extends State<BrowseArea> {
       final responseData = jsonData['data'];
 
       setState(() {
-        dataArea = responseData['records'];
+        dataGroupEquipment = responseData['records'];
         paginationData = responseData['paging'];
       });
     } else {
       print('Error: ${response.statusCode}');
       setState(() {
-        dataArea = [];
+        dataGroupEquipment = [];
         paginationData = {};
       });
     }
@@ -147,7 +148,7 @@ class _BrowseAreaState extends State<BrowseArea> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Text(
-                'Area',
+                'Equipment',
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 12),
@@ -166,13 +167,15 @@ class _BrowseAreaState extends State<BrowseArea> {
                       child: const Text('Tambah Data'),
                     ),
                     const SizedBox(height: 12),
-                    if (dataArea.isNotEmpty)
+                    if (dataGroupEquipment.isNotEmpty)
                       SingleChildScrollView(
                         child: Column(
-                          children: dataArea.map((a) {
+                          children: dataGroupEquipment.map((a) {
                             final nama = a['name'].toString();
                             final deskripsi = a['description'].toString();
                             final namadivisi = a['division']['name'].toString();
+                            final namaarea = a['area']['name'].toString();
+                            final namagrup_equipment = a['group_equipment']['name'].toString();
 
                             return Card(
                               margin: const EdgeInsets.symmetric(vertical: 8.0),
@@ -186,6 +189,14 @@ class _BrowseAreaState extends State<BrowseArea> {
                                       height: 8,
                                     ),
                                     Text('Nama Divisi: $namadivisi'),
+                                    const SizedBox(
+                                      height: 8,
+                                    ),
+                                    Text('Nama Area: $namaarea'),
+                                    const SizedBox(
+                                      height: 8,
+                                    ),
+                                    Text('Nama Grup: $namagrup_equipment'),
                                     const SizedBox(
                                       height: 8,
                                     ),
@@ -215,7 +226,7 @@ class _BrowseAreaState extends State<BrowseArea> {
                 ),
               const SizedBox(height: 12),
               if (mode == 'form')
-                FormArea(
+                FormEquipment(
                   selectedData: null, // Pass the selected data here if needed
                   onFinish: () => onFormClose(),
                 ),

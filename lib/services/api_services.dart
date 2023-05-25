@@ -1,8 +1,10 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:pltu/model/login_respon/login_respon.dart';
 
 class APIService {
   static const String baseUrl = 'https://digitm.isoae.com/api';
+  static String token = "";
 
   static Future<Map<String, dynamic>> login(
       String email, String password) async {
@@ -17,17 +19,22 @@ class APIService {
       }),
     );
 
-    final responseData = json.decode(response.body);
+    final responseData = LoginRespon.fromJson(jsonDecode(response.body));
+    print('respon:$response.body');
 
     print('Response Body: ${response.body}');
     print('Response Status Code: ${response.statusCode}');
+   
 
     if (response.statusCode == 200) {
       // Login successful
-      return {'success': true, 'token': responseData['token']};
+      token = responseData.data!.token!.accessToken!;
+      return {'success': true, 'token': token};
     } else {
       // Login failed
-      return {'success': false, 'message': responseData['message']};
+      final errorMessage = responseData.responStatus!.message;
+
+      return {'success': false, 'message': errorMessage};
     }
   }
 }

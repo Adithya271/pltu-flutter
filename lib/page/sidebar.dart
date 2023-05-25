@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'area/BrowseArea.dart';
-
 class SidebarMenu extends StatelessWidget {
   const SidebarMenu({
     Key? key,
@@ -31,6 +29,7 @@ class SidebarMenu extends StatelessWidget {
             ),
           ),
           ListTile(
+            leading: const Icon(Icons.dashboard),
             title: const Text('Dashboard'),
             onTap: () {
               onSidebarItemTapped(0);
@@ -38,25 +37,47 @@ class SidebarMenu extends StatelessWidget {
             selected: selectedIndex == 0,
           ),
           ListTile(
-            title: const Text('Area'),
+            leading: const Icon(Icons.person),
+            title: const Text('Profil'),
             onTap: () {
               onSidebarItemTapped(1);
             },
             selected: selectedIndex == 1,
           ),
+          const Divider(
+            color: Colors.grey,
+          ),
           ListTile(
-            title: const Text('Divisi'),
+            leading: const Icon(Icons.location_on),
+            title: const Text('Area'),
             onTap: () {
               onSidebarItemTapped(2);
             },
             selected: selectedIndex == 2,
           ),
           ListTile(
-            title: const Text('Equipment'),
+            leading: const Icon(Icons.business),
+            title: const Text('Divisi'),
             onTap: () {
               onSidebarItemTapped(3);
             },
             selected: selectedIndex == 3,
+          ),
+          ListTile(
+            leading: const Icon(Icons.settings),
+            title: const Text('GroupEquipment'),
+            onTap: () {
+              onSidebarItemTapped(4);
+            },
+            selected: selectedIndex == 4,
+          ),
+          ListTile(
+            leading: const Icon(Icons.settings),
+            title: const Text('Equipment'),
+            onTap: () {
+              onSidebarItemTapped(5);
+            },
+            selected: selectedIndex == 5,
           ),
         ],
       ),

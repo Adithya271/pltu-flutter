@@ -3,22 +3,25 @@ import 'package:http/http.dart' as http;
 import 'package:pltu/services/api_services.dart';
 import 'dart:convert';
 
-class FormArea extends StatefulWidget {
+class FormEquipment extends StatefulWidget {
   final dynamic selectedData;
   final Function onFinish;
 
-  const FormArea({Key? key, this.selectedData, required this.onFinish})
+  const FormEquipment(
+      {Key? key, this.selectedData, required this.onFinish})
       : super(key: key);
 
   @override
-  State<FormArea> createState() => FormAreaState();
+  State<FormEquipment> createState() => FormEquipmentState();
 }
 
-class FormAreaState extends State<FormArea> {
+class FormEquipmentState extends State<FormEquipment> {
   final _formKey = GlobalKey<FormState>();
   dynamic formData = {};
   List<dynamic> errors = [];
   List<dynamic> listDivisi = [];
+  List<dynamic> listArea = [];
+  List<dynamic> listGE = [];
   bool show = false;
 
   @override
@@ -49,6 +52,8 @@ class FormAreaState extends State<FormArea> {
           setState(() {
             listDivisi = records;
           });
+          // Get the areas based on the initially selected division
+          getOptionArea(listDivisi[0]['id'].toString());
         } else {
           print('Error: Invalid response data');
           setState(() {
@@ -69,6 +74,92 @@ class FormAreaState extends State<FormArea> {
     }
   }
 
+  void getOptionArea(String divisionId) async {
+    final url =
+        Uri.parse("https://digitm.isoae.com/api/area?division_id=$divisionId");
+    final headers = {
+      "Content-Type": "application/json",
+      "Accept": "application/json",
+      "Authorization": "Bearer ${APIService.token}",
+    };
+
+    final response = await http.get(url, headers: headers);
+
+    if (response.statusCode == 200) {
+      try {
+        final jsonData = json.decode(response.body);
+        final responseData = jsonData['data'];
+
+        if (responseData is Map<String, dynamic> &&
+            responseData.containsKey('records')) {
+          final records = responseData['records'] as List<dynamic>;
+          setState(() {
+            listArea = records;
+          });
+         
+        } else {
+          print('Error: Invalid response data');
+          setState(() {
+            listArea = [];
+          });
+        }
+      } catch (e) {
+        print('Error decoding response body: $e');
+        setState(() {
+          listArea = [];
+        });
+      }
+    } else {
+      print('Error: ${response.statusCode}');
+      setState(() {
+        listArea = [];
+      });
+    }
+  }
+  void getOptionGE(String areaId) async {
+    final url =
+        Uri.parse("https://digitm.isoae.com/api/groupequipment?area_id=$areaId");
+    final headers = {
+      "Content-Type": "application/json",
+      "Accept": "application/json",
+      "Authorization": "Bearer ${APIService.token}",
+    };
+
+    final response = await http.get(url, headers: headers);
+
+    if (response.statusCode == 200) {
+      try {
+        final jsonData = json.decode(response.body);
+        final responseData = jsonData['data'];
+
+        if (responseData is Map<String, dynamic> &&
+            responseData.containsKey('records')) {
+          final records = responseData['records'] as List<dynamic>;
+          setState(() {
+            listGE = records;
+          });
+        } else {
+          print('Error: Invalid response data');
+          setState(() {
+            listGE = [];
+          });
+        }
+      } catch (e) {
+        print('Error decoding response body: $e');
+        setState(() {
+          listGE = [];
+        });
+      }
+    } else {
+      print('Error: ${response.statusCode}');
+      setState(() {
+        listGE = [];
+      });
+    }
+  }
+
+  
+
   void newData() {
     setState(() {
       show = true;
@@ -79,12 +170,52 @@ class FormAreaState extends State<FormArea> {
             : listDivisi.isNotEmpty
                 ? listDivisi[0]['id'].toString()
                 : null,
+        'area_id': widget.selectedData != null
+            ? widget.selectedData['area_id'].toString()
+            : listArea.isNotEmpty
+                ? listArea[0]['id'].toString()
+                : null,
+        'group_equipment_id': widget.selectedData != null
+            ? widget.selectedData['group_equipment_id'].toString()
+            : listGE.isNotEmpty
+                ? listGE[0]['id'].toString()
+                : null,
         'name': widget.selectedData != null ? widget.selectedData['name'] : '',
         'description': widget.selectedData != null
             ? widget.selectedData['description']
             : '',
       };
       errors = [];
+
+      // Update the area dropdown options based on the selected division
+      if (formData['division_id'] != null) {
+        final selectedDivisionId = int.parse(formData['division_id']);
+        final filteredAreas = listArea
+            .where(
+                (area) => area['division_id'] == selectedDivisionId.toString())
+            .toList();
+
+        if (filteredAreas.isNotEmpty) {
+          formData['area_id'] = filteredAreas[0]['id'].toString();
+        } else {
+          formData['area_id'] = null;
+        }
+      }
+
+      // Update the ge dropdown options based on the selected area
+      if (formData['area_id'] != null) {
+        final selectedAreaId = int.parse(formData['area_id']);
+        final filteredGEs = listGE
+            .where(
+                (GE) => GE['area_id'] == selectedAreaId.toString())
+            .toList();
+
+        if (filteredGEs.isNotEmpty) {
+          formData['group_equipment_id'] = filteredGEs[0]['id'].toString();
+        } else {
+          formData['group_equipment_id'] = null;
+        }
+      }
     });
   }
 
@@ -94,8 +225,8 @@ class FormAreaState extends State<FormArea> {
 
       if (formData['id'] != null) {
         // Data memiliki id,jadinya edit
-        final url =
-            Uri.parse("https://digitm.isoae.com/api/area/${formData['id']}");
+        final url = Uri.parse(
+            "https://digitm.isoae.com/api/equipment/${formData['id']}");
         final headers = {
           "Content-Type": "application/json",
           "Accept": "application/json",
@@ -130,7 +261,7 @@ class FormAreaState extends State<FormArea> {
         }
       } else {
         // New data
-        final url = Uri.parse("https://digitm.isoae.com/api/area");
+        final url = Uri.parse("https://digitm.isoae.com/api/equipment");
         final headers = {
           "Content-Type": "application/json",
           "Accept": "application/json",
@@ -174,6 +305,8 @@ class FormAreaState extends State<FormArea> {
       formData = {
         'id': null,
         'division_id': '',
+        'area_id': '',
+        'group_equipment_id' : "",
         'name': '',
         'description': '',
       };
@@ -208,6 +341,52 @@ class FormAreaState extends State<FormArea> {
                     onChanged: (value) {
                       setState(() {
                         formData['division_id'] = value;
+                        // Call the getOptionArea() function to fetch areas based on the selected division
+                        getOptionArea(value!);
+                      });
+                    },
+                  ),
+                  DropdownButtonFormField<String>(
+                    decoration: const InputDecoration(labelText: 'Area'),
+                    value: formData['area_id'],
+                    items: listArea.map((area) {
+                      return DropdownMenuItem<String>(
+                        value: area['id'].toString(),
+                        child: Text(area['name']),
+                      );
+                    }).toList(),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please select an area';
+                      }
+                      return null;
+                    },
+                    onChanged: (value) {
+                      setState(() {
+                        formData['area_id'] = value;
+                        // Call the getOptionArea() function to fetch areas based on the selected division
+                        getOptionGE(value!);
+                      });
+                    },
+                  ),
+                  DropdownButtonFormField<String>(
+                    decoration: const InputDecoration(labelText: 'GE'),
+                    value: formData['group_equipment_id'],
+                    items: listGE.map((ge) {
+                      return DropdownMenuItem<String>(
+                        value: ge['id'].toString(),
+                        child: Text(ge['name']),
+                      );
+                    }).toList(),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please select an area';
+                      }
+                      return null;
+                    },
+                    onChanged: (value) {
+                      setState(() {
+                        formData['group_equipment_id'] = value;
                       });
                     },
                   ),
@@ -234,11 +413,11 @@ class FormAreaState extends State<FormArea> {
                     decoration: const InputDecoration(labelText: 'Description'),
                     initialValue: formData['description'],
                     validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please enter the name';
-                          }
-                          return null;
-                        },
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter the name';
+                      }
+                      return null;
+                    },
                     onChanged: (value) {
                       setState(() {
                         formData['description'] = value;

@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:pltu/page/home.dart';
+import 'package:pltu/auth/auth_page.dart';
 import 'package:pltu/signup_login/sign_in.dart';
 
 void main() {
-  
   runApp(const MyApp());
 }
 
@@ -28,13 +27,7 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-    home: SignIn(),
-      routes: <String, WidgetBuilder>{
-        // '/dashboard': (BuildContext context) => new Dashboard(title: title),
-        // '/adddata': (BuildContext context) => new AddData(title: title),
-        // '/register': (BuildContext context) => new RegisterPage(title: title),
-        // '/login': (BuildContext context) => new LoginPage(title: title),
-      },
+      home: SignIn(),
     );
   }
 }
