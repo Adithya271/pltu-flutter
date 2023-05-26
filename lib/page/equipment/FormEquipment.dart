@@ -430,12 +430,16 @@ class FormEquipmentState extends State<FormEquipment> {
                     },
                     child: const Text('Save'),
                   ),
+                  SizedBox(width: 15.0),
                   ElevatedButton(
                     onPressed: () {
                       setState(() {
                         clearForm();
                       });
                     },
+                    style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all(Colors.red),
+                    ),
                     child: const Text('Exit'),
                   ),
                 ],

@@ -20,16 +20,14 @@ class APIService {
     );
 
     final responseData = LoginRespon.fromJson(jsonDecode(response.body));
-    print('respon:$response.body');
-
     print('Response Body: ${response.body}');
     print('Response Status Code: ${response.statusCode}');
-   
 
     if (response.statusCode == 200) {
       // Login successful
       token = responseData.data!.token!.accessToken!;
-      return {'success': true, 'token': token};
+      final userId = responseData.data!.record!.id;
+      return {'success': true, 'token': token, 'userId': userId};
     } else {
       // Login failed
       final errorMessage = responseData.responStatus!.message;
@@ -37,4 +35,6 @@ class APIService {
       return {'success': false, 'message': errorMessage};
     }
   }
+
+  //logout
 }

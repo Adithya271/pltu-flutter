@@ -23,6 +23,7 @@ class FormTypeState extends State<FormType> {
   List<dynamic> listGroupEquipment = [];
   List<dynamic> listEquipment = [];
   bool show = false;
+  int currentUser = 1;
 
   @override
   void initState() {
@@ -96,8 +97,6 @@ class FormTypeState extends State<FormType> {
           setState(() {
             listArea = records;
           });
-          // Get the groupequipment based on the initially selected area
-          getOptionGroupEquipment(listArea[0]['id'].toString());
         } else {
           print('Error: Invalid response data');
           setState(() {
@@ -140,8 +139,6 @@ class FormTypeState extends State<FormType> {
           setState(() {
             listGroupEquipment = records;
           });
-          // Get the equipment based on the initially selected groupeq
-          getOptionEquipment(listGroupEquipment[0]['id'].toString());
         } else {
           print('Error: Invalid response data');
           setState(() {
@@ -184,7 +181,6 @@ class FormTypeState extends State<FormType> {
           setState(() {
             listEquipment = records;
           });
-          
         } else {
           print('Error: Invalid response data');
           setState(() {
@@ -210,6 +206,7 @@ class FormTypeState extends State<FormType> {
       show = true;
       formData = {
         'id': widget.selectedData != null ? widget.selectedData['id'] : null,
+        'user_id': currentUser.toString(),
         'division_id': widget.selectedData != null
             ? widget.selectedData['division_id'].toString()
             : listDivisi.isNotEmpty
@@ -234,52 +231,74 @@ class FormTypeState extends State<FormType> {
         'description': widget.selectedData != null
             ? widget.selectedData['description']
             : '',
+        'alasan':
+            widget.selectedData != null ? widget.selectedData['alasan'] : '',
+        'status':
+            widget.selectedData != null ? widget.selectedData['status'] : '',
+        'content':
+            widget.selectedData != null ? widget.selectedData['content'] : '',
       };
       errors = [];
 
-      // Update the area dropdown options based on the selected division
+      // Update the division dropdown initial value
       if (formData['division_id'] != null) {
         final selectedDivisionId = int.parse(formData['division_id']);
-        final filteredAreas = listArea
-            .where(
-                (area) => area['division_id'] == selectedDivisionId.toString())
-            .toList();
+        final selectedDivision = listDivisi.firstWhere(
+          (division) => division['id'] == selectedDivisionId,
+          orElse: () => null,
+        );
+        if (selectedDivision != null) {
+          formData['division_id'] = selectedDivision['id'].toString();
+          // Get the areas based on the initially selected division
+          getOptionArea(selectedDivision['id'].toString());
+        } else {
+          formData['division_id'] = null;
+        }
+      }
 
-        if (filteredAreas.isNotEmpty) {
-          formData['area_id'] = filteredAreas[0]['id'].toString();
+// Update the area dropdown initial value
+      if (formData['area_id'] != null) {
+        final selectedAreaId = int.parse(formData['area_id']);
+        final selectedArea = listArea.firstWhere(
+          (area) => area['id'] == selectedAreaId,
+          orElse: () => null,
+        );
+        if (selectedArea != null) {
+          formData['area_id'] = selectedArea['id'].toString();
+          // Get the group equipments based on the initially selected area
+          getOptionGroupEquipment(selectedArea['id'].toString());
         } else {
           formData['area_id'] = null;
         }
       }
 
-      // Update the groupequipment dropdown options based on the selected area
-      if (formData['area_id'] != null) {
-        final selectedAreaId = int.parse(formData['area_id']);
-        final filteredGroupEquipments = listGroupEquipment
-            .where((groupequipment) =>
-                groupequipment['area_id'] == selectedAreaId.toString())
-            .toList();
-
-        if (filteredGroupEquipments.isNotEmpty) {
+// Update the group equipment dropdown initial value
+      if (formData['group_equipment_id'] != null) {
+        final selectedGroupEquipmentId =
+            int.parse(formData['group_equipment_id']);
+        final selectedGroupEquipment = listGroupEquipment.firstWhere(
+          (ge) => ge['id'] == selectedGroupEquipmentId,
+          orElse: () => null,
+        );
+        if (selectedGroupEquipment != null) {
           formData['group_equipment_id'] =
-              filteredGroupEquipments[0]['id'].toString();
+              selectedGroupEquipment['id'].toString();
+          // Get the equipments based on the initially selected group equipment
+          getOptionEquipment(selectedGroupEquipment['id'].toString());
         } else {
           formData['group_equipment_id'] = null;
         }
       }
 
-      // Update the equipment dropdown options based on the selected groupequipment
-      if (formData['group_equipment_id'] != null) {
-        final selectedGroupEquipmentId =
-            int.parse(formData['group_equipment_id']);
-        final filteredEquipments = listEquipment
-            .where((equipment) =>
-                equipment['group_equipment_id'] ==
-                selectedGroupEquipmentId.toString())
-            .toList();
-
-        if (filteredEquipments.isNotEmpty) {
-          formData['equipment_id'] = filteredEquipments[0]['id'].toString();
+// Update the equipment dropdown initial value
+      if (formData['equipment_id'] != null) {
+        final selectedEquipmentId = int.parse(formData['equipment_id']);
+        final selectedEquipment = listEquipment.firstWhere(
+          (equipment) => equipment['id'] == selectedEquipmentId,
+          orElse: () => null,
+        );
+        if (selectedEquipment != null) {
+          formData['equipment_id'] = selectedEquipment['id'].toString();
         } else {
           formData['equipment_id'] = null;
         }
@@ -372,12 +391,16 @@ class FormTypeState extends State<FormType> {
       show = false;
       formData = {
         'id': null,
+        'user_id': '',
         'division_id': '',
         'area_id': '',
         'group_equipment_id': '',
         'equipment_id': '',
         'name': '',
         'description': '',
+        'alasan': '',
+        'status': '',
+        'content': '',
       };
       errors = [];
     });
@@ -433,31 +456,30 @@ class FormTypeState extends State<FormType> {
                     onChanged: (value) {
                       setState(() {
                         formData['area_id'] = value;
-                        // Call the getOptionGroupEquipment() function to fetch areas based on the selected division
+                        // Call the getOptionArea() function to fetch areas based on the selected division
                         getOptionGroupEquipment(value!);
                       });
                     },
                   ),
                   DropdownButtonFormField<String>(
-                    decoration:
-                        const InputDecoration(labelText: 'GroupEquipment'),
+                    decoration: const InputDecoration(labelText: 'GE'),
                     value: formData['group_equipment_id'],
-                    items: listGroupEquipment.map((groupequipment) {
+                    items: listGroupEquipment.map((ge) {
                       return DropdownMenuItem<String>(
-                        value: groupequipment['id'].toString(),
-                        child: Text(groupequipment['name']),
+                        value: ge['id'].toString(),
+                        child: Text(ge['name']),
                       );
                     }).toList(),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Please select a groupequipment';
+                        return 'Please select an area';
                       }
                       return null;
                     },
                     onChanged: (value) {
                       setState(() {
                         formData['group_equipment_id'] = value;
-                        // Call the getOptionEquipment() function to fetch areas based on the selected division
+                        // Call the getOptionArea() function to fetch areas based on the selected division
                         getOptionEquipment(value!);
                       });
                     },
@@ -514,6 +536,51 @@ class FormTypeState extends State<FormType> {
                     onChanged: (value) {
                       setState(() {
                         formData['description'] = value;
+                      });
+                    },
+                  ),
+                  TextFormField(
+                    decoration: const InputDecoration(labelText: 'Alasan'),
+                    initialValue: formData['alasan'],
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter the status';
+                      }
+                      return null;
+                    },
+                    onChanged: (value) {
+                      setState(() {
+                        formData['alasan'] = value;
+                      });
+                    },
+                  ),
+                  TextFormField(
+                    decoration: const InputDecoration(labelText: 'Status'),
+                    initialValue: formData['status'],
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter the status';
+                      }
+                      return null;
+                    },
+                    onChanged: (value) {
+                      setState(() {
+                        formData['status'] = value;
+                      });
+                    },
+                  ),
+                  TextFormField(
+                    decoration: const InputDecoration(labelText: 'Content'),
+                    initialValue: formData['content'],
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter the content';
+                      }
+                      return null;
+                    },
+                    onChanged: (value) {
+                      setState(() {
+                        formData['content'] = value;
                       });
                     },
                   ),
