@@ -3,24 +3,25 @@ import 'package:http/http.dart' as http;
 import 'package:pltu/services/api_services.dart';
 import 'dart:convert';
 
-class FormGroupEquipment extends StatefulWidget {
+class FormType extends StatefulWidget {
   final dynamic selectedData;
   final Function onFinish;
 
-  const FormGroupEquipment(
-      {Key? key, this.selectedData, required this.onFinish})
+  const FormType({Key? key, this.selectedData, required this.onFinish})
       : super(key: key);
 
   @override
-  State<FormGroupEquipment> createState() => FormGroupEquipmentState();
+  State<FormType> createState() => FormTypeState();
 }
 
-class FormGroupEquipmentState extends State<FormGroupEquipment> {
+class FormTypeState extends State<FormType> {
   final _formKey = GlobalKey<FormState>();
   dynamic formData = {};
   List<dynamic> errors = [];
   List<dynamic> listDivisi = [];
   List<dynamic> listArea = [];
+  List<dynamic> listGroupEquipment = [];
+  List<dynamic> listEquipment = [];
   bool show = false;
 
   @override
@@ -95,6 +96,8 @@ class FormGroupEquipmentState extends State<FormGroupEquipment> {
           setState(() {
             listArea = records;
           });
+          // Get the groupequipment based on the initially selected area
+          getOptionGroupEquipment(listArea[0]['id'].toString());
         } else {
           print('Error: Invalid response data');
           setState(() {
@@ -115,6 +118,93 @@ class FormGroupEquipmentState extends State<FormGroupEquipment> {
     }
   }
 
+  void getOptionGroupEquipment(String areaId) async {
+    final url = Uri.parse(
+        "https://digitm.isoae.com/api/groupequipment?area_id=$areaId");
+    final headers = {
+      "Content-Type": "application/json",
+      "Accept": "application/json",
+      "Authorization": "Bearer ${APIService.token}",
+    };
+
+    final response = await http.get(url, headers: headers);
+
+    if (response.statusCode == 200) {
+      try {
+        final jsonData = json.decode(response.body);
+        final responseData = jsonData['data'];
+
+        if (responseData is Map<String, dynamic> &&
+            responseData.containsKey('records')) {
+          final records = responseData['records'] as List<dynamic>;
+          setState(() {
+            listGroupEquipment = records;
+          });
+          // Get the equipment based on the initially selected groupeq
+          getOptionEquipment(listGroupEquipment[0]['id'].toString());
+        } else {
+          print('Error: Invalid response data');
+          setState(() {
+            listGroupEquipment = [];
+          });
+        }
+      } catch (e) {
+        print('Error decoding response body: $e');
+        setState(() {
+          listGroupEquipment = [];
+        });
+      }
+    } else {
+      print('Error: ${response.statusCode}');
+      setState(() {
+        listGroupEquipment = [];
+      });
+    }
+  }
+
+  void getOptionEquipment(String groupEquipmentid) async {
+    final url = Uri.parse(
+        "https://digitm.isoae.com/api/equipment?group_equipment_id=$groupEquipmentid");
+    final headers = {
+      "Content-Type": "application/json",
+      "Accept": "application/json",
+      "Authorization": "Bearer ${APIService.token}",
+    };
+
+    final response = await http.get(url, headers: headers);
+
+    if (response.statusCode == 200) {
+      try {
+        final jsonData = json.decode(response.body);
+        final responseData = jsonData['data'];
+
+        if (responseData is Map<String, dynamic> &&
+            responseData.containsKey('records')) {
+          final records = responseData['records'] as List<dynamic>;
+          setState(() {
+            listEquipment = records;
+          });
+          
+        } else {
+          print('Error: Invalid response data');
+          setState(() {
+            listEquipment = [];
+          });
+        }
+      } catch (e) {
+        print('Error decoding response body: $e');
+        setState(() {
+          listEquipment = [];
+        });
+      }
+    } else {
+      print('Error: ${response.statusCode}');
+      setState(() {
+        listEquipment = [];
+      });
+    }
+  }
+
   void newData() {
     setState(() {
       show = true;
@@ -129,6 +219,16 @@ class FormGroupEquipmentState extends State<FormGroupEquipment> {
             ? widget.selectedData['area_id'].toString()
             : listArea.isNotEmpty
                 ? listArea[0]['id'].toString()
+                : null,
+        'group_equipment_id': widget.selectedData != null
+            ? widget.selectedData['group_equipment_id'].toString()
+            : listGroupEquipment.isNotEmpty
+                ? listGroupEquipment[0]['id'].toString()
+                : null,
+        'equipment_id': widget.selectedData != null
+            ? widget.selectedData['equipment_id'].toString()
+            : listEquipment.isNotEmpty
+                ? listEquipment[0]['id'].toString()
                 : null,
         'name': widget.selectedData != null ? widget.selectedData['name'] : '',
         'description': widget.selectedData != null
@@ -151,6 +251,39 @@ class FormGroupEquipmentState extends State<FormGroupEquipment> {
           formData['area_id'] = null;
         }
       }
+
+      // Update the groupequipment dropdown options based on the selected area
+      if (formData['area_id'] != null) {
+        final selectedAreaId = int.parse(formData['area_id']);
+        final filteredGroupEquipments = listGroupEquipment
+            .where((groupequipment) =>
+                groupequipment['area_id'] == selectedAreaId.toString())
+            .toList();
+
+        if (filteredGroupEquipments.isNotEmpty) {
+          formData['group_equipment_id'] =
+              filteredGroupEquipments[0]['id'].toString();
+        } else {
+          formData['group_equipment_id'] = null;
+        }
+      }
+
+      // Update the equipment dropdown options based on the selected groupequipment
+      if (formData['group_equipment_id'] != null) {
+        final selectedGroupEquipmentId =
+            int.parse(formData['group_equipment_id']);
+        final filteredEquipments = listEquipment
+            .where((equipment) =>
+                equipment['group_equipment_id'] ==
+                selectedGroupEquipmentId.toString())
+            .toList();
+
+        if (filteredEquipments.isNotEmpty) {
+          formData['equipment_id'] = filteredEquipments[0]['id'].toString();
+        } else {
+          formData['equipment_id'] = null;
+        }
+      }
     });
   }
 
@@ -160,8 +293,8 @@ class FormGroupEquipmentState extends State<FormGroupEquipment> {
 
       if (formData['id'] != null) {
         // Data memiliki id,jadinya edit
-        final url = Uri.parse(
-            "https://digitm.isoae.com/api/groupequipment/${formData['id']}");
+        final url =
+            Uri.parse("https://digitm.isoae.com/api/type/${formData['id']}");
         final headers = {
           "Content-Type": "application/json",
           "Accept": "application/json",
@@ -196,7 +329,7 @@ class FormGroupEquipmentState extends State<FormGroupEquipment> {
         }
       } else {
         // New data
-        final url = Uri.parse("https://digitm.isoae.com/api/groupequipment");
+        final url = Uri.parse("https://digitm.isoae.com/api/type");
         final headers = {
           "Content-Type": "application/json",
           "Accept": "application/json",
@@ -241,6 +374,8 @@ class FormGroupEquipmentState extends State<FormGroupEquipment> {
         'id': null,
         'division_id': '',
         'area_id': '',
+        'group_equipment_id': '',
+        'equipment_id': '',
         'name': '',
         'description': '',
       };
@@ -298,6 +433,53 @@ class FormGroupEquipmentState extends State<FormGroupEquipment> {
                     onChanged: (value) {
                       setState(() {
                         formData['area_id'] = value;
+                        // Call the getOptionGroupEquipment() function to fetch areas based on the selected division
+                        getOptionGroupEquipment(value!);
+                      });
+                    },
+                  ),
+                  DropdownButtonFormField<String>(
+                    decoration:
+                        const InputDecoration(labelText: 'GroupEquipment'),
+                    value: formData['group_equipment_id'],
+                    items: listGroupEquipment.map((groupequipment) {
+                      return DropdownMenuItem<String>(
+                        value: groupequipment['id'].toString(),
+                        child: Text(groupequipment['name']),
+                      );
+                    }).toList(),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please select a groupequipment';
+                      }
+                      return null;
+                    },
+                    onChanged: (value) {
+                      setState(() {
+                        formData['group_equipment_id'] = value;
+                        // Call the getOptionEquipment() function to fetch areas based on the selected division
+                        getOptionEquipment(value!);
+                      });
+                    },
+                  ),
+                  DropdownButtonFormField<String>(
+                    decoration: const InputDecoration(labelText: 'Equipment'),
+                    value: formData['equipment_id'],
+                    items: listEquipment.map((equipment) {
+                      return DropdownMenuItem<String>(
+                        value: equipment['id'].toString(),
+                        child: Text(equipment['name']),
+                      );
+                    }).toList(),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please select an equipment';
+                      }
+                      return null;
+                    },
+                    onChanged: (value) {
+                      setState(() {
+                        formData['equipment_id'] = value;
                       });
                     },
                   ),
