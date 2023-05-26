@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:pltu/services/api_services.dart';
 import 'dart:convert';
+import 'package:image_picker/image_picker.dart';
+
 
 class FormType extends StatefulWidget {
   final dynamic selectedData;
@@ -22,8 +24,16 @@ class FormTypeState extends State<FormType> {
   List<dynamic> listArea = [];
   List<dynamic> listGroupEquipment = [];
   List<dynamic> listEquipment = [];
+  //ENUM('draft', 'publish', 'unpublish')
+  List<Map<String, String>> listStatus = [
+    {'text': "Draft", 'status': "draft"},
+    {'text': "Publish", 'status': "publish"},
+    {'text': "Unpublish", 'status': "unpublish"},
+  ];
+
   bool show = false;
   int currentUser = 1;
+  String? selectedStatus;
 
   @override
   void initState() {
@@ -233,11 +243,15 @@ class FormTypeState extends State<FormType> {
             : '',
         'alasan':
             widget.selectedData != null ? widget.selectedData['alasan'] : '',
-        'status':
-            widget.selectedData != null ? widget.selectedData['status'] : '',
+        'status': widget.selectedData != null
+            ? widget.selectedData['status'].toString()
+            : listStatus.isNotEmpty
+                ? listStatus[0]['status'].toString()
+                : null,
         'content':
             widget.selectedData != null ? widget.selectedData['content'] : '',
       };
+
       errors = [];
 
       // Update the division dropdown initial value
@@ -544,7 +558,7 @@ class FormTypeState extends State<FormType> {
                     initialValue: formData['alasan'],
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Please enter the status';
+                        return 'Please enter the alasan';
                       }
                       return null;
                     },
@@ -554,12 +568,19 @@ class FormTypeState extends State<FormType> {
                       });
                     },
                   ),
-                  TextFormField(
-                    decoration: const InputDecoration(labelText: 'Status'),
-                    initialValue: formData['status'],
+                  DropdownButtonFormField<String>(
+                    decoration: const InputDecoration(
+                        labelText: 'Status'), // Add a label
+                    value: formData['status'],
+                    items: listStatus.map((status) {
+                      return DropdownMenuItem<String>(
+                        value: status['status'],
+                        child: Text(status['text']!),
+                      );
+                    }).toList(),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Please enter the status';
+                        return 'Please select a status';
                       }
                       return null;
                     },
