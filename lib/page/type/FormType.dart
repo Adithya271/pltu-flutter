@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:pltu/services/api_services.dart';
 import 'dart:convert';
-import 'package:image_picker/image_picker.dart';
-
 
 class FormType extends StatefulWidget {
   final dynamic selectedData;
