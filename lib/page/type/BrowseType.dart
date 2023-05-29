@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:video_player/video_player.dart';
 
 import 'package:pltu/page/type/FormType.dart';
 import 'package:pltu/services/api_services.dart';
@@ -14,6 +15,7 @@ class BrowseType extends StatefulWidget {
 
 class _BrowseTypeState extends State<BrowseType> {
   List<dynamic> dataType = [];
+
   String mode = 'browse';
   Map<String, dynamic> paginationData = {};
   Map<String, dynamic> queryData = {
@@ -38,8 +40,7 @@ class _BrowseTypeState extends State<BrowseType> {
   }
 
   void onDelete(data) async {
-    final url =
-        Uri.parse("https://digitm.isoae.com/api/type/${data['id']}");
+    final url = Uri.parse("https://digitm.isoae.com/api/type/${data['id']}");
     final headers = {
       "Content-Type": "application/json",
       "Accept": "application/json",
@@ -175,13 +176,15 @@ class _BrowseTypeState extends State<BrowseType> {
                             final deskripsi = a['description'].toString();
                             final namadivisi = a['division']['name'].toString();
                             final namaarea = a['area']['name'].toString();
-                            final namagroupEq = a['group_equipment']['name'].toString();
-                            final namaequipment = a['equipment']['name'].toString();
+                            final namagroupEq =
+                                a['group_equipment']['name'].toString();
+                            final namaequipment =
+                                a['equipment']['name'].toString();
                             final alasan = a['alasan'].toString();
                             final status = a['status'].toString();
                             final content = a['content'].toString();
-                            // final images = a['images'].toString();
-                            // final video = a['video'].toString();
+                            final images = a['images'] as List<dynamic>;
+                            final video = a['video'].toString();
 
                             return Card(
                               margin: const EdgeInsets.symmetric(vertical: 8.0),
@@ -195,7 +198,7 @@ class _BrowseTypeState extends State<BrowseType> {
                                       height: 8,
                                     ),
                                     Text('Deskripsi: $deskripsi'),
-                                     const SizedBox(
+                                    const SizedBox(
                                       height: 8,
                                     ),
                                     Text('Nama Divisi: $namadivisi'),
@@ -214,19 +217,56 @@ class _BrowseTypeState extends State<BrowseType> {
                                     const SizedBox(
                                       height: 8,
                                     ),
-                                     Text('Alasan: $alasan'),
+                                    Text('Alasan: $alasan'),
                                     const SizedBox(
                                       height: 8,
                                     ),
-                                     Text('Status: $status'),
+                                    Text('Status: $status'),
                                     const SizedBox(
                                       height: 8,
                                     ),
-                                     Text('Content: $content'),
+                                    Text('Content: $content'),
                                     const SizedBox(
                                       height: 8,
                                     ),
-                                    
+                                    if (images.isNotEmpty)
+                                      ListView.builder(
+                                        shrinkWrap: true,
+                                        physics:
+                                            const NeverScrollableScrollPhysics(),
+                                        itemCount: images.length,
+                                        itemBuilder: (context, index) {
+                                          final image = images[index];
+                                          final imagePath =
+                                              image['path'].toString();
+                                          final imageUrl =
+                                              'https://digitm.isoae.com/$imagePath';
+
+                                          return SizedBox(
+                                            width:
+                                                150, // Adjust the width of the image
+                                            height:
+                                                200, // Adjust the height of the image
+                                            child: Image.network(
+                                              imageUrl,
+                                              fit: BoxFit
+                                                  .cover, // Adjust the image fit as needed
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                    const SizedBox(
+                                      height: 10,
+                                    ),
+                                    if (video.isNotEmpty)
+                                      SizedBox(
+                                        width:
+                                            150, // Adjust the width of the video
+                                        height:
+                                            200, // Adjust the height of the video
+                                        child:
+                                            VideoPlayerWidget(videoUrl: video),
+                                      ),
                                     Row(
                                       mainAxisAlignment: MainAxisAlignment.end,
                                       children: [
@@ -237,7 +277,10 @@ class _BrowseTypeState extends State<BrowseType> {
                                         const SizedBox(width: 8.0),
                                         TextButton(
                                           onPressed: () => onDelete(a),
-                                          child: const Text('Hapus',style: TextStyle(color: Colors.red),),
+                                          child: const Text(
+                                            'Hapus',
+                                            style: TextStyle(color: Colors.red),
+                                          ),
                                         ),
                                       ],
                                     ),
@@ -260,6 +303,52 @@ class _BrowseTypeState extends State<BrowseType> {
           ),
         ),
       ),
+    );
+  }
+}
+
+class VideoPlayerWidget extends StatefulWidget {
+  final String videoUrl;
+
+  const VideoPlayerWidget({super.key, required this.videoUrl});
+
+  @override
+  _VideoPlayerWidgetState createState() => _VideoPlayerWidgetState();
+}
+
+class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
+  late VideoPlayerController _controller;
+  late Future<void> _initializeVideoPlayerFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = VideoPlayerController.network(widget.videoUrl);
+    _initializeVideoPlayerFuture = _controller.initialize();
+    _controller.setLooping(true);
+    _controller.play();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder(
+      future: _initializeVideoPlayerFuture,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.done) {
+          return AspectRatio(
+            aspectRatio: _controller.value.aspectRatio,
+            child: VideoPlayer(_controller),
+          );
+        } else {
+          return const CircularProgressIndicator();
+        }
+      },
     );
   }
 }

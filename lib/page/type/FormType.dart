@@ -1,7 +1,11 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:pltu/services/api_services.dart';
 import 'dart:convert';
+import 'package:image_picker/image_picker.dart';
+import 'package:video_player/video_player.dart';
 
 class FormType extends StatefulWidget {
   final dynamic selectedData;
@@ -32,6 +36,14 @@ class FormTypeState extends State<FormType> {
   bool show = false;
   int currentUser = 1;
   String? selectedStatus;
+
+  // Variables for image and video handling
+  PickedFile? _pickedImage;
+  PickedFile? _pickedVideo;
+  VideoPlayerController? videoController;
+
+  // Image picker instance
+  final ImagePicker _imagePicker = ImagePicker();
 
   @override
   void initState() {
@@ -248,6 +260,10 @@ class FormTypeState extends State<FormType> {
                 : null,
         'content':
             widget.selectedData != null ? widget.selectedData['content'] : '',
+        'image':
+            widget.selectedData != null ? widget.selectedData['image'] : '',
+        'video':
+            widget.selectedData != null ? widget.selectedData['video'] : '',
       };
 
       errors = [];
@@ -413,16 +429,75 @@ class FormTypeState extends State<FormType> {
         'alasan': '',
         'status': '',
         'content': '',
+        'image': '',
+        'video': '',
       };
       errors = [];
     });
     widget.onFinish();
   }
 
+Future<void> pickImage() async {
+    final pickedFile = await _imagePicker.getImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      setState(() {
+        _pickedImage = pickedFile;
+        formData['image'] = pickedFile.path;
+      });
+    }
+  }
+
+  Future<void> pickVideo() async {
+    final pickedFile = await _imagePicker.getVideo(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      setState(() {
+        _pickedVideo = pickedFile;
+        formData['video'] = pickedFile.path;
+        videoController = VideoPlayerController.file(File(pickedFile.path));
+        videoController!.initialize().then((_) {
+          setState(() {});
+        });
+      });
+    }
+  }
+
+
+  // Widget to display the picked image or video
+Widget buildPickedMedia() {
+    if (_pickedImage != null) {
+      return Image.file(File(_pickedImage!.path));
+    } else {
+      return const SizedBox();
+    }
+  }
+
+  Widget buildPickedMedia2() {
+    if (_pickedVideo != null && videoController != null) {
+      return Column(
+        children: [
+          AspectRatio(
+            aspectRatio: videoController!.value.aspectRatio,
+            child: VideoPlayer(videoController!),
+          ),
+          ElevatedButton(
+            child: const Text('Play Video'),
+            onPressed: () {
+              videoController!.play();
+            },
+          ),
+        ],
+      );
+    } else {
+      return const SizedBox();
+    }
+  }
+
+
+
   @override
   Widget build(BuildContext context) {
     return show
-        ? Container(
+        ? SingleChildScrollView(
             child: Form(
               key: _formKey,
               child: Column(
@@ -603,6 +678,19 @@ class FormTypeState extends State<FormType> {
                       });
                     },
                   ),
+                  // Button to pick an image
+                  ElevatedButton(
+                    onPressed: pickImage,
+                    child: const Text('Pick Image'),
+                  ),
+                  // Button to pick a video
+                  ElevatedButton(
+                    onPressed: pickVideo,
+                    child: const Text('Pick Video'),
+                  ),
+                  // Display the picked image or video
+                  buildPickedMedia(),
+                  buildPickedMedia2(),
                   Padding(
                     padding: const EdgeInsets.only(top: 10),
                     child: Row(

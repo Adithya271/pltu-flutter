@@ -424,24 +424,32 @@ class FormEquipmentState extends State<FormEquipment> {
                       });
                     },
                   ),
-                  ElevatedButton(
-                    onPressed: () {
-                      saveData();
-                    },
-                    child: const Text('Save'),
-                  ),
-                  SizedBox(width: 15.0),
-                  ElevatedButton(
-                    onPressed: () {
-                      setState(() {
-                        clearForm();
-                      });
-                    },
-                    style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all(Colors.red),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 10),
+                    child: Row(
+                      children: [
+                        ElevatedButton(
+                          onPressed: () {
+                            saveData();
+                          },
+                          child: const Text('Save'),
+                        ),
+                        const SizedBox(width: 15.0),
+                        ElevatedButton(
+                          onPressed: () {
+                            setState(() {
+                              clearForm();
+                            });
+                          },
+                          style: ButtonStyle(
+                            backgroundColor:
+                                MaterialStateProperty.all(Colors.red),
+                          ),
+                          child: const Text('Exit'),
+                        )
+                      ],
                     ),
-                    child: const Text('Exit'),
-                  ),
+                  )
                 ],
               ),
             ),
