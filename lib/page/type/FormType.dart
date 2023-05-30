@@ -39,7 +39,7 @@ class FormTypeState extends State<FormType> {
   String? selectedStatus;
 
   // Variables for image and video handling
-  PickedFile? _pickedImage;
+  List<PickedFile> _pickedImages = [];
   PickedFile? _pickedVideo;
   VideoPlayerController? videoController;
 
@@ -440,31 +440,14 @@ class FormTypeState extends State<FormType> {
   }
 
   Future<void> pickImage() async {
-    final pickedFile =
-        await ImagePicker().pickImage(source: ImageSource.gallery);
-    if (pickedFile != null) {
-      final File imageFile = File(pickedFile.path);
-
-      bool success = false;
-      http.Response response;
-
-      try {
-        response = await Service().addImage(imageFile);
-        success = response.statusCode == 201;
-      } catch (e) {
-        print('Error storing image: $e');
-      }
-
-      if (success) {
-        // Image stored successfully
-        print('Image stored successfully');
-      } else {
-        // Error storing image
-        print('Error storing image');
-      }
-    }
+    List<XFile>? pickedFiles =
+        await ImagePicker().pickMultiImage(imageQuality: 50);
+    setState(() {
+      _pickedImages = pickedFiles.map((file) => PickedFile(file.path)).toList();
+      formData['images'] = _pickedImages.map((file) => file.path).toList();
+    });
   }
-  
+
   Future<void> pickVideo() async {
     final pickedFile = await _imagePicker.getVideo(source: ImageSource.gallery);
     if (pickedFile != null) {
@@ -481,8 +464,14 @@ class FormTypeState extends State<FormType> {
 
   // Widget to display the picked image dan video
   Widget buildPickedMedia() {
-    if (_pickedImage != null) {
-      return Image.file(File(_pickedImage!.path));
+    if (_pickedImages.isNotEmpty) {
+      return Wrap(
+        spacing: 8,
+        runSpacing: 8,
+        children: _pickedImages.map((pickedImage) {
+          return Image.file(File(pickedImage.path));
+        }).toList(),
+      );
     } else {
       return const SizedBox();
     }
@@ -499,7 +488,7 @@ class FormTypeState extends State<FormType> {
           ElevatedButton(
             child: const Text('Play Video'),
             onPressed: () {
-              videoController!.play();
+              // Logic to play the video
             },
           ),
         ],
