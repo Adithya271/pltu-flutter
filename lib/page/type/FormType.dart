@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:pltu/page/type/Service.dart';
 import 'package:pltu/services/api_services.dart';
 import 'dart:convert';
 import 'package:image_picker/image_picker.dart';
@@ -44,6 +45,7 @@ class FormTypeState extends State<FormType> {
 
   // Image picker instance
   final ImagePicker _imagePicker = ImagePicker();
+  Service service = Service();
 
   @override
   void initState() {
@@ -260,8 +262,8 @@ class FormTypeState extends State<FormType> {
                 : null,
         'content':
             widget.selectedData != null ? widget.selectedData['content'] : '',
-        'image':
-            widget.selectedData != null ? widget.selectedData['image'] : '',
+        'images':
+            widget.selectedData != null ? widget.selectedData['images'] : '',
         'video':
             widget.selectedData != null ? widget.selectedData['video'] : '',
       };
@@ -429,7 +431,7 @@ class FormTypeState extends State<FormType> {
         'alasan': '',
         'status': '',
         'content': '',
-        'image': '',
+        'images': '',
         'video': '',
       };
       errors = [];
@@ -437,16 +439,32 @@ class FormTypeState extends State<FormType> {
     widget.onFinish();
   }
 
-Future<void> pickImage() async {
-    final pickedFile = await _imagePicker.getImage(source: ImageSource.gallery);
+  Future<void> pickImage() async {
+    final pickedFile =
+        await ImagePicker().pickImage(source: ImageSource.gallery);
     if (pickedFile != null) {
-      setState(() {
-        _pickedImage = pickedFile;
-        formData['image'] = pickedFile.path;
-      });
+      final File imageFile = File(pickedFile.path);
+
+      bool success = false;
+      http.Response response;
+
+      try {
+        response = await Service().addImage(imageFile);
+        success = response.statusCode == 201;
+      } catch (e) {
+        print('Error storing image: $e');
+      }
+
+      if (success) {
+        // Image stored successfully
+        print('Image stored successfully');
+      } else {
+        // Error storing image
+        print('Error storing image');
+      }
     }
   }
-
+  
   Future<void> pickVideo() async {
     final pickedFile = await _imagePicker.getVideo(source: ImageSource.gallery);
     if (pickedFile != null) {
@@ -461,9 +479,8 @@ Future<void> pickImage() async {
     }
   }
 
-
-  // Widget to display the picked image or video
-Widget buildPickedMedia() {
+  // Widget to display the picked image dan video
+  Widget buildPickedMedia() {
     if (_pickedImage != null) {
       return Image.file(File(_pickedImage!.path));
     } else {
@@ -491,8 +508,6 @@ Widget buildPickedMedia() {
       return const SizedBox();
     }
   }
-
-
 
   @override
   Widget build(BuildContext context) {
