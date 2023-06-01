@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:video_player/video_player.dart';
-
+import 'package:chewie/chewie.dart';
 import 'package:pltu/page/type/FormType.dart';
 import 'package:pltu/services/api_services.dart';
 
@@ -183,8 +183,8 @@ class _BrowseTypeState extends State<BrowseType> {
                             final alasan = a['alasan'].toString();
                             final status = a['status'].toString();
                             final content = a['content'].toString();
-                            final images = a['images'] as List<dynamic>;
-                            final video = a['video'].toString();
+                            final images = a['images'] as List<dynamic>?;
+                            final videos = a['videos'] as List<dynamic>?;
 
                             return Card(
                               margin: const EdgeInsets.symmetric(vertical: 8.0),
@@ -229,7 +229,7 @@ class _BrowseTypeState extends State<BrowseType> {
                                     const SizedBox(
                                       height: 8,
                                     ),
-                                    if (images.isNotEmpty)
+                                    if (images != null && images.isNotEmpty)
                                       ListView.builder(
                                         shrinkWrap: true,
                                         physics:
@@ -258,14 +258,27 @@ class _BrowseTypeState extends State<BrowseType> {
                                     const SizedBox(
                                       height: 10,
                                     ),
-                                    if (video.isNotEmpty)
-                                      SizedBox(
-                                        width:
-                                            150, // Adjust the width of the video
-                                        height:
-                                            200, // Adjust the height of the video
-                                        child:
-                                            VideoPlayerWidget(videoUrl: video),
+                                    if (videos != null && videos.isNotEmpty)
+                                      ListView.builder(
+                                        shrinkWrap: true,
+                                        physics:
+                                            const NeverScrollableScrollPhysics(),
+                                        itemCount: videos.length,
+                                        itemBuilder: (context, index) {
+                                          final video = videos[index];
+                                          final videoPath =
+                                              video['path'].toString();
+                                          final videoUrl =
+                                              'https://digitm.isoae.com/$videoPath';
+
+                                          return SizedBox(
+                                            width: 150,
+                                            height: 200,
+                                            child: VideoPlayerWidget(
+                                              videoUrl: videoUrl,
+                                            ),
+                                          );
+                                        },
                                       ),
                                     Row(
                                       mainAxisAlignment: MainAxisAlignment.end,
@@ -310,45 +323,35 @@ class _BrowseTypeState extends State<BrowseType> {
 class VideoPlayerWidget extends StatefulWidget {
   final String videoUrl;
 
-  const VideoPlayerWidget({super.key, required this.videoUrl});
+  const VideoPlayerWidget({Key? key, required this.videoUrl}) : super(key: key);
 
   @override
   _VideoPlayerWidgetState createState() => _VideoPlayerWidgetState();
 }
 
 class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
-  late VideoPlayerController _controller;
-  late Future<void> _initializeVideoPlayerFuture;
+  late ChewieController _chewieController;
 
   @override
   void initState() {
     super.initState();
-    _controller = VideoPlayerController.network(widget.videoUrl);
-    _initializeVideoPlayerFuture = _controller.initialize();
-    _controller.setLooping(true);
-    _controller.play();
+    _chewieController = ChewieController(
+      videoPlayerController: VideoPlayerController.network(widget.videoUrl),
+      autoPlay: true,
+      looping: true,
+    );
   }
 
   @override
   void dispose() {
-    _controller.dispose();
+    _chewieController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: _initializeVideoPlayerFuture,
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.done) {
-          return AspectRatio(
-            aspectRatio: _controller.value.aspectRatio,
-            child: VideoPlayer(_controller),
-          );
-        } else {
-          return const CircularProgressIndicator();
-        }
-      },
+    return Chewie(
+      controller: _chewieController,
     );
   }
 }

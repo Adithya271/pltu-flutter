@@ -7,8 +7,7 @@ class FormEquipment extends StatefulWidget {
   final dynamic selectedData;
   final Function onFinish;
 
-  const FormEquipment(
-      {Key? key, this.selectedData, required this.onFinish})
+  const FormEquipment({Key? key, this.selectedData, required this.onFinish})
       : super(key: key);
 
   @override
@@ -21,7 +20,7 @@ class FormEquipmentState extends State<FormEquipment> {
   List<dynamic> errors = [];
   List<dynamic> listDivisi = [];
   List<dynamic> listArea = [];
-  List<dynamic> listGE = [];
+  List<dynamic> listGroupEquipment = [];
   bool show = false;
 
   @override
@@ -96,7 +95,6 @@ class FormEquipmentState extends State<FormEquipment> {
           setState(() {
             listArea = records;
           });
-         
         } else {
           print('Error: Invalid response data');
           setState(() {
@@ -116,9 +114,10 @@ class FormEquipmentState extends State<FormEquipment> {
       });
     }
   }
+
   void getOptionGE(String areaId) async {
-    final url =
-        Uri.parse("https://digitm.isoae.com/api/groupequipment?area_id=$areaId");
+    final url = Uri.parse(
+        "https://digitm.isoae.com/api/groupequipment?area_id=$areaId");
     final headers = {
       "Content-Type": "application/json",
       "Accept": "application/json",
@@ -136,29 +135,27 @@ class FormEquipmentState extends State<FormEquipment> {
             responseData.containsKey('records')) {
           final records = responseData['records'] as List<dynamic>;
           setState(() {
-            listGE = records;
+            listGroupEquipment = records;
           });
         } else {
           print('Error: Invalid response data');
           setState(() {
-            listGE = [];
+            listGroupEquipment = [];
           });
         }
       } catch (e) {
         print('Error decoding response body: $e');
         setState(() {
-          listGE = [];
+          listGroupEquipment = [];
         });
       }
     } else {
       print('Error: ${response.statusCode}');
       setState(() {
-        listGE = [];
+        listGroupEquipment = [];
       });
     }
   }
-
-  
 
   void newData() {
     setState(() {
@@ -177,8 +174,8 @@ class FormEquipmentState extends State<FormEquipment> {
                 : null,
         'group_equipment_id': widget.selectedData != null
             ? widget.selectedData['group_equipment_id'].toString()
-            : listGE.isNotEmpty
-                ? listGE[0]['id'].toString()
+            : listGroupEquipment.isNotEmpty
+                ? listGroupEquipment[0]['id'].toString()
                 : null,
         'name': widget.selectedData != null ? widget.selectedData['name'] : '',
         'description': widget.selectedData != null
@@ -205,9 +202,8 @@ class FormEquipmentState extends State<FormEquipment> {
       // Update the ge dropdown options based on the selected area
       if (formData['area_id'] != null) {
         final selectedAreaId = int.parse(formData['area_id']);
-        final filteredGEs = listGE
-            .where(
-                (GE) => GE['area_id'] == selectedAreaId.toString())
+        final filteredGEs = listGroupEquipment
+            .where((GE) => GE['area_id'] == selectedAreaId.toString())
             .toList();
 
         if (filteredGEs.isNotEmpty) {
@@ -306,7 +302,7 @@ class FormEquipmentState extends State<FormEquipment> {
         'id': null,
         'division_id': '',
         'area_id': '',
-        'group_equipment_id' : "",
+        'group_equipment_id': "",
         'name': '',
         'description': '',
       };
@@ -372,7 +368,7 @@ class FormEquipmentState extends State<FormEquipment> {
                   DropdownButtonFormField<String>(
                     decoration: const InputDecoration(labelText: 'GE'),
                     value: formData['group_equipment_id'],
-                    items: listGE.map((ge) {
+                    items: listGroupEquipment.map((ge) {
                       return DropdownMenuItem<String>(
                         value: ge['id'].toString(),
                         child: Text(ge['name']),
@@ -380,7 +376,7 @@ class FormEquipmentState extends State<FormEquipment> {
                     }).toList(),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Please select an area';
+                        return 'Please select a GroupEquipment';
                       }
                       return null;
                     },

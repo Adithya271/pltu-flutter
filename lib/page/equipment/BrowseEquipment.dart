@@ -175,7 +175,8 @@ class _BrowseEquipmentState extends State<BrowseEquipment> {
                             final deskripsi = a['description'].toString();
                             final namadivisi = a['division']['name'].toString();
                             final namaarea = a['area']['name'].toString();
-                            final namagrup_equipment = a['group_equipment']['name'].toString();
+                            final namagrupEquipment =
+                                a['group_equipment']?['name']?.toString() ?? '';
 
                             return Card(
                               margin: const EdgeInsets.symmetric(vertical: 8.0),
@@ -196,7 +197,7 @@ class _BrowseEquipmentState extends State<BrowseEquipment> {
                                     const SizedBox(
                                       height: 8,
                                     ),
-                                    Text('Nama Grup: $namagrup_equipment'),
+                                    Text('Nama Grup: $namagrupEquipment'),
                                     const SizedBox(
                                       height: 8,
                                     ),

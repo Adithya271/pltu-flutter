@@ -1,12 +1,12 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:pltu/page/type/Service.dart';
 import 'package:pltu/services/api_services.dart';
 import 'dart:convert';
 import 'package:image_picker/image_picker.dart';
 import 'package:video_player/video_player.dart';
+import 'package:http_parser/http_parser.dart';
+import 'package:path/path.dart' as path;
 
 class FormType extends StatefulWidget {
   final dynamic selectedData;
@@ -45,7 +45,6 @@ class FormTypeState extends State<FormType> {
 
   // Image picker instance
   final ImagePicker _imagePicker = ImagePicker();
-  Service service = Service();
 
   @override
   void initState() {
@@ -262,8 +261,8 @@ class FormTypeState extends State<FormType> {
                 : null,
         'content':
             widget.selectedData != null ? widget.selectedData['content'] : '',
-        'images':
-            widget.selectedData != null ? widget.selectedData['images'] : '',
+        'image':
+            widget.selectedData != null ? widget.selectedData['image'] : '',
         'video':
             widget.selectedData != null ? widget.selectedData['video'] : '',
       };
@@ -341,7 +340,7 @@ class FormTypeState extends State<FormType> {
       _formKey.currentState!.save();
 
       if (formData['id'] != null) {
-        // Data memiliki id,jadinya edit
+        // Data has an id, indicating it's an edit operation
         final url =
             Uri.parse("https://digitm.isoae.com/api/type/${formData['id']}");
         final headers = {
@@ -351,20 +350,68 @@ class FormTypeState extends State<FormType> {
         };
 
         try {
-          final response = await http.put(
-            url,
-            headers: headers,
-            body: jsonEncode(formData),
-          );
+          var request = http.MultipartRequest('PUT', url);
+          request.headers.addAll(headers);
+
+          // Add image files to the request
+          for (PickedFile pickedImage in _pickedImages) {
+            var file = await pickedImage.readAsBytes();
+            var fileName = path.basename(pickedImage.path);
+            var fileExtension = path.extension(fileName).toLowerCase();
+
+            // Validate file extension
+            if (fileExtension == '.jpg' ||
+                fileExtension == '.jpeg' ||
+                fileExtension == '.png' ||
+                fileExtension == '.bmp') {
+              // Append the file extension to the image field name
+              var fieldName = 'image[]';
+              var fieldNameWithExtension = '$fieldName.$fileExtension';
+
+              request.files.add(http.MultipartFile.fromBytes(
+                fieldName,
+                file,
+                filename: fieldNameWithExtension,
+                contentType: MediaType('image', fileExtension.substring(1)),
+              ));
+            } else {
+              print('Error: Invalid file extension: $fileExtension');
+              continue; // Skip this file and proceed to the next one
+            }
+          }
+
+          // Add text fields to the request
+          formData.forEach((key, value) {
+            if (key != 'image') {
+              request.fields[key] = value.toString();
+            }
+          });
+
+          print('Request payload: ${request.fields}');
+          final response = await request.send();
+          print('Response statusCode: ${response.statusCode}');
+          final responseData = await response.stream.bytesToString();
+          print('Response body: $responseData');
 
           if (response.statusCode == 200) {
-            clearForm();
-          } else if (response.statusCode == 422) {
-            final responseData = jsonDecode(response.body);
-            if (responseData is Map<String, dynamic>) {
+            final parsedData = jsonDecode(responseData);
+            if (parsedData is Map<String, dynamic> &&
+                parsedData.containsKey('image')) {
+              final images = [parsedData['image']];
+              // Update the form data with the image details
               setState(() {
-                errors = responseData['errors'] as List<dynamic>;
+                formData['image'] = images;
               });
+            }
+            clearForm();
+            print('Data updated successfully.');
+            // Add logic for successful data update
+          } else if (response.statusCode == 422) {
+            final parsedData = jsonDecode(responseData);
+            if (parsedData is Map<String, dynamic> &&
+                parsedData.containsKey('errors')) {
+              final errors = parsedData['errors'];
+              print('Error: $errors');
             } else {
               print('Error: Invalid response data');
             }
@@ -377,32 +424,76 @@ class FormTypeState extends State<FormType> {
           // Handle error
         }
       } else {
-        // New data
+        //new data
         final url = Uri.parse("https://digitm.isoae.com/api/type");
         final headers = {
           "Content-Type": "application/json",
           "Accept": "application/json",
           "Authorization": "Bearer ${APIService.token}",
         };
-
         try {
-          final response = await http.post(
-            url,
-            headers: headers,
-            body: jsonEncode(formData),
-          );
+          var request = http.MultipartRequest('POST', url);
+          request.headers.addAll(headers);
+
+          // Add image files to the request
+          for (http.MultipartFile imageFile in formData['image']) {
+            request.files.add(imageFile);
+          }
+
+          // Add video file to the request
+          if (formData['video'] != null) {
+            var videoFile = File(formData['video']);
+            var fileName = videoFile.path.split('/').last;
+            var fileExtension = fileName.split('.').last.toLowerCase();
+            request.files.add(http.MultipartFile(
+              'video',
+              videoFile.readAsBytes().asStream(),
+              videoFile.lengthSync(),
+              filename: fileName,
+              contentType: MediaType('video', fileExtension),
+            ));
+          }
+
+          // Add other text fields to the request
+          formData.forEach((key, value) {
+            if (key != 'image' && key != 'video') {
+              request.fields[key] = value.toString();
+            }
+          });
+
+          print('Request payload: ${request.fields}');
+
+          final response = await request.send();
+          final responseStream = await response.stream.bytesToString();
+
+          print('Response statusCode: ${response.statusCode}');
+          print('Response body: $responseStream');
 
           if (response.statusCode == 200) {
-            clearForm();
-            // bisa tambah logic ketika sudah berhasil tambah data
-          } else if (response.statusCode == 422) {
-            final responseData = jsonDecode(response.body);
-            if (responseData is Map<String, dynamic>) {
+            final parsedData = jsonDecode(responseStream);
+            if (parsedData is Map<String, dynamic> &&
+                parsedData.containsKey('data')) {
+              final images = parsedData['data']['image'];
+              // Update the form data with the image details
               setState(() {
-                errors = responseData['errors'] as List<dynamic>;
+                formData['image'] = images;
               });
-            } else {
-              print('Error: Invalid response data');
+            }
+            clearForm();
+            print('Data updated successfully.');
+            // Add logic for successful data update
+          } else if (response.statusCode == 422) {
+            final parsedData = jsonDecode(responseStream);
+            if (parsedData is Map<String, dynamic> &&
+                parsedData.containsKey('errors')) {
+              final errors = parsedData['errors'];
+              if (errors.containsKey('image')) {
+                print('Error: ${errors['image'].join(', ')}');
+              } else if (errors.containsKey('video')) {
+                print('Error: ${errors['video'].join(', ')}');
+              } else {
+                print('Error: Invalid response data');
+              }
             }
           } else {
             print('Error: ${response.statusCode}');
@@ -416,35 +507,24 @@ class FormTypeState extends State<FormType> {
     }
   }
 
-  void clearForm() {
-    setState(() {
-      show = false;
-      formData = {
-        'id': null,
-        'user_id': '',
-        'division_id': '',
-        'area_id': '',
-        'group_equipment_id': '',
-        'equipment_id': '',
-        'name': '',
-        'description': '',
-        'alasan': '',
-        'status': '',
-        'content': '',
-        'images': '',
-        'video': '',
-      };
-      errors = [];
-    });
-    widget.onFinish();
-  }
-
   Future<void> pickImage() async {
     List<XFile>? pickedFiles =
         await ImagePicker().pickMultiImage(imageQuality: 50);
     setState(() {
-      _pickedImages = pickedFiles.map((file) => PickedFile(file.path)).toList();
-      formData['images'] = _pickedImages.map((file) => file.path).toList();
+      _pickedImages =
+          pickedFiles.map((file) => PickedFile(file.path)).toList() ?? [];
+      formData['image'] = _pickedImages.map((pickedImage) {
+        var file = File(pickedImage.path);
+        var fileName = file.path.split('/').last;
+        var fileExtension = fileName.split('.').last.toLowerCase();
+        return http.MultipartFile(
+          'image',
+          file.readAsBytes().asStream(),
+          file.lengthSync(),
+          filename: fileName,
+          contentType: MediaType('image', fileExtension),
+        );
+      }).toList();
     });
   }
 
@@ -486,9 +566,15 @@ class FormTypeState extends State<FormType> {
             child: VideoPlayer(videoController!),
           ),
           ElevatedButton(
-            child: const Text('Play Video'),
+            child: Text(videoController!.value.isPlaying
+                ? 'Pause Video'
+                : 'Play Video'),
             onPressed: () {
-              // Logic to play the video
+              if (videoController!.value.isPlaying) {
+                videoController!.pause();
+              } else {
+                videoController!.play();
+              }
             },
           ),
         ],
@@ -496,6 +582,29 @@ class FormTypeState extends State<FormType> {
     } else {
       return const SizedBox();
     }
+  }
+
+  void clearForm() {
+    setState(() {
+      show = false;
+      formData = {
+        'id': null,
+        'user_id': '',
+        'division_id': '',
+        'area_id': '',
+        'group_equipment_id': '',
+        'equipment_id': '',
+        'name': '',
+        'description': '',
+        'alasan': '',
+        'status': '',
+        'content': '',
+        'image': '',
+        'video': '',
+      };
+      errors = [];
+    });
+    widget.onFinish();
   }
 
   @override
