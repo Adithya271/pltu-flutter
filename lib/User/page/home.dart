@@ -4,7 +4,6 @@ import 'package:pltu/page/equipment/BrowseEquipment.dart';
 import 'package:pltu/page/groupEquipment/BrowseGroupEquipment.dart';
 import 'package:pltu/page/profil.dart';
 import 'package:pltu/page/sidebar.dart';
-import 'package:pltu/page/transaksi/BrowseTransaksi.dart';
 import 'package:pltu/page/type/BrowseType.dart';
 import 'area/BrowseArea.dart';
 
@@ -27,7 +26,6 @@ class _HomePageState extends State<HomePage> {
     BrowseGroupEquipment(),
     BrowseEquipment(),
     BrowseType(),
-    BrowseTransaksi(),
   ];
 
   void _onSidebarItemTapped(int index) {

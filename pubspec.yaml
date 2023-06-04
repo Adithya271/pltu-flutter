@@ -43,6 +43,8 @@ dependencies:
   chewie: ^1.5.0
   image: ^3.0.3
   http_parser: ^4.0.0
+  flutter_date_pickers: ^0.4.2
+  intl: ^0.17.0
 
 dev_dependencies:
   flutter_test:

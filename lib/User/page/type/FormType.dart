@@ -7,7 +7,6 @@ import 'package:image_picker/image_picker.dart';
 import 'package:video_player/video_player.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:path/path.dart' as path;
-import 'package:chewie/chewie.dart';
 
 class FormType extends StatefulWidget {
   final dynamic selectedData;
@@ -560,30 +559,21 @@ class FormTypeState extends State<FormType> {
 
   Widget buildPickedMedia2() {
     if (_pickedVideo != null && videoController != null) {
-      ChewieController chewieController = ChewieController(
-        videoPlayerController: videoController!,
-        autoPlay: false,
-        looping: false,
-        showControls: true,
-        // Customize other ChewieController properties as needed
-      );
-
       return Column(
         children: [
           AspectRatio(
             aspectRatio: videoController!.value.aspectRatio,
-            child: Chewie(
-              controller: chewieController,
-            ),
+            child: VideoPlayer(videoController!),
           ),
           ElevatedButton(
-            child:
-                Text(chewieController.isPlaying ? 'Pause Video' : 'Play Video'),
+            child: Text(videoController!.value.isPlaying
+                ? 'Pause Video'
+                : 'Play Video'),
             onPressed: () {
-              if (chewieController.isPlaying) {
-                chewieController.pause();
+              if (videoController!.value.isPlaying) {
+                videoController!.pause();
               } else {
-                chewieController.play();
+                videoController!.play();
               }
             },
           ),
