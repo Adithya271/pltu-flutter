@@ -63,22 +63,7 @@ class _ProfilPageState extends State<ProfilPage> {
               onPressed: _logout,
               child: const Text('Logout'),
             ),
-            const SizedBox(height: 30),
-            GestureDetector(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const SignUp()),
-                );
-              },
-              child: const Text(
-                "Buat akun disini",
-                style: TextStyle(
-                  color: Colors.blue,
-                  decoration: TextDecoration.underline,
-                ),
-              ),
-            ),
+            
           ],
         ),
       ),

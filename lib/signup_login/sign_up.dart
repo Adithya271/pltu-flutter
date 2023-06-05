@@ -1,6 +1,5 @@
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
-import 'package:pltu/page/home.dart';
 import 'package:pltu/signup_login/sign_in.dart';
 
 import '../services/api_services.dart';
@@ -16,24 +15,20 @@ class _SignUpState extends State<SignUp> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _roleIdController = TextEditingController();
 
   String _emailErrorText = '';
   String _passwordErrorText = '';
   String _nameErrorText = '';
-  String _roleIdErrorText = '';
 
   Future<void> _register() async {
     final email = _emailController.text;
     final password = _passwordController.text;
     final name = _nameController.text;
-    final roleId = int.tryParse(_roleIdController.text) ?? 0;
 
     setState(() {
       _emailErrorText = '';
       _passwordErrorText = '';
       _nameErrorText = '';
-      _roleIdErrorText = '';
     });
 
     if (email.isEmpty) {
@@ -64,39 +59,7 @@ class _SignUpState extends State<SignUp> {
       return;
     }
 
-    if (roleId == null) {
-      setState(() {
-        _roleIdErrorText = 'Invalid role ID';
-      });
-      return;
-    }
-
-    // Check if the user is logged in
-    if (APIService.token.isEmpty) {
-      showDialog(
-        context: context,
-        builder: (ctx) => AlertDialog(
-          title: const Text('Login Required'),
-          content: const Text('Please log in before registering.'),
-          actions: [
-            TextButton(
-              child: const Text('OK'),
-              onPressed: () {
-                Navigator.of(ctx).pop();
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const SignIn()),
-                );
-              },
-            ),
-          ],
-        ),
-      );
-      return;
-    }
-
-    final registerResult =
-        await APIService.register(email, password, name, roleId);
+    final registerResult = await APIService.register(email, password, name);
 
     try {
       if (registerResult['success']) {
@@ -220,33 +183,36 @@ class _SignUpState extends State<SignUp> {
                         _nameErrorText.isNotEmpty ? _nameErrorText : null,
                   ),
                 ),
-                const SizedBox(height: 10),
-                TextField(
-                  controller: _roleIdController,
-                  decoration: InputDecoration(
-                    labelText: 'Role',
-                    border: const OutlineInputBorder(),
-                    errorText:
-                        _roleIdErrorText.isNotEmpty ? _roleIdErrorText : null,
-                  ),
-                ),
                 const SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: _register,
                   child: const Text('Sign Up'),
                 ),
                 const SizedBox(height: 30),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.grey, // Background color
+                Padding(
+                  padding: const EdgeInsets.only(left: 550),
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const SignIn()),
+                      );
+                    },
+                    child: Row(
+                      children: const [
+                        Text(
+                          "Sudah punya akun? ",
+                        ),
+                        Text(
+                          "Login disini",
+                          style: TextStyle(
+                            color: Colors.blue,
+                            decoration: TextDecoration.underline,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => const HomePage()),
-                    );
-                  },
-                  child: const Text('Kembali'),
                 ),
               ],
             ),

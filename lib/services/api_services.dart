@@ -38,8 +38,8 @@ class APIService {
 
   //signup
   static Future<Map<String, dynamic>> register(
-      String email, String password, String name, int roleId) async {
-    final apiUrl = Uri.parse('$baseUrl/user');
+      String email, String password, String name) async {
+    final apiUrl = Uri.parse('$baseUrl/register');
 
     final response = await http.post(
       apiUrl,
@@ -51,7 +51,7 @@ class APIService {
         'email': email,
         'password': password,
         'name': name,
-        'role_id': roleId,
+        
       }),
     );
 

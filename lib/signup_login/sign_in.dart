@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pltu/page/home.dart';
 import 'package:pltu/services/api_services.dart';
 import 'package:email_validator/email_validator.dart';
+import 'package:pltu/signup_login/sign_up.dart';
 
 class SignIn extends StatefulWidget {
   const SignIn({super.key});
@@ -129,7 +130,7 @@ class _SignInState extends State<SignIn> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               const Text(
-                'Login Admin',
+                'Login User',
                 style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
@@ -160,6 +161,32 @@ class _SignInState extends State<SignIn> {
               ElevatedButton(
                 onPressed: _login,
                 child: const Text('Login'),
+              ),
+              const SizedBox(height: 30),
+              Padding(
+                padding: const EdgeInsets.only(left: 550),
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const SignUp()),
+                    );
+                  },
+                  child: Row(
+                    children: const [
+                      Text(
+                        "Belum punya akun? ",
+                      ),
+                      Text(
+                        "Buat akun disini",
+                        style: TextStyle(
+                          color: Colors.blue,
+                          decoration: TextDecoration.underline,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ),
             ],
           ),
