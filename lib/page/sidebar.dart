@@ -87,14 +87,7 @@ class SidebarMenu extends StatelessWidget {
             },
             selected: selectedIndex == 6,
           ),
-          ListTile(
-            leading: const Icon(Icons.money_rounded),
-            title: const Text('Transaksi'),
-            onTap: () {
-              onSidebarItemTapped(7);
-            },
-            selected: selectedIndex == 7,
-          ),
+          
         ],
       ),
     );
