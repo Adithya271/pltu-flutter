@@ -76,6 +76,11 @@ class _SignUpState extends State<SignUp> {
           ),
         );
 
+        // Clear the form fields
+        _emailController.clear();
+        _passwordController.clear();
+        _nameController.clear();
+
         // TODO: Handle successful registration
       } else {
         // Registration failed
