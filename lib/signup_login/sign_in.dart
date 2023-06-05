@@ -48,10 +48,10 @@ class _SignInState extends State<SignIn> {
     }
 
     final loginResult = await APIService.login(email, password);
-    print('Login: '+loginResult["success"].toString());
+    print('Login: ${loginResult["success"]}');
 
     try {
-      if ( loginResult['success']) {
+      if (loginResult['success']) {
         // Login successful
 
         // Print record data
@@ -140,7 +140,7 @@ class _SignInState extends State<SignIn> {
                 controller: _emailController,
                 decoration: InputDecoration(
                   labelText: 'Email',
-                  border: OutlineInputBorder(),
+                  border: const OutlineInputBorder(),
                   errorText:
                       _emailErrorText.isNotEmpty ? _emailErrorText : null,
                 ),
@@ -151,7 +151,7 @@ class _SignInState extends State<SignIn> {
                 obscureText: true,
                 decoration: InputDecoration(
                   labelText: 'Password',
-                  border: OutlineInputBorder(),
+                  border: const OutlineInputBorder(),
                   errorText:
                       _passwordErrorText.isNotEmpty ? _passwordErrorText : null,
                 ),
