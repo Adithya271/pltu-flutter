@@ -130,7 +130,7 @@ class _SignInState extends State<SignIn> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               const Text(
-                'Login User',
+                'Login Admin',
                 style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,

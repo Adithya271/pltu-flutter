@@ -2,15 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:pltu/page/home.dart';
 import 'package:pltu/services/api_services.dart';
 import 'package:email_validator/email_validator.dart';
+import 'package:pltu/signup_login/sign_up.dart';
 
-class SignIn extends StatefulWidget {
-  const SignIn({super.key});
+class SignInUser extends StatefulWidget {
+  const SignInUser({super.key});
 
   @override
-  _SignInState createState() => _SignInState();
+  _SignInUserState createState() => _SignInUserState();
 }
 
-class _SignInState extends State<SignIn> {
+class _SignInUserState extends State<SignInUser> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
@@ -48,10 +49,10 @@ class _SignInState extends State<SignIn> {
     }
 
     final loginResult = await APIService.login(email, password);
-    print('Login: '+loginResult["success"].toString());
+    print('Login: ${loginResult["success"]}');
 
     try {
-      if ( loginResult['success']) {
+      if (loginResult['success']) {
         // Login successful
 
         // Print record data
@@ -140,7 +141,7 @@ class _SignInState extends State<SignIn> {
                 controller: _emailController,
                 decoration: InputDecoration(
                   labelText: 'Email',
-                  border: OutlineInputBorder(),
+                  border: const OutlineInputBorder(),
                   errorText:
                       _emailErrorText.isNotEmpty ? _emailErrorText : null,
                 ),
@@ -151,7 +152,7 @@ class _SignInState extends State<SignIn> {
                 obscureText: true,
                 decoration: InputDecoration(
                   labelText: 'Password',
-                  border: OutlineInputBorder(),
+                  border: const OutlineInputBorder(),
                   errorText:
                       _passwordErrorText.isNotEmpty ? _passwordErrorText : null,
                 ),
@@ -160,6 +161,32 @@ class _SignInState extends State<SignIn> {
               ElevatedButton(
                 onPressed: _login,
                 child: const Text('Login'),
+              ),
+              const SizedBox(height: 30),
+              Padding(
+                padding: const EdgeInsets.only(left: 60),
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const SignUp()),
+                    );
+                  },
+                  child: Row(
+                    children: const [
+                      Text(
+                        "Belum punya akun? ",
+                      ),
+                      Text(
+                        "Buat akun disini",
+                        style: TextStyle(
+                          color: Colors.blue,
+                          decoration: TextDecoration.underline,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ),
             ],
           ),

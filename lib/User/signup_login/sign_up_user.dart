@@ -4,14 +4,14 @@ import 'package:pltu/signup_login/sign_in.dart';
 
 import '../services/api_services.dart';
 
-class SignUp extends StatefulWidget {
-  const SignUp({Key? key}) : super(key: key);
+class SignUpUser extends StatefulWidget {
+  const SignUpUser({Key? key}) : super(key: key);
 
   @override
-  _SignUpState createState() => _SignUpState();
+  _SignUpUserState createState() => _SignUpUserState();
 }
 
-class _SignUpState extends State<SignUp> {
+class _SignUpUserState extends State<SignUpUser> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _nameController = TextEditingController();
