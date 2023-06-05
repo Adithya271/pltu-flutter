@@ -164,7 +164,7 @@ class _SignInState extends State<SignIn> {
               ),
               const SizedBox(height: 30),
               Padding(
-                padding: const EdgeInsets.only(left: 550),
+                padding: const EdgeInsets.only(left: 60),
                 child: GestureDetector(
                   onTap: () {
                     Navigator.push(
