@@ -1,6 +1,7 @@
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
-import 'package:pltu/signup_login/sign_in.dart';
+import 'package:pltu/User/signup_login/sign_in_user.dart';
+
 
 import '../services/api_services.dart';
 
@@ -150,6 +151,7 @@ class _SignUpUserState extends State<SignUpUser> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                
                 const Text(
                   'Sign Up',
                   style: TextStyle(
@@ -201,7 +203,7 @@ class _SignUpUserState extends State<SignUpUser> {
                     onTap: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => const SignIn()),
+                        MaterialPageRoute(builder: (context) => const SignInUser()),
                       );
                     },
                     child: Row(

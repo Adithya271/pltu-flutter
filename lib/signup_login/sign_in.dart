@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:pltu/page/home.dart';
 import 'package:pltu/services/api_services.dart';
 import 'package:email_validator/email_validator.dart';
-import 'package:pltu/signup_login/sign_up.dart';
 
 class SignIn extends StatefulWidget {
   const SignIn({super.key});
@@ -54,15 +53,34 @@ class _SignInState extends State<SignIn> {
     try {
       if (loginResult['success']) {
         // Login successful
+        if (loginResult['userId'] == 1) {
+          // UserId is 1, login success
+          // Print record data
+          print('Login Result:[success] $loginResult');
 
-        // Print record data
-        print('Login Result:[success] $loginResult');
-
-        // Navigate to the HomePage
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const HomePage()),
-        );
+          // Navigate to the HomePage
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const HomePage()),
+          );
+        } else {
+          // UserId is not 4, login failed
+          showDialog(
+            context: context,
+            builder: (ctx) => AlertDialog(
+              title: const Text('Login Failed'),
+              content: const Text('You are not a user.'),
+              actions: [
+                TextButton(
+                  child: const Text('OK'),
+                  onPressed: () {
+                    Navigator.of(ctx).pop();
+                  },
+                ),
+              ],
+            ),
+          );
+        }
       } else {
         // Login failed
         final errorMessage =
@@ -161,32 +179,6 @@ class _SignInState extends State<SignIn> {
               ElevatedButton(
                 onPressed: _login,
                 child: const Text('Login'),
-              ),
-              const SizedBox(height: 30),
-              Padding(
-                padding: const EdgeInsets.only(left: 60),
-                child: GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => const SignUp()),
-                    );
-                  },
-                  child: Row(
-                    children: const [
-                      Text(
-                        "Belum punya akun? ",
-                      ),
-                      Text(
-                        "Buat akun disini",
-                        style: TextStyle(
-                          color: Colors.blue,
-                          decoration: TextDecoration.underline,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
               ),
             ],
           ),

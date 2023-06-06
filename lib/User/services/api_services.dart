@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:pltu/model/login_respon/login_respon.dart';
+import 'package:pltu/User/model/login_respon/login_respon.dart';
 
 class APIService {
   static const String baseUrl = 'https://digitm.isoae.com/api';

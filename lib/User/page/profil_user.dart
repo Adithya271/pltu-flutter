@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:pltu/services/api_services.dart';
-import 'package:pltu/signup_login/sign_in.dart';
-import 'package:pltu/signup_login/sign_up.dart';
+import 'package:pltu/User/services/api_services.dart';
+import 'package:pltu/User/signup_login/sign_in_user.dart';
+
 
 class ProfilPageUser extends StatefulWidget {
   const ProfilPageUser({Key? key}) : super(key: key);
@@ -45,7 +45,7 @@ class _ProfilPageStateUser extends State<ProfilPageUser> {
       await APIService.logout();
       Navigator.pushAndRemoveUntil(
         context,
-        MaterialPageRoute(builder: (context) => const SignIn()),
+        MaterialPageRoute(builder: (context) => const SignInUser()),
         (route) => false,
       );
     }

@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:pltu/page/home.dart';
-import 'package:pltu/services/api_services.dart';
+import 'package:pltu/User/page/home_user.dart';
+import 'package:pltu/User/signup_login/sign_up_user.dart';
+import 'package:pltu/User/services/api_services.dart';
 import 'package:email_validator/email_validator.dart';
-import 'package:pltu/signup_login/sign_up.dart';
+import 'package:pltu/signup_login/sign_in.dart';
 
 class SignInUser extends StatefulWidget {
   const SignInUser({super.key});
@@ -54,15 +55,34 @@ class _SignInUserState extends State<SignInUser> {
     try {
       if (loginResult['success']) {
         // Login successful
+        if (loginResult['userId'] == 4) {
+          // UserId is 4, login success
+          // Print record data
+          print('Login Result:[success] $loginResult');
 
-        // Print record data
-        print('Login Result:[success] $loginResult');
-
-        // Navigate to the HomePage
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const HomePage()),
-        );
+          // Navigate to the HomePage
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const HomePageUser()),
+          );
+        } else {
+          // UserId is not 4, login failed
+          showDialog(
+            context: context,
+            builder: (ctx) => AlertDialog(
+              title: const Text('Login Failed'),
+              content: const Text('You are not a user.'),
+              actions: [
+                TextButton(
+                  child: const Text('OK'),
+                  onPressed: () {
+                    Navigator.of(ctx).pop();
+                  },
+                ),
+              ],
+            ),
+          );
+        }
       } else {
         // Login failed
         final errorMessage =
@@ -129,6 +149,31 @@ class _SignInUserState extends State<SignInUser> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              Padding(
+                padding: const EdgeInsets.only(left: 270),
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const SignIn()),
+                    );
+                  },
+                  child: Row(
+                    children: const [
+                      Text(
+                        "Anda Admin? ",
+                      ),
+                      Text(
+                        "Login sebagai Admin",
+                        style: TextStyle(
+                          color: Colors.blue,
+                          decoration: TextDecoration.underline,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
               const Text(
                 'Login User',
                 style: TextStyle(
@@ -169,7 +214,8 @@ class _SignInUserState extends State<SignInUser> {
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => const SignUp()),
+                      MaterialPageRoute(
+                          builder: (context) => const SignUpUser()),
                     );
                   },
                   child: Row(
