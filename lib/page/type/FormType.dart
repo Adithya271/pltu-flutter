@@ -75,8 +75,6 @@ class FormTypeState extends State<FormType> {
           setState(() {
             listDivisi = records;
           });
-          // Get the areas based on the initially selected division
-          getOptionArea(listDivisi[0]['id'].toString());
         } else {
           print('Error: Invalid response data');
           setState(() {
@@ -643,6 +641,12 @@ class FormTypeState extends State<FormType> {
                     onChanged: (value) {
                       setState(() {
                         formData['division_id'] = value;
+                        formData['area_id'] = null;
+                        listArea = [];
+                        formData['group_equipment_id'] = null;
+                        listGroupEquipment = [];
+                        formData['equipment_id'] = null;
+                        listEquipment = [];
                         // Call the getOptionArea() function to fetch areas based on the selected division
                         getOptionArea(value!);
                       });
@@ -666,6 +670,10 @@ class FormTypeState extends State<FormType> {
                     onChanged: (value) {
                       setState(() {
                         formData['area_id'] = value;
+                        formData['group_equipment_id'] = null;
+                        listGroupEquipment = [];
+                        formData['equipment_id'] = null;
+                        listEquipment = [];
                         // Call the getOptionArea() function to fetch areas based on the selected division
                         getOptionGroupEquipment(value!);
                       });
@@ -689,6 +697,8 @@ class FormTypeState extends State<FormType> {
                     onChanged: (value) {
                       setState(() {
                         formData['group_equipment_id'] = value;
+                        formData['equipment_id'] = null;
+                        listEquipment = [];
                         // Call the getOptionArea() function to fetch areas based on the selected division
                         getOptionEquipment(value!);
                       });

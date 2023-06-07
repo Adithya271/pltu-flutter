@@ -337,6 +337,11 @@ class FormEquipmentState extends State<FormEquipment> {
                     onChanged: (value) {
                       setState(() {
                         formData['division_id'] = value;
+                        formData['area_id'] = null;
+                        listArea = [];
+                        formData['group_equipment_id'] = null;
+                        listGroupEquipment = [];
+
                         // Call the getOptionArea() function to fetch areas based on the selected division
                         getOptionArea(value!);
                       });
@@ -360,6 +365,8 @@ class FormEquipmentState extends State<FormEquipment> {
                     onChanged: (value) {
                       setState(() {
                         formData['area_id'] = value;
+                        formData['group_equipment_id'] = null;
+                        listGroupEquipment = [];
                         // Call the getOptionArea() function to fetch areas based on the selected division
                         getOptionGE(value!);
                       });

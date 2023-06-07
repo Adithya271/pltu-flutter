@@ -274,6 +274,8 @@ class FormGroupEquipmentState extends State<FormGroupEquipment> {
                     },
                     onChanged: (value) {
                       setState(() {
+                        formData['area_id'] = null;
+                        listArea = [];
                         formData['division_id'] = value;
                         // Call the getOptionArea() function to fetch areas based on the selected division
                         getOptionArea(value!);
