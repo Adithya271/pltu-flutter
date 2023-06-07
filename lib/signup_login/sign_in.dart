@@ -147,13 +147,12 @@ class _SignInState extends State<SignIn> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Text(
-                'Login Admin',
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
+               Image.asset(
+                  'txtlogin.png',
+                  width: 50,
+                  height: 50,
                 ),
-              ),
+
               const SizedBox(height: 20),
               TextField(
                 controller: _emailController,
