@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:pltu/User/page/dashboard_user_show_type.dart';
 
 class DashboardUser extends StatefulWidget {
   const DashboardUser({Key? key}) : super(key: key);
@@ -10,16 +11,16 @@ class DashboardUser extends StatefulWidget {
 }
 
 class _DashboardUserState extends State<DashboardUser> {
-  List<dynamic> errors = [];
-  List<dynamic> listDivisi = [];
-  List<dynamic> listArea = [];
-  List<dynamic> listGroupEquipment = [];
-  List<dynamic> listEquipment = [];
+  List<Map<String, dynamic>> listDivisi = [];
+  List<Map<String, dynamic>> listArea = [];
+  List<Map<String, dynamic>> listEquipment = [];
+  List<Map<String, dynamic>> listGroupEq = [];
 
   String selectedDivisi = '';
   String selectedArea = '';
-  String selectedGroupEquipment = '';
   String selectedEquipment = '';
+  String selectedGroupEq = '';
+  String typeData = '';
 
   @override
   void initState() {
@@ -45,10 +46,13 @@ class _DashboardUserState extends State<DashboardUser> {
             responseData.containsKey('records')) {
           final records = responseData['records'] as List<dynamic>;
           setState(() {
-            listDivisi = records;
+            listDivisi = records
+                .map<Map<String, dynamic>>((dynamic divisi) => {
+                      'value': divisi['value'],
+                      'text': divisi['text'],
+                    })
+                .toList();
           });
-          // Get the areas based on the initially selected division
-          getOptionArea(listDivisi[0]['id'].toString());
         } else {
           print('Error: Invalid response data');
           setState(() {
@@ -69,11 +73,15 @@ class _DashboardUserState extends State<DashboardUser> {
     }
   }
 
-  void getOptionArea(String divisionId) async {
+  void getOptionArea(String selectedDivisi) async {
     final url = Uri.parse(
-        "https://digitm.isoae.com/api/area/getOption?division_id=$divisionId");
+        "https://digitm.isoae.com/api/area/getOption?division_id=$selectedDivisi");
+    final headers = {
+      "Content-Type": "application/json",
+      "Accept": "application/json",
+    };
 
-    final response = await http.get(url);
+    final response = await http.get(url, headers: headers);
 
     if (response.statusCode == 200) {
       try {
@@ -84,7 +92,12 @@ class _DashboardUserState extends State<DashboardUser> {
             responseData.containsKey('records')) {
           final records = responseData['records'] as List<dynamic>;
           setState(() {
-            listArea = records;
+            listArea = records
+                .map<Map<String, dynamic>>((dynamic area) => {
+                      'value': area['value'],
+                      'text': area['text'],
+                    })
+                .toList();
           });
         } else {
           print('Error: Invalid response data');
@@ -106,11 +119,15 @@ class _DashboardUserState extends State<DashboardUser> {
     }
   }
 
-  void getOptionGroupEquipment(String areaId) async {
+  void getOptionGroupEq(String selectedDivisi, String selectedArea) async {
     final url = Uri.parse(
-        "https://digitm.isoae.com/api/groupequipment/getOption?area_id=$areaId");
+        "https://digitm.isoae.com/api/groupequipment/getOption?division_id=$selectedDivisi&area_id=$selectedArea");
+    final headers = {
+      "Content-Type": "application/json",
+      "Accept": "application/json",
+    };
 
-    final response = await http.get(url);
+    final response = await http.get(url, headers: headers);
 
     if (response.statusCode == 200) {
       try {
@@ -121,33 +138,43 @@ class _DashboardUserState extends State<DashboardUser> {
             responseData.containsKey('records')) {
           final records = responseData['records'] as List<dynamic>;
           setState(() {
-            listGroupEquipment = records;
+            listGroupEq = records
+                .map<Map<String, dynamic>>((dynamic groupEq) => {
+                      'value': groupEq['value'],
+                      'text': groupEq['text'],
+                    })
+                .toList();
           });
         } else {
           print('Error: Invalid response data');
           setState(() {
-            listGroupEquipment = [];
+            listGroupEq = [];
           });
         }
       } catch (e) {
         print('Error decoding response body: $e');
         setState(() {
-          listGroupEquipment = [];
+          listGroupEq = [];
         });
       }
     } else {
       print('Error: ${response.statusCode}');
       setState(() {
-        listGroupEquipment = [];
+        listGroupEq = [];
       });
     }
   }
 
-  void getOptionEquipment(String groupEquipmentId) async {
+  void getOptionEquipment(String selectedDivisi, String selectedArea,
+      String selectedGroupEq) async {
     final url = Uri.parse(
-        "https://digitm.isoae.com/api/equipment/getOption?group_equipment_id=$groupEquipmentId");
+        "https://digitm.isoae.com/api/equipment/getOption?division_id=$selectedDivisi&area_id=$selectedArea&group_equipment_id=$selectedGroupEq");
+    final headers = {
+      "Content-Type": "application/json",
+      "Accept": "application/json",
+    };
 
-    final response = await http.get(url);
+    final response = await http.get(url, headers: headers);
 
     if (response.statusCode == 200) {
       try {
@@ -158,7 +185,12 @@ class _DashboardUserState extends State<DashboardUser> {
             responseData.containsKey('records')) {
           final records = responseData['records'] as List<dynamic>;
           setState(() {
-            listEquipment = records;
+            listEquipment = records
+                .map<Map<String, dynamic>>((dynamic equipment) => {
+                      'value': equipment['value'],
+                      'text': equipment['text'],
+                    })
+                .toList();
           });
         } else {
           print('Error: Invalid response data');
@@ -180,112 +212,199 @@ class _DashboardUserState extends State<DashboardUser> {
     }
   }
 
+  void fetchData(String selectedDivisi, String selectedArea,
+      String selectedGroupEq, String selectedEquipment) async {
+    final url = Uri.parse(
+        "https://digitm.isoae.com/api/type?division_id=$selectedDivisi&area_id=$selectedArea&group_equipment_id=$selectedGroupEq&equipment_id=$selectedEquipment");
+    final headers = {
+      "Content-Type": "application/json",
+      "Accept": "application/json",
+    };
+
+    final response = await http.get(url, headers: headers);
+
+    if (response.statusCode == 200) {
+      try {
+        final jsonData = json.decode(response.body);
+        final responseData = jsonData['data'];
+
+        if (responseData is Map<String, dynamic> &&
+            responseData.containsKey('records')) {
+          final records = responseData['records'] as List<dynamic>;
+          if (records.isNotEmpty) {
+            List<String> names = [];
+
+            for (int i = 0; i < records.length; i++) {
+              final record = records[i];
+              final name = record['name'];
+
+              names.add(name);
+            }
+
+            if (names.isNotEmpty) {
+              setState(() {
+                // Store the names in the state variable
+                typeData = names.join(", ");
+              });
+            } else {
+              print('Error: No records found');
+            }
+          } else {
+            print('Error: No records found');
+          }
+        }
+      } catch (e) {
+        print('Error: $e');
+      }
+    } else {
+      print('Error: ${response.statusCode}');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Dashboard User'),
-      ),
-      body: Container(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            DropdownButtonFormField<String>(
-              value: selectedDivisi.isNotEmpty ? selectedDivisi : null,
-              items: listDivisi.map((divisi) {
-                return DropdownMenuItem<String>(
-                  value: divisi['id'].toString(),
-                  child: Text(divisi['name'].toString()),
-                );
-              }).toList(),
-              onChanged: (value) {
-                setState(() {
-                  selectedDivisi = value ?? '';
-                  // Reset selected area, group equipment, and equipment
-                  selectedArea = '';
-                  selectedGroupEquipment = '';
-                  selectedEquipment = '';
-                  // Get the areas based on the selected division
-                  getOptionArea(selectedDivisi);
-                });
-              },
-              decoration: const InputDecoration(
-                labelText: 'Divisi',
-                border: OutlineInputBorder(),
-              ),
-            ),
-            const SizedBox(height: 16.0),
-            DropdownButtonFormField<String>(
-              value: selectedArea.isNotEmpty ? selectedArea : null,
-              items: listArea.map((area) {
-                return DropdownMenuItem<String>(
-                  value: area['id'].toString(),
-                  child: Text(area['name'].toString()),
-                );
-              }).toList(),
-              onChanged: (value) {
-                setState(() {
-                  selectedArea = value ?? '';
-                  // Reset selected group equipment and equipment
-                  selectedGroupEquipment = '';
-                  selectedEquipment = '';
-                  // Get the group equipment based on the selected division and area
-                  getOptionGroupEquipment(selectedArea);
-                });
-              },
-              decoration: const InputDecoration(
-                labelText: 'Area',
-                border: OutlineInputBorder(),
-              ),
-            ),
-            const SizedBox(height: 16.0),
-            DropdownButtonFormField<String>(
-              value: selectedGroupEquipment.isNotEmpty
-                  ? selectedGroupEquipment
-                  : null,
-              items: listGroupEquipment.map((groupEquipment) {
-                return DropdownMenuItem<String>(
-                  value: groupEquipment['id'].toString(),
-                  child: Text(groupEquipment['name'].toString()),
-                );
-              }).toList(),
-              onChanged: (value) {
-                setState(() {
-                  selectedGroupEquipment = value ?? '';
-                  // Reset selected equipment
-                  selectedEquipment = '';
-                  // Get the equipment based on the selected division, area, and group equipment
-                  getOptionEquipment(selectedGroupEquipment);
-                });
-              },
-              decoration: const InputDecoration(
-                labelText: 'Group Equipment',
-                border: OutlineInputBorder(),
-              ),
-            ),
-            const SizedBox(height: 16.0),
-            DropdownButtonFormField<String>(
-              value: selectedEquipment.isNotEmpty ? selectedEquipment : null,
-              items: listEquipment.map((equipment) {
-                return DropdownMenuItem<String>(
-                  value: equipment['id'].toString(),
-                  child: Text(equipment['name'].toString()),
-                );
-              }).toList(),
-              onChanged: (value) {
-                setState(() {
-                  selectedEquipment = value ?? '';
-                });
-              },
-              decoration: const InputDecoration(
-                labelText: 'Equipment',
-                border: OutlineInputBorder(),
-              ),
-            ),
-          ],
+    return Column(
+      children: [
+        DropdownButtonFormField<String>(
+          value: selectedDivisi.isNotEmpty ? selectedDivisi : null,
+          items: listDivisi.map((divisi) {
+            return DropdownMenuItem<String>(
+              value: divisi['value'].toString(),
+              child: Text(divisi['text'].toString()),
+            );
+          }).toList(),
+          onChanged: (value) {
+            setState(() {
+              selectedDivisi = value ?? '';
+              selectedArea = '';
+              selectedGroupEq = '';
+              selectedEquipment = '';
+              listArea = [];
+              listGroupEq = [];
+              listEquipment = [];
+            });
+            if (selectedDivisi.isNotEmpty) {
+              getOptionArea(selectedDivisi);
+            }
+          },
+          decoration: const InputDecoration(
+            labelText: 'Divisi',
+            border: OutlineInputBorder(),
+          ),
         ),
-      ),
+        const SizedBox(height: 16),
+        DropdownButtonFormField<String>(
+          value: selectedArea.isNotEmpty ? selectedArea : null,
+          items: listArea.map((area) {
+            return DropdownMenuItem<String>(
+              value: area['value'].toString(),
+              child: Text(area['text'].toString()),
+            );
+          }).toList(),
+          onChanged: (value) {
+            setState(() {
+              selectedArea = value ?? '';
+              selectedGroupEq = '';
+              selectedEquipment = '';
+              listGroupEq = [];
+              listEquipment = [];
+            });
+            if (selectedArea.isNotEmpty) {
+              getOptionGroupEq(selectedDivisi, selectedArea);
+            }
+          },
+          decoration: const InputDecoration(
+            labelText: 'Area',
+            border: OutlineInputBorder(),
+          ),
+        ),
+        const SizedBox(height: 16),
+        DropdownButtonFormField<String>(
+          value: selectedGroupEq.isNotEmpty ? selectedGroupEq : null,
+          items: listGroupEq.map((groupEq) {
+            return DropdownMenuItem<String>(
+              value: groupEq['value'].toString(),
+              child: Text(groupEq['text'].toString()),
+            );
+          }).toList(),
+          onChanged: (value) {
+            setState(() {
+              selectedGroupEq = value ?? '';
+              selectedEquipment = '';
+              listEquipment = [];
+            });
+            if (selectedGroupEq.isNotEmpty) {
+              getOptionEquipment(selectedDivisi, selectedArea, selectedGroupEq);
+            }
+          },
+          decoration: const InputDecoration(
+            labelText: 'Group Equipment',
+            border: OutlineInputBorder(),
+          ),
+        ),
+        const SizedBox(height: 16),
+        DropdownButtonFormField<String>(
+          value: selectedEquipment.isNotEmpty ? selectedEquipment : null,
+          items: listEquipment.map((equipment) {
+            return DropdownMenuItem<String>(
+              value: equipment['value'].toString(),
+              child: Text(equipment['text'].toString()),
+            );
+          }).toList(),
+          onChanged: (value) {
+            setState(() {
+              selectedEquipment = value ?? '';
+            });
+
+            if (selectedEquipment.isNotEmpty) {
+              fetchData(selectedDivisi, selectedArea, selectedGroupEq,
+                  selectedEquipment);
+            }
+          },
+          decoration: const InputDecoration(
+            labelText: 'Equipment',
+            border: OutlineInputBorder(),
+          ),
+        ),
+        Card(
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  'Type: $typeData',
+                  style: const TextStyle(
+                    color: Colors.black,
+                    fontSize: 16,
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: TextButton(
+                  onPressed: () {
+                    // Replace 'DashboardUserShowType' with the name of your next page class
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            DashboardUserShowType(typeId: typeData),
+                      ),
+                    );
+                  },
+                  child: const Text(
+                    'View Details',
+                    style: TextStyle(
+                      decoration: TextDecoration.underline,
+                      color: Colors.blue,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:pltu/User/page/home_user.dart';
 import 'package:pltu/services/api_services.dart';
-import 'package:pltu/signup_login/sign_in.dart';
-import 'package:pltu/signup_login/sign_up.dart';
 
 class ProfilPage extends StatefulWidget {
   const ProfilPage({Key? key}) : super(key: key);
@@ -45,7 +44,7 @@ class _ProfilPageState extends State<ProfilPage> {
       await APIService.logout();
       Navigator.pushAndRemoveUntil(
         context,
-        MaterialPageRoute(builder: (context) => const SignIn()),
+        MaterialPageRoute(builder: (context) => const HomePageUser()),
         (route) => false,
       );
     }
@@ -62,7 +61,7 @@ class _ProfilPageState extends State<ProfilPage> {
             ElevatedButton(
               onPressed: _logout,
               child: const Text('Logout'),
-            ),            
+            ),
           ],
         ),
       ),
