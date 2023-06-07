@@ -71,6 +71,8 @@ flutter:
   assets:
     - assets/bgbuild.png
     - assets/txtlogin.png
+    - assets/cloud.png
+    - assets/txtsignup.png
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

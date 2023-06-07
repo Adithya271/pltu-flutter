@@ -1,11 +1,14 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:pltu/page/home.dart';
+import 'package:pltu/page/profil.dart';
 import 'package:pltu/services/api_services.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:pltu/signup_login/sign_up.dart';
 
+import '../page/home.dart';
+
 class SignIn extends StatefulWidget {
-  const SignIn({super.key});
+  const SignIn({Key? key}) : super(key: key);
 
   @override
   _SignInState createState() => _SignInState();
@@ -52,7 +55,7 @@ class _SignInState extends State<SignIn> {
     print('Login: ${loginResult["success"]}');
 
     try {
-      if (loginResult['success']) {
+  if (loginResult['success']) {
         // Login successful
         if (loginResult['userId'] == 1) {
           // UserId is 1, login success
@@ -65,44 +68,44 @@ class _SignInState extends State<SignIn> {
             MaterialPageRoute(builder: (context) => const HomePage()),
           );
         } else {
-          // UserId is not 1, login failed
-          showDialog(
-            context: context,
-            builder: (ctx) => AlertDialog(
-              title: const Text('Login Failed'),
-              content: const Text('Anda bukan Admin'),
-              actions: [
-                TextButton(
-                  child: const Text('OK'),
-                  onPressed: () {
-                    Navigator.of(ctx).pop();
-                  },
-                ),
-              ],
+      // UserId is not 1, login failed
+      showDialog(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          title: const Text('Login Failed'),
+          content: const Text('Anda bukan Admin'),
+          actions: [
+            TextButton(
+              child: const Text('OK'),
+              onPressed: () {
+                Navigator.of(ctx).pop();
+              },
             ),
-          );
-        }
-      } else {
-        // Login failed
-        final errorMessage =
-            loginResult['message'] ?? 'Email atau password salah';
-        showDialog(
-          context: context,
-          builder: (ctx) => AlertDialog(
-            title: const Text('Login Failed'),
-            content: Text(errorMessage),
-            actions: [
-              TextButton(
-                child: const Text('OK'),
-                onPressed: () {
-                  Navigator.of(ctx).pop();
-                },
-              ),
-            ],
+          ],
+        ),
+      );
+    }
+  } else {
+    // Login failed
+    final errorMessage = loginResult['message'] ?? 'Email atau password salah';
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Login Failed'),
+        content: Text(errorMessage),
+        actions: [
+          TextButton(
+            child: const Text('OK'),
+            onPressed: () {
+              Navigator.of(ctx).pop();
+            },
           ),
-        );
-      }
-    } on FormatException {
+        ],
+      ),
+    );
+  }
+} 
+ on FormatException {
       // FormatException occurred
       showDialog(
         context: context,
@@ -142,75 +145,108 @@ class _SignInState extends State<SignIn> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-               Image.asset(
-                  'txtlogin.png',
-                  width: 50,
-                  height: 50,
-                ),
-
-              const SizedBox(height: 20),
-              TextField(
-                controller: _emailController,
-                decoration: InputDecoration(
-                  labelText: 'Email',
-                  border: const OutlineInputBorder(),
-                  errorText:
-                      _emailErrorText.isNotEmpty ? _emailErrorText : null,
-                ),
-              ),
-              const SizedBox(height: 10),
-              TextField(
-                controller: _passwordController,
-                obscureText: true,
-                decoration: InputDecoration(
-                  labelText: 'Password',
-                  border: const OutlineInputBorder(),
-                  errorText:
-                      _passwordErrorText.isNotEmpty ? _passwordErrorText : null,
-                ),
-              ),
-              const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: _login,
-                child: const Text('Login'),
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 170),
-                child: GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => const SignUp()),
-                    );
-                  },
-                  child: Row(
-                    children: const [
-                      Text(
-                        "Belum punya akun? Daftar ",
+      backgroundColor: Colors.blue[200],
+      body: Stack(
+        children: [ 
+          Center(
+            child: Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.asset(
+                    'assets/txtlogin.png',
+                    height: 100,
+                  ),
+                  const SizedBox(height: 20),
+                  TextField(
+                    controller: _emailController,
+                    decoration: InputDecoration(
+                      labelText: 'Email',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15),
                       ),
-                      Text(
-                        "disini",
-                        style: TextStyle(
-                          color: Colors.blue,
-                          decoration: TextDecoration.underline,
+                      errorText:
+                          _emailErrorText.isNotEmpty ? _emailErrorText : null,
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  TextField(
+                    controller: _passwordController,
+                    obscureText: true,
+                    decoration: InputDecoration(
+                      labelText: 'Password',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      errorText: _passwordErrorText.isNotEmpty
+                          ? _passwordErrorText
+                          : null,
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  Container(
+                    width: 180,
+                    height: 30,
+                    child: ElevatedButton(
+                            onPressed: _login,
+                            child: const Text('Login'),
+                            style: ElevatedButton.styleFrom(
+                            minimumSize: Size(220, 50),
+                          ),
+                          ),
+                  ),
+                  const SizedBox(height: 5),
+                  Text.rich(
+                    TextSpan(
+                      text: 'Buat akun? ',
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.black,
+                      ),
+                      children: [
+                        TextSpan(
+                          text: 'Disini !',
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Colors.blue,
+                            decoration: TextDecoration.underline,
+                            fontWeight: FontWeight.w700
+                          ),
+                          recognizer: TapGestureRecognizer()
+                            ..onTap = () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => SignUp()),
+                              ); // Tambahkan navigasi ke halaman register di sini
+                            },
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          Positioned(
+            bottom: 0,
+            left: 0,
+            right: 0,
+            child: Align(
+              alignment: Alignment.bottomCenter,
+              child: Container(
+                height: 180,
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage('assets/bgbuild.png'),
+                    fit: BoxFit.cover,
                   ),
                 ),
               ),
-            ],
+            ),
           ),
-        ),
+        ],
       ),
     );
   }

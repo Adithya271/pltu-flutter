@@ -59,7 +59,32 @@ class _SignUpState extends State<SignUp> {
       return;
     }
 
-    final registerResult = await APIService.register(email, password, name);
+    // Check if the user is logged in
+    if (APIService.token.isEmpty) {
+      showDialog(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          title: const Text('Login Required'),
+          content: const Text('Please log in before registering.'),
+          actions: [
+            TextButton(
+              child: const Text('OK'),
+              onPressed: () {
+                Navigator.of(ctx).pop();
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const SignIn()),
+                );
+              },
+            ),
+          ],
+        ),
+      );
+      return;
+    }
+
+    final registerResult =
+        await APIService.register(email, password, name);
 
     try {
       if (registerResult['success']) {
@@ -140,91 +165,120 @@ class _SignUpState extends State<SignUp> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: SingleChildScrollView(
-            controller: ScrollController(),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Text(
-                  'Sign Up',
-                  style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(height: 20),
-                TextField(
-                  controller: _emailController,
-                  decoration: InputDecoration(
-                    labelText: 'Email',
-                    border: const OutlineInputBorder(),
-                    errorText:
-                        _emailErrorText.isNotEmpty ? _emailErrorText : null,
-                  ),
-                ),
-                const SizedBox(height: 10),
-                TextField(
-                  controller: _passwordController,
-                  obscureText: true,
-                  decoration: InputDecoration(
-                    labelText: 'Password',
-                    border: const OutlineInputBorder(),
-                    errorText: _passwordErrorText.isNotEmpty
-                        ? _passwordErrorText
-                        : null,
-                  ),
-                ),
-                const SizedBox(height: 10),
-                TextField(
-                  controller: _nameController,
-                  decoration: InputDecoration(
-                    labelText: 'Name',
-                    border: const OutlineInputBorder(),
-                    errorText:
-                        _nameErrorText.isNotEmpty ? _nameErrorText : null,
-                  ),
-                ),
-                const SizedBox(height: 20),
-                ElevatedButton(
-                  onPressed: _register,
-                  child: const Text('Sign Up'),
-                ),
-                const SizedBox(height: 30),
-                Padding(
-                  padding: const EdgeInsets.only(left: 70),
-                  child: GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => const SignIn()),
-                      );
-                    },
-                    child: Row(
-                      children: const [
-                        Text(
-                          "Sudah punya akun? ",
-                        ),
-                        Text(
-                          "Login disini",
-                          style: TextStyle(
-                            color: Colors.blue,
-                            decoration: TextDecoration.underline,
+Widget build(BuildContext context) {
+  return Scaffold(
+    backgroundColor: Colors.blue[200],
+    body: Stack(
+      children: [
+        Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Expanded(
+              child: Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: Stack(
+                    alignment: Alignment.bottomCenter,
+                    children: [
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Image.asset(
+                            'assets/txtsignup.png',
+                            height: 100,
+                            alignment: Alignment.center,
                           ),
-                        ),
-                      ],
-                    ),
+                          const SizedBox(height: 20),
+                          TextField(
+                            controller: _emailController,
+                            decoration: InputDecoration(
+                              labelText: 'Email',
+                              border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(15), // Ubah nilai sesuai dengan ukuran border radius yang diinginkan
+                          ),
+                              errorText: _emailErrorText.isNotEmpty ? _emailErrorText : null,
+                            ),
+                          ),
+                          const SizedBox(height: 10),
+                          TextField(
+                            controller: _passwordController,
+                            obscureText: true,
+                            decoration: InputDecoration(
+                              labelText: 'Password',
+                              border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(15), // Ubah nilai sesuai dengan ukuran border radius yang diinginkan
+                          ),
+                              errorText: _passwordErrorText.isNotEmpty ? _passwordErrorText : null,
+                            ),
+                          ),
+                          const SizedBox(height: 10),
+                          TextField(
+                            controller: _nameController,
+                            decoration: InputDecoration(
+                              labelText: 'Name',
+                              border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(15), // Ubah nilai sesuai dengan ukuran border radius yang diinginkan
+                          ),
+                              errorText: _nameErrorText.isNotEmpty ? _nameErrorText : null,
+                            ),
+                          ),
+                          const SizedBox(height: 20),
+                          ElevatedButton(
+                            onPressed: _register,
+                            child: const Text('Sign Up'),
+                            style: ElevatedButton.styleFrom(
+                            minimumSize: Size(220, 50),
+                          ),
+                          ),
+                          const SizedBox(height: 5),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 70),
+                            child: GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (context) => const SignIn()),
+                                );
+                              },
+                              child: Row(
+                                children: const [
+                                  Text("Sudah punya akun? "),
+                                  Text(
+                                    "Login disini !",
+                                    style: TextStyle(
+                                      color: Colors.blue,
+                                      decoration: TextDecoration.underline,
+                                      fontWeight: FontWeight.w600
+                                      
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
                 ),
-              ],
+              ),
             ),
-          ),
+            Align(
+              alignment: Alignment.bottomCenter, // Mengatur posisi gambar ke bawah layar
+              child: Container(
+                height: 200, // Sesuaikan dengan tinggi gambar Anda
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage('assets/bgbuild.png'), // Ganti dengan path gambar di direktori asset Anda
+                    fit: BoxFit.contain,
+                  ),
+                ),
+              ),
+            ),
+          ],
         ),
-      ),
-    );
-  }
+      ],
+    ),
+  );
+}
 }
