@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:pltu/User/page/profil_user.dart';
+import 'package:pltu/User/page/settings_user.dart';
 import 'dashboard_user.dart';
 
 class HomePageUser extends StatefulWidget {
@@ -14,7 +14,8 @@ class _HomePageUserState extends State<HomePageUser> {
 
   static const List<Widget> _pages = <Widget>[
     DashboardUser(),
-    ProfilPageUser(),
+    SettingsUser()
+    
   ];
 
   void _onBottomBarItemTapped(int index) {
@@ -34,8 +35,8 @@ class _HomePageUserState extends State<HomePageUser> {
             label: 'Home',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profile',
+            icon: Icon(Icons.settings),
+            label: 'Settings',
           ),
         ],
         currentIndex: _bottomBarIndex,

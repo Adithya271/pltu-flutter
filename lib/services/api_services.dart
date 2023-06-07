@@ -51,7 +51,6 @@ class APIService {
         'email': email,
         'password': password,
         'name': name,
-        
       }),
     );
 
@@ -91,4 +90,7 @@ class APIService {
       print('Logout failed');
     }
   }
+
+  //mengambil data user
+  
 }

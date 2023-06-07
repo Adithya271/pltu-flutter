@@ -21,12 +21,11 @@ class _HomePageState extends State<HomePage> {
   static const List<Widget> _pages = <Widget>[
     Center(child: Text('Dashboard')),
     ProfilPage(),
-    BrowseArea(),
     BrowseDivisi(),
+    BrowseArea(),
     BrowseGroupEquipment(),
     BrowseEquipment(),
     BrowseType(),
-    
   ];
 
   void _onSidebarItemTapped(int index) {

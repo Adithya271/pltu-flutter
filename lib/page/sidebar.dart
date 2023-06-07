@@ -48,16 +48,16 @@ class SidebarMenu extends StatelessWidget {
             color: Colors.grey,
           ),
           ListTile(
-            leading: const Icon(Icons.location_on),
-            title: const Text('Area'),
+            leading: const Icon(Icons.business),
+            title: const Text('Divisi'),
             onTap: () {
               onSidebarItemTapped(2);
             },
             selected: selectedIndex == 2,
           ),
           ListTile(
-            leading: const Icon(Icons.business),
-            title: const Text('Divisi'),
+            leading: const Icon(Icons.location_on),
+            title: const Text('Area'),
             onTap: () {
               onSidebarItemTapped(3);
             },

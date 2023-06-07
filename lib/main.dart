@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:pltu/User/signup_login/sign_in_user.dart';
-import 'package:pltu/auth/auth_page.dart';
-import 'package:pltu/signup_login/sign_in.dart';
+import 'package:pltu/User/page/home_user.dart';
+
 
 void main() {
   runApp(const MyApp());
@@ -28,7 +27,7 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: const SignInUser(),
+      home: const HomePageUser(),
     );
   }
 }

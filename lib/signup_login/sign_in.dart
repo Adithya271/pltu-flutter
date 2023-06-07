@@ -64,12 +64,12 @@ class _SignInState extends State<SignIn> {
             MaterialPageRoute(builder: (context) => const HomePage()),
           );
         } else {
-          // UserId is not 4, login failed
+          // UserId is not 1, login failed
           showDialog(
             context: context,
             builder: (ctx) => AlertDialog(
               title: const Text('Login Failed'),
-              content: const Text('You are not a user.'),
+              content: const Text('Anda bukan Admin'),
               actions: [
                 TextButton(
                   child: const Text('OK'),
