@@ -7,6 +7,7 @@ class SettingsUser extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.blue[200],
       body: Padding(
         padding: const EdgeInsets.only(top: 50, left: 100),
         child: GestureDetector(

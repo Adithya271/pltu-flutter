@@ -168,6 +168,7 @@ class _SignUpState extends State<SignUp> {
 Widget build(BuildContext context) {
   return Scaffold(
     backgroundColor: Colors.blue[200],
+    resizeToAvoidBottomInset: false,
     body: Stack(
       children: [
         Column(

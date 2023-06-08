@@ -44,6 +44,7 @@ dependencies:
   image: ^3.0.3
   http_parser: ^4.0.0
   flutter_date_pickers: ^0.4.2
+  animated_text_kit: ^4.2.2
   intl: ^0.17.0
 
 dev_dependencies:
@@ -71,7 +72,8 @@ flutter:
   assets:
     - assets/bgbuild.png
     - assets/txtlogin.png
-    - assets/cloud.png
+    - assets/admin.png
+    - assets/txtkamu.png
     - assets/txtsignup.png
   #   - images/a_dot_ham.jpeg
 
