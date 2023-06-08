@@ -3,6 +3,16 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:pltu/User/page/dashboard_user_show_type.dart';
 
+class TypeData {
+  final String imageUrl;
+  final String name;
+  final String content;
+  final String videoUrl;
+
+  TypeData({required this.imageUrl, required this.name, required this.content,
+      required this.videoUrl});
+}
+
 class DashboardUser extends StatefulWidget {
   const DashboardUser({Key? key}) : super(key: key);
 
@@ -20,7 +30,7 @@ class _DashboardUserState extends State<DashboardUser> {
   String selectedArea = '';
   String selectedEquipment = '';
   String selectedGroupEq = '';
-  String typeData = '';
+  List<TypeData> typeData = [];
 
   @override
   void initState() {
@@ -231,20 +241,260 @@ class _DashboardUserState extends State<DashboardUser> {
         if (responseData is Map<String, dynamic> &&
             responseData.containsKey('records')) {
           final records = responseData['records'] as List<dynamic>;
+          // Clear the typeData list before adding new data
+          setState(() {
+            typeData = [];
+          });
           if (records.isNotEmpty) {
-            List<String> names = [];
+            List<TypeData> typeDataList = [];
+
+            
+            for (int i = 0; i < records.length; i++) {
+              final record = records[i];
+              final images = record['images'] as List<dynamic>;
+              final videos = record['videos'] as List<dynamic>;
+              final typeDataList = <TypeData>[];
+
+              for (int index = 0; index < images.length; index++) {
+                final image = images[index];
+                final imagePath = image['path'].toString();
+                final imageUrl = 'https://digitm.isoae.com/$imagePath';
+                final name = record['name'];
+                final content = record['content'];
+                final video = videos[index];
+                final videoPath = video['path'].toString();
+                final videoUrl = 'https://digitm.isoae.com/$videoPath';
+                typeDataList.add(TypeData(
+                    imageUrl: imageUrl,
+                    name: name,
+                    content: content,
+                    videoUrl: videoUrl));
+              }
+
+              setState(() {
+                typeData.addAll(typeDataList);
+              });
+            }
+
+            if (typeDataList.isNotEmpty) {
+              setState(() {
+                // Store the typeDataList in the state variable
+                typeData = typeDataList;
+              });
+            } else {
+              print('Error: No records found');
+            }
+          } else {
+            print('Error: No records found');
+          }
+        }
+      } catch (e) {
+        print('Error: $e');
+      }
+    } else {
+      print('Error: ${response.statusCode}');
+    }
+  }
+
+  void fetchData2(String selectedDivisi, String selectedArea,
+      String selectedGroupEq) async {
+    final url = Uri.parse(
+        "https://digitm.isoae.com/api/type?division_id=$selectedDivisi&area_id=$selectedArea&group_equipment_id=$selectedGroupEq");
+    final headers = {
+      "Content-Type": "application/json",
+      "Accept": "application/json",
+    };
+
+    final response = await http.get(url, headers: headers);
+
+    if (response.statusCode == 200) {
+      try {
+        final jsonData = json.decode(response.body);
+        final responseData = jsonData['data'];
+
+        if (responseData is Map<String, dynamic> &&
+            responseData.containsKey('records')) {
+          final records = responseData['records'] as List<dynamic>;
+          // Clear the typeData list before adding new data
+          setState(() {
+            typeData = [];
+          });
+          if (records.isNotEmpty) {
+            List<TypeData> typeDataList = [];
+
+            
+            for (int i = 0; i < records.length; i++) {
+              final record = records[i];
+              final images = record['images'] as List<dynamic>;
+              final videos = record['videos'] as List<dynamic>;
+              final typeDataList = <TypeData>[];
+
+              for (int index = 0; index < images.length; index++) {
+                final image = images[index];
+                final imagePath = image['path'].toString();
+                final imageUrl = 'https://digitm.isoae.com/$imagePath';
+                final name = record['name'];
+                final content = record['content'];
+                final video = videos[index];
+                final videoPath = video['path'].toString();
+                final videoUrl = 'https://digitm.isoae.com/$videoPath';
+                typeDataList.add(TypeData(
+                    imageUrl: imageUrl,
+                    name: name,
+                    content: content,
+                    videoUrl: videoUrl));
+              }
+
+              setState(() {
+                typeData.addAll(typeDataList);
+              });
+            }
+
+            if (typeDataList.isNotEmpty) {
+              setState(() {
+                // Store the typeDataList in the state variable
+                typeData = typeDataList;
+              });
+            } else {
+              print('Error: No records found');
+            }
+          } else {
+            print('Error: No records found');
+          }
+        }
+      } catch (e) {
+        print('Error: $e');
+      }
+    } else {
+      print('Error: ${response.statusCode}');
+    }
+  }
+
+  void fetchData3(String selectedDivisi, String selectedArea) async {
+    final url = Uri.parse(
+        "https://digitm.isoae.com/api/type?division_id=$selectedDivisi&area_id=$selectedArea");
+    final headers = {
+      "Content-Type": "application/json",
+      "Accept": "application/json",
+    };
+
+    final response = await http.get(url, headers: headers);
+
+    if (response.statusCode == 200) {
+      try {
+        final jsonData = json.decode(response.body);
+        final responseData = jsonData['data'];
+
+        if (responseData is Map<String, dynamic> &&
+            responseData.containsKey('records')) {
+          final records = responseData['records'] as List<dynamic>;
+          // Clear the typeData list before adding new data
+          setState(() {
+            typeData = [];
+          });
+          if (records.isNotEmpty) {
+            List<TypeData> typeDataList = [];
+
+            
+            for (int i = 0; i < records.length; i++) {
+              final record = records[i];
+              final images = record['images'] as List<dynamic>;
+              final videos = record['videos'] as List<dynamic>;
+              final typeDataList = <TypeData>[];
+
+              for (int index = 0; index < images.length; index++) {
+                final image = images[index];
+                final imagePath = image['path'].toString();
+                final imageUrl = 'https://digitm.isoae.com/$imagePath';
+                final name = record['name'];
+                final content = record['content'];
+                final video = videos[index];
+                final videoPath = video['path'].toString();
+                final videoUrl = 'https://digitm.isoae.com/$videoPath';
+                typeDataList.add(TypeData(
+                    imageUrl: imageUrl,
+                    name: name,
+                    content: content,
+                    videoUrl: videoUrl));
+              }
+
+              setState(() {
+                typeData.addAll(typeDataList);
+              });
+            }
+
+            if (typeDataList.isNotEmpty) {
+              setState(() {
+                // Store the typeDataList in the state variable
+                typeData = typeDataList;
+              });
+            } else {
+              print('Error: No records found');
+            }
+          } else {
+            print('Error: No records found');
+          }
+        }
+      } catch (e) {
+        print('Error: $e');
+      }
+    } else {
+      print('Error: ${response.statusCode}');
+    }
+  }
+
+  void fetchData4(String selectedDivisi) async {
+    final url = Uri.parse(
+        "https://digitm.isoae.com/api/type?division_id=$selectedDivisi");
+    final headers = {
+      "Content-Type": "application/json",
+      "Accept": "application/json",
+    };
+
+    final response = await http.get(url, headers: headers);
+
+    if (response.statusCode == 200) {
+      try {
+        final jsonData = json.decode(response.body);
+        final responseData = jsonData['data'];
+
+        if (responseData is Map<String, dynamic> &&
+            responseData.containsKey('records')) {
+          final records = responseData['records'] as List<dynamic>;
+          // Clear the typeData list before adding new data
+          setState(() {
+            typeData = [];
+          });
+          if (records.isNotEmpty) {
+            List<TypeData> typeDataList = [];
 
             for (int i = 0; i < records.length; i++) {
               final record = records[i];
-              final name = record['name'];
+              final images = record['images'] as List<dynamic>;
+              final videos = record['videos'] as List<dynamic>;
+              final typeDataList = <TypeData>[];
 
-              names.add(name);
+              for (int index = 0; index < images.length; index++) {
+                final image = images[index];
+                final imagePath = image['path'].toString();
+                final imageUrl = 'https://digitm.isoae.com/$imagePath';
+                final name = record['name'];
+                final content = record['content'];
+                final video = videos[index];
+                final videoPath = video['path'].toString();
+                final videoUrl = 'https://digitm.isoae.com/$videoPath';
+                typeDataList.add(TypeData(imageUrl: imageUrl, name: name, content: content,videoUrl: videoUrl));
+              }
+
+              setState(() {
+                typeData.addAll(typeDataList);
+              });
             }
 
-            if (names.isNotEmpty) {
+            if (typeDataList.isNotEmpty) {
               setState(() {
-                // Store the names in the state variable
-                typeData = names.join(", ");
+                // Store the typeDataList in the state variable
+                typeData = typeDataList;
               });
             } else {
               print('Error: No records found');
@@ -263,148 +513,189 @@ class _DashboardUserState extends State<DashboardUser> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        DropdownButtonFormField<String>(
-          value: selectedDivisi.isNotEmpty ? selectedDivisi : null,
-          items: listDivisi.map((divisi) {
-            return DropdownMenuItem<String>(
-              value: divisi['value'].toString(),
-              child: Text(divisi['text'].toString()),
-            );
-          }).toList(),
-          onChanged: (value) {
-            setState(() {
-              selectedDivisi = value ?? '';
-              selectedArea = '';
-              selectedGroupEq = '';
-              selectedEquipment = '';
-              listArea = [];
-              listGroupEq = [];
-              listEquipment = [];
-            });
-            if (selectedDivisi.isNotEmpty) {
-              getOptionArea(selectedDivisi);
-            }
-          },
-          decoration: const InputDecoration(
-            labelText: 'Divisi',
-            border: OutlineInputBorder(),
-          ),
-        ),
-        const SizedBox(height: 16),
-        DropdownButtonFormField<String>(
-          value: selectedArea.isNotEmpty ? selectedArea : null,
-          items: listArea.map((area) {
-            return DropdownMenuItem<String>(
-              value: area['value'].toString(),
-              child: Text(area['text'].toString()),
-            );
-          }).toList(),
-          onChanged: (value) {
-            setState(() {
-              selectedArea = value ?? '';
-              selectedGroupEq = '';
-              selectedEquipment = '';
-              listGroupEq = [];
-              listEquipment = [];
-            });
-            if (selectedArea.isNotEmpty) {
-              getOptionGroupEq(selectedDivisi, selectedArea);
-            }
-          },
-          decoration: const InputDecoration(
-            labelText: 'Area',
-            border: OutlineInputBorder(),
-          ),
-        ),
-        const SizedBox(height: 16),
-        DropdownButtonFormField<String>(
-          value: selectedGroupEq.isNotEmpty ? selectedGroupEq : null,
-          items: listGroupEq.map((groupEq) {
-            return DropdownMenuItem<String>(
-              value: groupEq['value'].toString(),
-              child: Text(groupEq['text'].toString()),
-            );
-          }).toList(),
-          onChanged: (value) {
-            setState(() {
-              selectedGroupEq = value ?? '';
-              selectedEquipment = '';
-              listEquipment = [];
-            });
-            if (selectedGroupEq.isNotEmpty) {
-              getOptionEquipment(selectedDivisi, selectedArea, selectedGroupEq);
-            }
-          },
-          decoration: const InputDecoration(
-            labelText: 'Group Equipment',
-            border: OutlineInputBorder(),
-          ),
-        ),
-        const SizedBox(height: 16),
-        DropdownButtonFormField<String>(
-          value: selectedEquipment.isNotEmpty ? selectedEquipment : null,
-          items: listEquipment.map((equipment) {
-            return DropdownMenuItem<String>(
-              value: equipment['value'].toString(),
-              child: Text(equipment['text'].toString()),
-            );
-          }).toList(),
-          onChanged: (value) {
-            setState(() {
-              selectedEquipment = value ?? '';
-            });
-
-            if (selectedEquipment.isNotEmpty) {
-              fetchData(selectedDivisi, selectedArea, selectedGroupEq,
-                  selectedEquipment);
-            }
-          },
-          decoration: const InputDecoration(
-            labelText: 'Equipment',
-            border: OutlineInputBorder(),
-          ),
-        ),
-        Card(
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text(
-                  'Type: $typeData',
-                  style: const TextStyle(
-                    color: Colors.black,
-                    fontSize: 16,
-                  ),
-                ),
+    return SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            const SizedBox(
+              height: 30,
+            ),
+            DropdownButtonFormField<String>(
+              value: selectedDivisi.isNotEmpty ? selectedDivisi : null,
+              items: listDivisi.map((divisi) {
+                return DropdownMenuItem<String>(
+                  value: divisi['value'].toString(),
+                  child: Text(divisi['text'].toString()),
+                );
+              }).toList(),
+              onChanged: (value) {
+                setState(() {
+                  selectedDivisi = value ?? '';
+                  selectedArea = '';
+                  selectedGroupEq = '';
+                  selectedEquipment = '';
+                  listArea = [];
+                  listGroupEq = [];
+                  listEquipment = [];
+                });
+                if (selectedDivisi.isNotEmpty) {
+                  getOptionArea(selectedDivisi);
+                  fetchData4(selectedDivisi);
+                }
+              },
+              decoration: const InputDecoration(
+                labelText: 'Divisi',
+                border: OutlineInputBorder(),
+                contentPadding:
+                    EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                isDense: true,
               ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: TextButton(
-                  onPressed: () {
-                    // Replace 'DashboardUserShowType' with the name of your next page class
+            ),
+            const SizedBox(height: 16),
+            DropdownButtonFormField<String>(
+              value: selectedArea.isNotEmpty ? selectedArea : null,
+              items: listArea.map((area) {
+                return DropdownMenuItem<String>(
+                  value: area['value'].toString(),
+                  child: Text(area['text'].toString()),
+                );
+              }).toList(),
+              onChanged: (value) {
+                setState(() {
+                  selectedArea = value ?? '';
+                  selectedGroupEq = '';
+                  selectedEquipment = '';
+                  listGroupEq = [];
+                  listEquipment = [];
+                });
+                if (selectedArea.isNotEmpty) {
+                  getOptionGroupEq(selectedDivisi, selectedArea);
+                  fetchData3(selectedDivisi, selectedArea);
+                }
+              },
+              decoration: const InputDecoration(
+                labelText: 'Area',
+                border: OutlineInputBorder(),
+                contentPadding:
+                    EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                isDense: true,
+              ),
+            ),
+            const SizedBox(height: 16),
+            DropdownButtonFormField<String>(
+              value: selectedGroupEq.isNotEmpty ? selectedGroupEq : null,
+              items: listGroupEq.map((groupEq) {
+                return DropdownMenuItem<String>(
+                  value: groupEq['value'].toString(),
+                  child: Text(groupEq['text'].toString()),
+                );
+              }).toList(),
+              onChanged: (value) {
+                setState(() {
+                  selectedGroupEq = value ?? '';
+                  selectedEquipment = '';
+                  listEquipment = [];
+                });
+                if (selectedGroupEq.isNotEmpty) {
+                  getOptionEquipment(
+                      selectedDivisi, selectedArea, selectedGroupEq);
+                  fetchData2(
+                    selectedDivisi,
+                    selectedArea,
+                    selectedGroupEq,
+                  );
+                }
+              },
+              decoration: const InputDecoration(
+                labelText: 'Group Equipment',
+                border: OutlineInputBorder(),
+                contentPadding:
+                    EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                isDense: true,
+              ),
+            ),
+            const SizedBox(height: 16),
+            DropdownButtonFormField<String>(
+              value: selectedEquipment.isNotEmpty ? selectedEquipment : null,
+              items: listEquipment.map((equipment) {
+                return DropdownMenuItem<String>(
+                  value: equipment['value'].toString(),
+                  child: Text(equipment['text'].toString()),
+                );
+              }).toList(),
+              onChanged: (value) {
+                setState(() {
+                  selectedEquipment = value ?? '';
+                });
+
+                if (selectedEquipment.isNotEmpty) {
+                  fetchData(selectedDivisi, selectedArea, selectedGroupEq,
+                      selectedEquipment);
+                }
+              },
+              decoration: const InputDecoration(
+                labelText: 'Equipment',
+                border: OutlineInputBorder(),
+                contentPadding:
+                    EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                isDense: true,
+              ),
+            ),
+            const SizedBox(height: 16),
+            GridView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                crossAxisSpacing: 8.0,
+                mainAxisSpacing: 8.0,
+              ),
+              itemCount: typeData.length,
+              itemBuilder: (context, index) {
+                final data = typeData[index];
+                return GestureDetector(
+                 onTap: () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) =>
-                            DashboardUserShowType(typeId: typeData),
+                        builder: (context) => DashboardUserShowType(
+                          imageUrl: data.imageUrl,
+                          name: data.name,
+                          content: data.content,
+                          videoUrl: data.videoUrl,
+                        ),
                       ),
                     );
                   },
-                  child: const Text(
-                    'View Details',
-                    style: TextStyle(
-                      decoration: TextDecoration.underline,
-                      color: Colors.blue,
+                  child: Card(
+                    child: Column(
+                      children: [
+                        Image.network(
+                          data.imageUrl,
+                          width: 150,
+                          height: 120,
+                          fit: BoxFit.cover,
+                        ),
+                        const SizedBox(height: 5),
+                        Text(
+                          data.name,
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ],
                     ),
                   ),
-                ),
-              ),
-            ],
-          ),
+                );
+              },
+            ),
+          ],
         ),
-      ],
+      ),
     );
   }
 }
