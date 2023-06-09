@@ -677,6 +677,16 @@ class _DashboardUserState extends State<DashboardUser> {
             const SizedBox(
               height: 30,
             ),
+            const Padding(
+              padding: EdgeInsets.only(right: 230),
+              child: Text(
+                'Filter Data',
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
+            ),
+            const SizedBox(
+              height: 10,
+            ),
             DropdownButtonFormField<String>(
               value: selectedDivisi.isNotEmpty ? selectedDivisi : null,
               items: listDivisi.map((divisi) {
@@ -819,7 +829,17 @@ class _DashboardUserState extends State<DashboardUser> {
               child: const Text('Lihat Semua Data'),
             ),
             TextField(
-              onChanged: onSearching,
+              onChanged: (value) {
+                selectedDivisi = '';
+                selectedArea = '';
+                selectedGroupEq = '';
+                selectedEquipment = '';
+                listArea = [];
+                listGroupEq = [];
+                listEquipment = [];
+                fetchAllData();
+                onSearching(value);
+              },
               decoration: const InputDecoration(
                 hintText: 'Cari Data Disini',
               ),
