@@ -160,90 +160,114 @@ Widget build(BuildContext context) {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => const HomePageUser()),
-      );
-    }
+            );
+          }
           ),
         ),
-        Center(
-          child: Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Image.asset(
-                  'assets/txtlogin.png',
-                  height: 100,
-                ),
-                const SizedBox(height: 20),
-                TextField(
-                  controller: _emailController,
-                  decoration: InputDecoration(
-                    labelText: 'Email',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    errorText:
-                        _emailErrorText.isNotEmpty ? _emailErrorText : null,
-                  ),
-                ),
-                const SizedBox(height: 10),
-                TextField(
-                  controller: _passwordController,
-                  obscureText: true,
-                  decoration: InputDecoration(
-                    labelText: 'Password',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    errorText: _passwordErrorText.isNotEmpty
-                        ? _passwordErrorText
-                        : null,
-                  ),
-                ),
-                const SizedBox(height: 20),
-                Container(
-                  width: 180,
-                  height: 30,
-                  child: ElevatedButton(
-                    onPressed: _login,
-                    child: const Text('Login'),
-                    style: ElevatedButton.styleFrom(
-                      minimumSize: Size(220, 50),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 5),
-                Text.rich(
-                  TextSpan(
-                    text: 'Buat akun? ',
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.black,
-                    ),
-                    children: [
-                      TextSpan(
-                        text: 'Disini !',
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Colors.blue,
-                          decoration: TextDecoration.underline,
-                          fontWeight: FontWeight.w700,
-                        ),
-                        recognizer: TapGestureRecognizer()
-                          ..onTap = () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => SignUp()),
-                            );
-                          },
-                      ),
-                    ],
-                  ),
-                ),
-              ],
+        Positioned(
+          top: 90,
+          left: 120,
+          child: Image.asset(
+            'assets/txtlogin.png', // Ganti dengan path yang sesuai dengan lokasi file txtlogin.png di dalam folder assets
+            width: 100,
+            height: 100,
+          ),
+        ),
+        Positioned(
+          top: 200,
+          left: 40,
+          right: 40,
+          child: Container(
+            width: 300, // Atur lebar Card sesuai keinginan
+            height: 300, // Atur tinggi Card sesuai keinginan
+            child: Card(
+              elevation: 4,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(15),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            Image.asset(
+              'assets/grup3.png', // Ganti dengan path yang sesuai dengan lokasi file gambar email_icon.png di dalam folder assets
+              width: 80,
+              height: 20,
             ),
-          ),
+            const SizedBox(height: 10),
+            TextField(
+                controller: _emailController,
+                decoration: InputDecoration(
+                  labelText: 'Email',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                  errorText: _emailErrorText.isNotEmpty ? _emailErrorText : null,
+                  prefixIcon: Icon(Icons.email), // Tambahkan ikon email di sini
+                ),
+              ),
+
+            const SizedBox(height: 10),
+            TextField(
+              controller: _passwordController,
+              obscureText: true,
+              decoration: InputDecoration(
+                labelText: 'Password',
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(15),
+                ),
+                errorText: _passwordErrorText.isNotEmpty ? _passwordErrorText : null,
+                prefixIcon: Icon(Icons.key)
+              ),
+            ),
+            const SizedBox(height: 40),
+            SizedBox(
+              height: 40, // Atur tinggi ElevatedButton sesuai keinginan
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: () {
+                  _login(); // Tambahkan fungsi yang akan dijalankan ketika tombol "Login" ditekan
+                },
+                child: const Text('Login'),
+              ),
+            ),
+            const SizedBox(height: 10),
+            Align(
+  alignment: Alignment.center,
+  child: GestureDetector(
+    onTap: () {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => SignUp()),
+      );
+    },
+    child: InkWell(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => SignUp()),
+        );
+      },
+      splashColor: Colors.blue, // Atur warna efek ketika diklik
+      child: Text(
+        'Daftar disini',
+        style: TextStyle(
+          decoration: TextDecoration.underline,
+          color: Colors.black, // Atur warna teks
         ),
+      ),
+    ),
+  ),
+),
+
+          ],
+        ),
+      ),
+    ),
+  ),
+),
+
+
         Positioned(
           bottom: 0,
           left: 0,
@@ -266,4 +290,23 @@ Widget build(BuildContext context) {
   );
 }
 
+}
+class WaveClipper extends CustomClipper<Path> {
+  @override
+  Path getClip(Size size) {
+    final path = Path();
+    path.lineTo(0, size.height);
+    path.lineTo(size.width, size.height);
+    path.lineTo(size.width, 0);
+    path.quadraticBezierTo(size.width * 0.8, 0, size.width * 0.7, size.height * 0.15);
+    path.quadraticBezierTo(
+        size.width * 0.6, size.height * 0.3, size.width * 0.4, size.height * 0.3);
+    path.quadraticBezierTo(
+        size.width * 0.2, size.height * 0.3, 0, size.height * 0.5);
+    path.close();
+    return path;
+  }
+
+  @override
+  bool shouldReclip(CustomClipper<Path> oldClipper) => false;
 }

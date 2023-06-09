@@ -75,7 +75,10 @@ flutter:
     - assets/bgbuild.png
     - assets/txtlogin.png
     - assets/admin.png
-    - assets/txtkamu.png
+    - assets/grup1.png
+    - assets/grup2.png
+    - assets/grup3.png
+    - assets/khusus.png
     - assets/txtsignup.png
   #   - images/a_dot_ham.jpeg
 

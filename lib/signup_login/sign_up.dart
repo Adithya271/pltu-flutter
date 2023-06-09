@@ -181,101 +181,36 @@ Widget build(BuildContext context) {
                   child: Stack(
                     alignment: Alignment.bottomCenter,
                     children: [
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Image.asset(
+                       Positioned(
+                          top: 20, // Atur posisi vertikal gambar sesuai keinginan
+                          child: Image.asset(
                             'assets/txtsignup.png',
                             height: 100,
                             alignment: Alignment.center,
                           ),
-                          const SizedBox(height: 20),
-                          TextField(
-                            controller: _emailController,
-                            decoration: InputDecoration(
-                              labelText: 'Email',
-                              border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(15), // Ubah nilai sesuai dengan ukuran border radius yang diinginkan
-                          ),
-                              errorText: _emailErrorText.isNotEmpty ? _emailErrorText : null,
-                            ),
-                          ),
-                          const SizedBox(height: 10),
-                          TextField(
-                            controller: _passwordController,
-                            obscureText: true,
-                            decoration: InputDecoration(
-                              labelText: 'Password',
-                              border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(15), // Ubah nilai sesuai dengan ukuran border radius yang diinginkan
-                          ),
-                              errorText: _passwordErrorText.isNotEmpty ? _passwordErrorText : null,
-                            ),
-                          ),
-                          const SizedBox(height: 10),
-                          TextField(
-                            controller: _nameController,
-                            decoration: InputDecoration(
-                              labelText: 'Name',
-                              border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(15), // Ubah nilai sesuai dengan ukuran border radius yang diinginkan
-                          ),
-                              errorText: _nameErrorText.isNotEmpty ? _nameErrorText : null,
-                            ),
-                          ),
-                          const SizedBox(height: 20),
-                          ElevatedButton(
-                            onPressed: _register,
-                            child: const Text('Sign Up'),
-                            style: ElevatedButton.styleFrom(
-                            minimumSize: Size(220, 50),
-                          ),
-                          ),
-                          const SizedBox(height: 5),
-                          Padding(
-                            padding: const EdgeInsets.only(left: 70),
-                            child: GestureDetector(
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(builder: (context) => const SignIn()),
-                                );
-                              },
-                              child: Row(
-                                children: const [
-                                  Text("Sudah punya akun? "),
-                                  Text(
-                                    "Login disini !",
-                                    style: TextStyle(
-                                      color: Colors.blue,
-                                      decoration: TextDecoration.underline,
-                                      fontWeight: FontWeight.w600
-                                      
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
+                        ),
                     ],
                   ),
                 ),
               ),
             ),
-            Align(
-              alignment: Alignment.bottomCenter, // Mengatur posisi gambar ke bawah layar
-              child: Container(
-                height: 200, // Sesuaikan dengan tinggi gambar Anda
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: AssetImage('assets/bgbuild.png'), // Ganti dengan path gambar di direktori asset Anda
-                    fit: BoxFit.contain,
-                  ),
+             Positioned(
+          bottom: 0,
+          left: 0,
+          right: 0,
+          child: Align(
+            alignment: Alignment.bottomCenter,
+            child: Container(
+              height: 180,
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage('assets/bgbuild.png'),
+                  fit: BoxFit.cover,
                 ),
               ),
             ),
+          ),
+        ),
           ],
         ),
       ],

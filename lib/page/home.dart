@@ -6,6 +6,7 @@ import 'package:pltu/page/profil.dart';
 import 'package:pltu/page/sidebar.dart';
 import 'package:pltu/page/type/BrowseType.dart';
 import 'area/BrowseArea.dart';
+import 'dashboard.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -19,7 +20,7 @@ class _HomePageState extends State<HomePage> {
   int _bottomBarIndex = 0;
 
   static const List<Widget> _pages = <Widget>[
-    Center(child: Text('Dashboard')),
+    DashBoardPage(),
     ProfilPage(),
     BrowseDivisi(),
     BrowseArea(),
