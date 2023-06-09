@@ -84,18 +84,12 @@ class VideoPlayerWidget extends StatefulWidget {
 
 class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
   late ChewieController _chewieController;
-  bool _isLoading = true;
+  bool _isVideoInitialized = false;
+  bool _isVideoPlaying = false;
 
   @override
   void initState() {
     super.initState();
-    _chewieController = ChewieController(
-      videoPlayerController: VideoPlayerController.network(widget.videoUrl),
-      autoPlay: false,
-      looping: true,
-    );
-
-    _chewieController.addListener(_videoPlayerListener);
     _initializeVideoPlayer();
   }
 
@@ -105,32 +99,66 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
     super.dispose();
   }
 
-  void _initializeVideoPlayer() async {
-    await _chewieController.videoPlayerController.initialize();
+  Future<void> _initializeVideoPlayer() async {
+    final videoPlayerController =
+        VideoPlayerController.network(widget.videoUrl);
+    await videoPlayerController.initialize();
+
     setState(() {
-      _isLoading = false;
+      _chewieController = ChewieController(
+        videoPlayerController: videoPlayerController,
+        autoPlay: false,
+        looping: true,
+        errorBuilder: (context, errorMessage) {
+          return Center(
+            child: Text(
+              errorMessage,
+              style: const TextStyle(color: Colors.white),
+            ),
+          );
+        },
+      );
+      _isVideoInitialized = true;
     });
   }
 
-  void _videoPlayerListener() {
-    if (_chewieController.videoPlayerController.value.isInitialized &&
-        !_chewieController.videoPlayerController.value.isPlaying) {
-      setState(() {
-        _isLoading = false;
-      });
-    }
+  void _onVideoPlay() {
+    setState(() {
+      _isVideoPlaying = true;
+    });
+  }
+
+  void _onVideoPause() {
+    setState(() {
+      _isVideoPlaying = false;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        Chewie(
-          controller: _chewieController,
-        ),
-        if (_isLoading)
+        if (_isVideoInitialized)
+          Chewie(
+            controller: _chewieController,
+          )
+        else
           const Center(
             child: CircularProgressIndicator(),
+          ),
+        if (!_isVideoPlaying && _isVideoInitialized)
+          GestureDetector(
+            onTap: _onVideoPlay,
+            child: Container(
+              color: Colors.transparent,
+              child: const Center(
+                child: Icon(
+                  Icons.play_arrow,
+                  size: 64,
+                  color: Colors.white,
+                ),
+              ),
+            ),
           ),
       ],
     );
