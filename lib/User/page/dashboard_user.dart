@@ -805,7 +805,7 @@ class _DashboardUserState extends State<DashboardUser> {
                 selectedArea = '';
                 selectedGroupEq = '';
                 selectedEquipment = '';
-                listDivisi = [];
+
                 listArea = [];
                 listGroupEq = [];
                 listEquipment = [];
