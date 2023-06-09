@@ -47,11 +47,13 @@ class _DashboardUserState extends State<DashboardUser> {
     setState(() {
       searchValue = value;
     });
-    loadData();
+    loadData(selectedDivisi, selectedArea, selectedGroupEq, selectedEquipment);
   }
 
-  Future<void> loadData() async {
-    final url = Uri.parse("https://digitm.isoae.com/api/type");
+  Future<void> loadData(String selectedDivisi, String selectedArea,
+      String selectedGroupEq, String selectedEquipment) async {
+    final url = Uri.parse(
+        "https://digitm.isoae.com/api/type?division_id=$selectedDivisi&area_id=$selectedArea&group_equipment_id=$selectedGroupEq&equipment_id=$selectedEquipment");
     final headers = {
       "Content-Type": "application/json",
       "Accept": "application/json",
@@ -677,6 +679,16 @@ class _DashboardUserState extends State<DashboardUser> {
             const SizedBox(
               height: 30,
             ),
+            const Padding(
+              padding: EdgeInsets.only(right: 230.0),
+              child: Text(
+                'Filter Data',
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
+            ),
+            const SizedBox(
+              height: 10,
+            ),
             DropdownButtonFormField<String>(
               value: selectedDivisi.isNotEmpty ? selectedDivisi : null,
               items: listDivisi.map((divisi) {
@@ -691,7 +703,7 @@ class _DashboardUserState extends State<DashboardUser> {
                   selectedArea = '';
                   selectedGroupEq = '';
                   selectedEquipment = '';
-                  
+
                   listArea = [];
                   listGroupEq = [];
                   listEquipment = [];
@@ -800,29 +812,35 @@ class _DashboardUserState extends State<DashboardUser> {
               ),
             ),
             const SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: () {
-                selectedDivisi = '';
-                selectedArea = '';
-                selectedGroupEq = '';
-                selectedEquipment = '';
+            Padding(
+              padding: const EdgeInsets.only(right: 230.0),
+              child: ElevatedButton(
+                onPressed: () {
+                  selectedDivisi = '';
+                  selectedArea = '';
+                  selectedGroupEq = '';
+                  selectedEquipment = '';
 
-                listArea = [];
-                listGroupEq = [];
-                listEquipment = [];
-                fetchAllData();
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.white,
-                foregroundColor: Colors.grey,
-                side: const BorderSide(color: Colors.grey),
+                  listArea = [];
+                  listGroupEq = [];
+                  listEquipment = [];
+                  fetchAllData();
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.white,
+                  foregroundColor: Colors.grey,
+                  side: const BorderSide(color: Colors.grey),
+                ),
+                child: const Text(
+                  'Reset Filter',
+                  style: TextStyle(color: Colors.red),
+                ),
               ),
-              child: const Text('Lihat Semua Data'),
             ),
             TextField(
               onChanged: onSearching,
               decoration: const InputDecoration(
-                hintText: 'Cari Data Disini',
+                hintText: 'Cari Nama Disini',
               ),
             ),
             const SizedBox(height: 16),
