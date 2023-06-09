@@ -40,8 +40,7 @@ class DashboardUserShowType extends StatelessWidget {
               width: 400,
               height: 200,
               child: AspectRatio(
-                aspectRatio: 16 /
-                    9, // Replace with the appropriate aspect ratio of your video
+                aspectRatio: 1.0, // 1:1 aspect ratio
                 child: VideoPlayerWidget(
                   videoUrl: videoUrl,
                 ),
@@ -85,6 +84,7 @@ class VideoPlayerWidget extends StatefulWidget {
 
 class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
   late ChewieController _chewieController;
+  bool _isLoading = true;
 
   @override
   void initState() {
@@ -94,6 +94,9 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
       autoPlay: false,
       looping: true,
     );
+
+    _chewieController.addListener(_videoPlayerListener);
+    _initializeVideoPlayer();
   }
 
   @override
@@ -102,10 +105,34 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
     super.dispose();
   }
 
+  void _initializeVideoPlayer() async {
+    await _chewieController.videoPlayerController.initialize();
+    setState(() {
+      _isLoading = false;
+    });
+  }
+
+  void _videoPlayerListener() {
+    if (_chewieController.videoPlayerController.value.isInitialized &&
+        !_chewieController.videoPlayerController.value.isPlaying) {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Chewie(
-      controller: _chewieController,
+    return Stack(
+      children: [
+        Chewie(
+          controller: _chewieController,
+        ),
+        if (_isLoading)
+          const Center(
+            child: CircularProgressIndicator(),
+          ),
+      ],
     );
   }
 }
