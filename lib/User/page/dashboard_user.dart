@@ -34,12 +34,93 @@ class _DashboardUserState extends State<DashboardUser> {
   String selectedEquipment = '';
   String selectedGroupEq = '';
   List<TypeData> typeData = [];
+  String searchValue = '';
 
   @override
   void initState() {
     super.initState();
     fetchAllData();
     getOptionDivisi();
+  }
+
+  void onSearching(String value) {
+    setState(() {
+      searchValue = value;
+    });
+    loadData();
+  }
+
+  Future<void> loadData() async {
+    final url = Uri.parse("https://digitm.isoae.com/api/type");
+    final headers = {
+      "Content-Type": "application/json",
+      "Accept": "application/json",
+    };
+
+    final response = await http.get(url, headers: headers);
+
+    if (response.statusCode == 200) {
+      try {
+        final jsonData = json.decode(response.body);
+        final responseData = jsonData['data'];
+
+        if (responseData is Map<String, dynamic> &&
+            responseData.containsKey('records')) {
+          final records = responseData['records'] as List<dynamic>;
+          setState(() {
+            typeData = [];
+          });
+          if (records.isNotEmpty) {
+            List<TypeData> typeDataList = [];
+
+            for (int i = 0; i < records.length; i++) {
+              final record = records[i];
+              final images = record['images'] as List<dynamic>;
+              final videos = record['videos'] as List<dynamic>;
+              final typeDataList = <TypeData>[];
+
+              for (int index = 0; index < images.length; index++) {
+                final image = images[index];
+                final imagePath = image['path'].toString();
+                final imageUrl = 'https://digitm.isoae.com/$imagePath';
+                final name = record['name'];
+                final content = record['content'];
+                final video = videos[index];
+                final videoPath = video['path'].toString();
+                final videoUrl = 'https://digitm.isoae.com/$videoPath';
+                // Filter the data based on the search value
+                if (name.toLowerCase().contains(searchValue.toLowerCase())) {
+                  typeDataList.add(TypeData(
+                    imageUrl: imageUrl,
+                    name: name,
+                    content: content,
+                    videoUrl: videoUrl,
+                  ));
+                }
+              }
+
+              setState(() {
+                typeData.addAll(typeDataList);
+              });
+            }
+
+            if (typeDataList.isNotEmpty) {
+              setState(() {
+                typeData = typeDataList;
+              });
+            } else {
+              print('Error: No records found');
+            }
+          } else {
+            print('Error: No records found');
+          }
+        }
+      } catch (e) {
+        print('Error: $e');
+      }
+    } else {
+      print('Error: ${response.statusCode}');
+    }
   }
 
   void fetchAllData() async {
@@ -717,9 +798,31 @@ class _DashboardUserState extends State<DashboardUser> {
                 isDense: true,
               ),
             ),
+            const SizedBox(height: 16),
             ElevatedButton(
-              onPressed: fetchAllData,
+              onPressed: () {
+                selectedDivisi = '';
+                selectedArea = '';
+                selectedGroupEq = '';
+                selectedEquipment = '';
+                listDivisi = [];
+                listArea = [];
+                listGroupEq = [];
+                listEquipment = [];
+                fetchAllData();
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.white,
+                foregroundColor: Colors.grey,
+                side: const BorderSide(color: Colors.grey),
+              ),
               child: const Text('Lihat Semua Data'),
+            ),
+            TextField(
+              onChanged: onSearching,
+              decoration: const InputDecoration(
+                hintText: 'Cari Data Disini',
+              ),
             ),
             const SizedBox(height: 16),
             GridView.builder(

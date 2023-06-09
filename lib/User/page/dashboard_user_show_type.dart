@@ -39,10 +39,15 @@ class DashboardUserShowType extends StatelessWidget {
             SizedBox(
               width: 400,
               height: 200,
-              child: VideoPlayerWidget(
-                videoUrl: videoUrl,
+              child: AspectRatio(
+                aspectRatio: 16 /
+                    9, // Replace with the appropriate aspect ratio of your video
+                child: VideoPlayerWidget(
+                  videoUrl: videoUrl,
+                ),
               ),
             ),
+
             const SizedBox(height: 16.0),
             Html(
               data: content,
