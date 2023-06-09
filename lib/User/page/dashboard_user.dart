@@ -9,7 +9,10 @@ class TypeData {
   final String content;
   final String videoUrl;
 
-  TypeData({required this.imageUrl, required this.name, required this.content,
+  TypeData(
+      {required this.imageUrl,
+      required this.name,
+      required this.content,
       required this.videoUrl});
 }
 
@@ -35,7 +38,78 @@ class _DashboardUserState extends State<DashboardUser> {
   @override
   void initState() {
     super.initState();
+    fetchAllData();
     getOptionDivisi();
+  }
+
+  void fetchAllData() async {
+    final url = Uri.parse("https://digitm.isoae.com/api/type");
+    final headers = {
+      "Content-Type": "application/json",
+      "Accept": "application/json",
+    };
+
+    final response = await http.get(url, headers: headers);
+
+    if (response.statusCode == 200) {
+      try {
+        final jsonData = json.decode(response.body);
+        final responseData = jsonData['data'];
+
+        if (responseData is Map<String, dynamic> &&
+            responseData.containsKey('records')) {
+          final records = responseData['records'] as List<dynamic>;
+          setState(() {
+            typeData = [];
+          });
+          if (records.isNotEmpty) {
+            List<TypeData> typeDataList = [];
+
+            for (int i = 0; i < records.length; i++) {
+              final record = records[i];
+              final images = record['images'] as List<dynamic>;
+              final videos = record['videos'] as List<dynamic>;
+              final typeDataList = <TypeData>[];
+
+              for (int index = 0; index < images.length; index++) {
+                final image = images[index];
+                final imagePath = image['path'].toString();
+                final imageUrl = 'https://digitm.isoae.com/$imagePath';
+                final name = record['name'];
+                final content = record['content'];
+                final video = videos[index];
+                final videoPath = video['path'].toString();
+                final videoUrl = 'https://digitm.isoae.com/$videoPath';
+                typeDataList.add(TypeData(
+                  imageUrl: imageUrl,
+                  name: name,
+                  content: content,
+                  videoUrl: videoUrl,
+                ));
+              }
+
+              setState(() {
+                typeData.addAll(typeDataList);
+              });
+            }
+
+            if (typeDataList.isNotEmpty) {
+              setState(() {
+                typeData = typeDataList;
+              });
+            } else {
+              print('Error: No records found');
+            }
+          } else {
+            print('Error: No records found');
+          }
+        }
+      } catch (e) {
+        print('Error: $e');
+      }
+    } else {
+      print('Error: ${response.statusCode}');
+    }
   }
 
   void getOptionDivisi() async {
@@ -248,7 +322,6 @@ class _DashboardUserState extends State<DashboardUser> {
           if (records.isNotEmpty) {
             List<TypeData> typeDataList = [];
 
-            
             for (int i = 0; i < records.length; i++) {
               final record = records[i];
               final images = record['images'] as List<dynamic>;
@@ -322,7 +395,6 @@ class _DashboardUserState extends State<DashboardUser> {
           if (records.isNotEmpty) {
             List<TypeData> typeDataList = [];
 
-            
             for (int i = 0; i < records.length; i++) {
               final record = records[i];
               final images = record['images'] as List<dynamic>;
@@ -395,7 +467,6 @@ class _DashboardUserState extends State<DashboardUser> {
           if (records.isNotEmpty) {
             List<TypeData> typeDataList = [];
 
-            
             for (int i = 0; i < records.length; i++) {
               final record = records[i];
               final images = record['images'] as List<dynamic>;
@@ -483,7 +554,11 @@ class _DashboardUserState extends State<DashboardUser> {
                 final video = videos[index];
                 final videoPath = video['path'].toString();
                 final videoUrl = 'https://digitm.isoae.com/$videoPath';
-                typeDataList.add(TypeData(imageUrl: imageUrl, name: name, content: content,videoUrl: videoUrl));
+                typeDataList.add(TypeData(
+                    imageUrl: imageUrl,
+                    name: name,
+                    content: content,
+                    videoUrl: videoUrl));
               }
 
               setState(() {
@@ -642,6 +717,10 @@ class _DashboardUserState extends State<DashboardUser> {
                 isDense: true,
               ),
             ),
+            ElevatedButton(
+              onPressed: fetchAllData,
+              child: const Text('Lihat Semua Data'),
+            ),
             const SizedBox(height: 16),
             GridView.builder(
               shrinkWrap: true,
@@ -655,7 +734,7 @@ class _DashboardUserState extends State<DashboardUser> {
               itemBuilder: (context, index) {
                 final data = typeData[index];
                 return GestureDetector(
-                 onTap: () {
+                  onTap: () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
