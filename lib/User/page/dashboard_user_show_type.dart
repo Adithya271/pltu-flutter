@@ -6,6 +6,7 @@ import 'package:flutter_html/flutter_html.dart';
 class DashboardUserShowType extends StatelessWidget {
   final String imageUrl;
   final String name;
+  final String description;
   final String content;
   final String videoUrl;
 
@@ -13,6 +14,7 @@ class DashboardUserShowType extends StatelessWidget {
     super.key,
     required this.imageUrl,
     required this.name,
+    required this.description,
     required this.content,
     required this.videoUrl,
   });
