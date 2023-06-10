@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:pltu/page/type/ShowContent.dart';
+import 'package:pltu/page/type/ShowImage.dart';
+import 'package:pltu/page/type/ShowVideo.dart';
 import 'dart:convert';
 import 'package:video_player/video_player.dart';
 import 'package:chewie/chewie.dart';
@@ -225,9 +228,26 @@ class _BrowseTypeState extends State<BrowseType> {
                                     const SizedBox(
                                       height: 8,
                                     ),
-                                    Text('Content: $content'),
-                                    const SizedBox(
-                                      height: 8,
+                                    Row(
+                                      children: [
+                                        const Text('Content:'),
+                                        const SizedBox(width: 8.0),
+                                        ElevatedButton(
+                                          onPressed: () {
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) =>
+                                                    ShowContent(
+                                                  nama: nama,
+                                                  content: content,
+                                                ),
+                                              ),
+                                            );
+                                          },
+                                          child: const Text('Lihat'),
+                                        ),
+                                      ],
                                     ),
                                     if (images != null && images.isNotEmpty)
                                       ListView.builder(
@@ -242,16 +262,24 @@ class _BrowseTypeState extends State<BrowseType> {
                                           final imageUrl =
                                               'https://digitm.isoae.com/$imagePath';
 
-                                          return SizedBox(
-                                            width:
-                                                150, // Adjust the width of the image
-                                            height:
-                                                200, // Adjust the height of the image
-                                            child: Image.network(
-                                              imageUrl,
-                                              fit: BoxFit
-                                                  .cover, // Adjust the image fit as needed
-                                            ),
+                                          return Row(
+                                            children: [
+                                              ElevatedButton(
+                                                onPressed: () {
+                                                  Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          ShowImage(
+                                                            nama: nama,
+                                                              imageUrl: imageUrl),
+                                                    ),
+                                                  );
+                                                },
+                                                child: Text(
+                                                    'Lihat Gambar'),
+                                              ),
+                                            ],
                                           );
                                         },
                                       ),
@@ -271,16 +299,24 @@ class _BrowseTypeState extends State<BrowseType> {
                                           final videoUrl =
                                               'https://digitm.isoae.com/$videoPath';
 
-                                          return SizedBox(
-                                            width: 150,
-                                            height: 200,
-                                            child: AspectRatio(
-                                              aspectRatio:
-                                                  1.0, // 1:1 aspect ratio
-                                              child: VideoPlayerWidget(
-                                                videoUrl: videoUrl,
+                                         return Row(
+                                            children: [
+                                              ElevatedButton(
+                                                onPressed: () {
+                                                  Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          ShowVideo(
+                                                              nama: nama,
+                                                              videoUrl:
+                                                                  videoUrl),
+                                                    ),
+                                                  );
+                                                },
+                                                child: Text('Lihat Video'),
                                               ),
-                                            ),
+                                            ],
                                           );
                                         },
                                       ),
@@ -323,94 +359,4 @@ class _BrowseTypeState extends State<BrowseType> {
     );
   }
 }
-class VideoPlayerWidget extends StatefulWidget {
-  final String videoUrl;
 
-  const VideoPlayerWidget({Key? key, required this.videoUrl}) : super(key: key);
-
-  @override
-  _VideoPlayerWidgetState createState() => _VideoPlayerWidgetState();
-}
-
-class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
-  late ChewieController _chewieController;
-  bool _isVideoInitialized = false;
-  bool _isVideoPlaying = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _initializeVideoPlayer();
-  }
-
-  @override
-  void dispose() {
-    _chewieController.dispose();
-    super.dispose();
-  }
-
-  Future<void> _initializeVideoPlayer() async {
-    final videoPlayerController =
-        VideoPlayerController.network(widget.videoUrl);
-    await videoPlayerController.initialize();
-
-    setState(() {
-      _chewieController = ChewieController(
-        videoPlayerController: videoPlayerController,
-        autoPlay: false,
-        looping: true,
-        errorBuilder: (context, errorMessage) {
-          return Center(
-            child: Text(
-              errorMessage,
-              style: TextStyle(color: Colors.white),
-            ),
-          );
-        },
-      );
-      _isVideoInitialized = true;
-    });
-  }
-
-  void _onVideoPlay() {
-    setState(() {
-      _isVideoPlaying = true;
-    });
-  }
-
-  void _onVideoPause() {
-    setState(() {
-      _isVideoPlaying = false;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        if (_isVideoInitialized)
-          Chewie(
-            controller: _chewieController,
-          )
-        else
-          Center(
-            child: CircularProgressIndicator(),
-          ),
-        if (!_isVideoPlaying && _isVideoInitialized)
-          GestureDetector(
-            onTap: _onVideoPlay,
-            child: Container(
-              color: Colors.transparent,
-              child: Center(
-                child: Icon(
-                  Icons.play_arrow,
-                  size: 64,
-                  color: Colors.white,
-                ),
-              ),
-            ),
-          ),
-      ],
-    );
-  }
-}
