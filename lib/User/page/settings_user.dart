@@ -6,91 +6,177 @@ class SettingsUser extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return Stack(
       children: [
-        ClipPath(
-          clipper: ShapeClipper(),
-          child: Container(
-            height: 250,
-            color: Colors.blue,
-            child: Center(
-              child: Image.asset(
-                'assets/grup1.png', // Ganti dengan path gambar Anda
-                width: 200,
-                height: 200,
+        Positioned(
+          top: 0, // Koordinat Y dari bagian atas
+          left: 0, // Koordinat X dari bagian kiri
+          child: ClipPath(
+            clipper: ShapeClipper(),
+            child: Container(
+              width: 400, // Ubah lebar container sesuai keinginan Anda
+              height: 250,
+              color: Colors.blue,
+              child: Center(
+                child: Image.asset(
+                  'assets/grup1.png', // Ganti dengan path gambar Anda
+                  width: 200,
+                  height: 190,
+                ),
               ),
             ),
           ),
         ),
-        SizedBox(height: 20),
-        Padding(
-          padding: EdgeInsets.only(right: 100.0), // Ubah nilai left sesuai kebutuhan
-          child: Image.asset(
-            'assets/khusus.png', // Ganti dengan path gambar khusus Anda
-            width: 200,
-            height: 100,
-          ),
+        Positioned(
+  top: 10, // Koordinat Y dari bagian atas
+  right: 15, // Koordinat X dari bagian kanan
+  child: GestureDetector(
+    onTap: () {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => SignIn()),
+      );
+    },
+    child: Image.asset(
+      'assets/logopltu.png', // Ganti dengan path gambar logo PLTU Anda
+      width: 30,
+      height: 30,
+    ),
+  ),
+),
+        Positioned(
+          top: 210, // Koordinat Y dari bagian atas
+          left: 100, // Koordinat X dari bagian kiri
+          child: Image.asset('assets/isoae.png'),
         ),
-        SizedBox(height: 50),
-        Container(
-          width: 200, // Ubah lebar sesuai kebutuhan
-          height: 35, // Ubah tinggi sesuai kebutuhan
-          child: ElevatedButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => SignIn()),
-              );
-            },
-            child: Text('Login'),
-          ),
-        ),
-        SizedBox(height: 90),
-         Positioned(
-                    top: 0,
-                    child: Image.asset(
-                      'assets/grup2.png', // Ganti dengan path gambar grup2 Anda
-                      width: 77,
-                      height: 14,
-                    ),
+        Positioned(
+          top: 280, // Koordinat Y dari bagian atas
+          left: 35, // Koordinat X dari bagian kiri
+          child: Container(
+            width: 300,
+            child: RichText(
+              textAlign: TextAlign.left,
+              text: TextSpan(
+                style: DefaultTextStyle.of(context).style,
+                children: [
+                  TextSpan(
+                    text: 'PT.ASLI ISOAE SOLUSINE',
+                    style: TextStyle(fontWeight: FontWeight.bold),
                   ),
-        Padding(
-          padding: EdgeInsets.symmetric(vertical: 10), // Atur jarak vertikal sesuai kebutuhan
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
+                ],
+              ),
+            ),
+          ),
+        ),
+        Positioned(
+          top: 308, // Koordinat Y dari bagian atas
+          left: 40, // Koordinat X dari bagian kiri
+          child: Container(
+            width: 300,
+            child: RichText(
+              textAlign: TextAlign.left,
+              text: TextSpan(
+                style: DefaultTextStyle.of(context).style,
+                children: [
+                  TextSpan(
+                    text:
+                        'Kami mengubah permintaan klien tentang desain & pengembangan web menjadi karya nyata. Dikemas dengan pengalaman 10 tahun dalam mengembangkan situs web,',
+                  ),
+                  TextSpan(
+                    text:
+                        ' kami tahu cara membuat situs web canggih yang melibatkan pengunjung Anda dan mengonversi.',
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+        Positioned(
+  top: 470, // Koordinat Y dari bagian atas
+  left: 40, // Koordinat X dari bagian kiri
+  child: Container(
+    width: 250,
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        RichText(
+          textAlign: TextAlign.left,
+          text: TextSpan(
+            style: DefaultTextStyle.of(context).style,
             children: [
-              Padding(
-                padding: EdgeInsets.only(right: 10,), // Atur jarak kanan sesuai kebutuhan
-                child: Image.network(
-                  'https://th.bing.com/th/id/OIP.d9GZxbX8Gi9_qGg7XP1ntgHaHa?w=218&h=218&c=7&r=0&o=5&pid=1.7', // Ganti dengan URL logo Facebook Anda
-                  width: 30,
-                  height: 30,
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 10), // Atur jarak horizontal sesuai kebutuhan
-                child: Image.network(
-                  'https://th.bing.com/th/id/OIP.tHP8rVlfCbCv4ScNkBasjAHaHa?w=217&h=217&c=7&r=0&o=5&pid=1.7', // Ganti dengan URL logo Instagram Anda
-                  width: 30,
-                  height: 30,
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.only(left: 10), // Atur jarak kiri sesuai kebutuhan
-                child: Image.network(
-                  'https://th.bing.com/th/id/OIP.P3GJZi8Z-DGPx1JS3u5yOgHaGl?w=216&h=191&c=7&r=0&o=5&pid=1.7', // Ganti dengan URL logo Twitter Anda
-                  width: 30,
-                  height: 30,
-                ),
+              TextSpan(
+                text: 'Website',
+                style: TextStyle(fontWeight: FontWeight.bold),
               ),
             ],
           ),
         ),
+        SizedBox(height: 1), // Jarak antara teks "Website" dan teks URL
+        Text(
+          'https://isoae.id/',
+          style: DefaultTextStyle.of(context).style,
+        ),
+      ],
+    ),
+  ),
+),
+Positioned(
+          top: 308, // Koordinat Y dari bagian atas
+          left: 40, // Koordinat X dari bagian kiri
+          child: Container(
+            width: 300,
+            child: RichText(
+              textAlign: TextAlign.left,
+              text: TextSpan(
+                style: DefaultTextStyle.of(context).style,
+                children: [
+                  TextSpan(
+                    text:
+                        'Kami mengubah permintaan klien tentang desain & pengembangan web menjadi karya nyata. Dikemas dengan pengalaman 10 tahun dalam mengembangkan situs web,',
+                  ),
+                  TextSpan(
+                    text:
+                        ' kami tahu cara membuat situs web canggih yang melibatkan pengunjung Anda dan mengonversi.',
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+        Positioned(
+  top: 515, // Koordinat Y dari bagian atas
+  left: 40, // Koordinat X dari bagian kiri
+  child: Container(
+    width: 250,
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        RichText(
+          textAlign: TextAlign.left,
+          text: TextSpan(
+            style: DefaultTextStyle.of(context).style,
+            children: [
+              TextSpan(
+                text: 'Telepon',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+            ],
+          ),
+        ),
+        SizedBox(height: 1), // Jarak antara teks "Website" dan teks URL
+        Text(
+          '021-75923000',
+          style: DefaultTextStyle.of(context).style,
+        ),
+      ],
+    ),
+  ),
+),
+        // Tambahkan widget lainnya di bawah atau di atas gambar dan teks
       ],
     );
   }
 }
-
 class ShapeClipper extends CustomClipper<Path> {
   @override
   Path getClip(Size size) {

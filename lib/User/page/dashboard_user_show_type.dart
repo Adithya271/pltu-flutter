@@ -39,10 +39,14 @@ class DashboardUserShowType extends StatelessWidget {
             SizedBox(
               width: 400,
               height: 200,
-              child: VideoPlayerWidget(
-                videoUrl: videoUrl,
+              child: AspectRatio(
+                aspectRatio: 1.0, // 1:1 aspect ratio
+                child: VideoPlayerWidget(
+                  videoUrl: videoUrl,
+                ),
               ),
             ),
+
             const SizedBox(height: 16.0),
             Html(
               data: content,
@@ -80,15 +84,13 @@ class VideoPlayerWidget extends StatefulWidget {
 
 class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
   late ChewieController _chewieController;
+  bool _isVideoInitialized = false;
+  bool _isVideoPlaying = false;
 
   @override
   void initState() {
     super.initState();
-    _chewieController = ChewieController(
-      videoPlayerController: VideoPlayerController.network(widget.videoUrl),
-      autoPlay: false,
-      looping: true,
-    );
+    _initializeVideoPlayer();
   }
 
   @override
@@ -97,10 +99,68 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
     super.dispose();
   }
 
+  Future<void> _initializeVideoPlayer() async {
+    final videoPlayerController =
+        VideoPlayerController.network(widget.videoUrl);
+    await videoPlayerController.initialize();
+
+    setState(() {
+      _chewieController = ChewieController(
+        videoPlayerController: videoPlayerController,
+        autoPlay: false,
+        looping: true,
+        errorBuilder: (context, errorMessage) {
+          return Center(
+            child: Text(
+              errorMessage,
+              style: const TextStyle(color: Colors.white),
+            ),
+          );
+        },
+      );
+      _isVideoInitialized = true;
+    });
+  }
+
+  void _onVideoPlay() {
+    setState(() {
+      _isVideoPlaying = true;
+    });
+  }
+
+  void _onVideoPause() {
+    setState(() {
+      _isVideoPlaying = false;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Chewie(
-      controller: _chewieController,
+    return Stack(
+      children: [
+        if (_isVideoInitialized)
+          Chewie(
+            controller: _chewieController,
+          )
+        else
+          const Center(
+            child: CircularProgressIndicator(),
+          ),
+        if (!_isVideoPlaying && _isVideoInitialized)
+          GestureDetector(
+            onTap: _onVideoPlay,
+            child: Container(
+              color: Colors.transparent,
+              child: const Center(
+                child: Icon(
+                  Icons.play_arrow,
+                  size: 64,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          ),
+      ],
     );
   }
 }
