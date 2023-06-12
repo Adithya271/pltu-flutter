@@ -47,6 +47,7 @@ dependencies:
   intl: ^0.17.0
   flutter_html: ^2.2.1
   youtube_player_flutter: ^8.1.2
+  pdf: ^3.6.0
 
 dev_dependencies:
   flutter_test:

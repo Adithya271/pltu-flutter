@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pltu/User/page/home_user.dart';
 
-
 void main() {
   runApp(const MyApp());
 }

@@ -29,15 +29,6 @@ class DashboardUserShowType extends StatelessWidget {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            Image.network(
-              imageUrl,
-              width: 400,
-              height: 200,
-              fit: BoxFit.cover,
-            ),
-            const SizedBox(
-              height: 10,
-            ),
             SizedBox(
               width: 400,
               height: 200,
@@ -48,7 +39,15 @@ class DashboardUserShowType extends StatelessWidget {
                 ),
               ),
             ),
-
+            const SizedBox(
+              height: 10,
+            ),
+            Image.network(
+              imageUrl,
+              width: 400,
+              height: 200,
+              fit: BoxFit.cover,
+            ),
             const SizedBox(height: 16.0),
             Html(
               data: content,
@@ -66,8 +65,6 @@ class DashboardUserShowType extends StatelessWidget {
                 ),
               },
             ),
-
-            
           ],
         ),
       ),
