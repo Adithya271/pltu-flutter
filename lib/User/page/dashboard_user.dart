@@ -685,279 +685,325 @@ class _DashboardUserState extends State<DashboardUser> {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            const SizedBox(
-              height: 10,
-            ),
-            const Padding(
-              padding: EdgeInsets.only(right: 230.0),
-              child: Text(
-                'Filter Data',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-              ),
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            Card(
-  child: Padding(
-    padding: const EdgeInsets.all(8.0),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        DropdownButtonFormField<String>(
-          value: selectedDivisi.isNotEmpty ? selectedDivisi : null,
-          items: listDivisi.map((divisi) {
-            return DropdownMenuItem<String>(
-              value: divisi['value'].toString(),
-              child: Text(divisi['text'].toString()),
-            );
-          }).toList(),
-          onChanged: (value) {
-            setState(() {
-              selectedDivisi = value ?? '';
-              selectedArea = '';
-              selectedGroupEq = '';
-              selectedEquipment = '';
-
-              listArea = [];
-              listGroupEq = [];
-              listEquipment = [];
-            });
-            if (selectedDivisi.isNotEmpty) {
-              getOptionArea(selectedDivisi);
-              fetchData4(selectedDivisi);
-            }
-          },
-          decoration: const InputDecoration(
-            labelText: 'Divisi',
-            border: OutlineInputBorder(),
-            contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-            isDense: true,
+    return Stack(
+  children: [
+    SingleChildScrollView(
+      child: Column(
+        children: [
+          const SizedBox(
+            height: 30,
           ),
-        ),
-        const SizedBox(height: 16),
-        DropdownButtonFormField<String>(
-          value: selectedArea.isNotEmpty ? selectedArea : null,
-          items: listArea.map((area) {
-            return DropdownMenuItem<String>(
-              value: area['value'].toString(),
-              child: Text(area['text'].toString()),
-            );
-          }).toList(),
-          onChanged: (value) {
-            setState(() {
-              selectedArea = value ?? '';
-              selectedGroupEq = '';
-              selectedEquipment = '';
-              listGroupEq = [];
-              listEquipment = [];
-            });
-            if (selectedArea.isNotEmpty) {
-              getOptionGroupEq(selectedDivisi, selectedArea);
-              fetchData3(selectedDivisi, selectedArea);
-            }
-          },
-          decoration: const InputDecoration(
-            labelText: 'Area',
-            border: OutlineInputBorder(),
-            contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-            isDense: true,
-          ),
-        ),
-        const SizedBox(height: 16),
-        DropdownButtonFormField<String>(
-          value: selectedGroupEq.isNotEmpty ? selectedGroupEq : null,
-          items: listGroupEq.map((groupEq) {
-            return DropdownMenuItem<String>(
-              value: groupEq['value'].toString(),
-              child: Text(groupEq['text'].toString()),
-            );
-          }).toList(),
-          onChanged: (value) {
-            setState(() {
-              selectedGroupEq = value ?? '';
-              selectedEquipment = '';
-              listEquipment = [];
-            });
-            if (selectedGroupEq.isNotEmpty) {
-              getOptionEquipment(
-                  selectedDivisi, selectedArea, selectedGroupEq);
-              fetchData2(
-                selectedDivisi,
-                selectedArea,
-                selectedGroupEq,
-              );
-            }
-          },
-          decoration: const InputDecoration(
-            labelText: 'Group Equipment',
-            border: OutlineInputBorder(),
-            contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-            isDense: true,
-          ),
-        ),
-        const SizedBox(height: 16),
-        DropdownButtonFormField<String>(
-          value: selectedEquipment.isNotEmpty ? selectedEquipment : null,
-          items: listEquipment.map((equipment) {
-            return DropdownMenuItem<String>(
-              value: equipment['value'].toString(),
-              child: Text(equipment['text'].toString()),
-            );
-          }).toList(),
-          onChanged: (value) {
-            setState(() {
-              selectedEquipment = value ?? '';
-            });
-
-            if (selectedEquipment.isNotEmpty) {
-              fetchData(selectedDivisi, selectedArea, selectedGroupEq,
-                  selectedEquipment);
-            }
-          },
-          decoration: const InputDecoration(
-            labelText: 'Equipment',
-            border: OutlineInputBorder(),
-            contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-            isDense: true,
-          ),
-        ),
-      ],
+          Stack(
+  children: [
+    Image.asset(
+      "assets/logopltu.png",
+      width: 100,
+      height: 100,
     ),
-  ),
+  ],
 ),
-          
-            const SizedBox(height: 16),
-            Padding(
-              padding: const EdgeInsets.only(right: 240.0),
-              child: ElevatedButton(
-                onPressed: () {
-                  selectedDivisi = '';
-                  selectedArea = '';
-                  selectedGroupEq = '';
-                  selectedEquipment = '';
-
-                  listArea = [];
-                  listGroupEq = [];
-                  listEquipment = [];
-                  fetchAllData();
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.white,
-                  foregroundColor: Colors.grey,
-                  side: const BorderSide(color: Colors.grey),
-                ),
-                child: const Text(
-                  'Reset Filter',
-                  style: TextStyle(color: Colors.red),
-                ),
-              ),
+ const SizedBox(height: 30,),
+                      Container(
+              width: 200, // Menentukan lebar gambar
+              height: 50, // Menentukan tinggi gambar
+              margin: EdgeInsets.only(right: 160), // Menentukan jarak kiri gambar dari tepi
+              child: Image.asset("assets/texttselamat.png"),
             ),
-            Card(
-  shape: RoundedRectangleBorder(
-    borderRadius: BorderRadius.circular(10.0),
-  ),
-  elevation: 3,
-  child: Padding(
-    padding: const EdgeInsets.all(8.0),
-    child: TextField(
-      onChanged: onSearching,
-      decoration: InputDecoration(
-        hintText: 'Cari Nama Disini',
-        contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8.0),
-        ),
-      ),
-    ),
-  ),
-),
-            const SizedBox(height: 16),
-            GridView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                crossAxisSpacing: 8.0,
-                mainAxisSpacing: 8.0,
-              ),
-              itemCount: typeData.length,
-              itemBuilder: (context, index) {
-                final data = typeData[index];
-                return GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => DashboardUserShowType(
-                          imageUrl: data.imageUrl,
-                          name: data.name,
-                          description: data.description,
-                          content: data.content,
-                          videoUrl: data.videoUrl,
-                        ),
+            const SizedBox(
+                        height: 10,
                       ),
-                    );
-                  },
-                  child: Card(
-                    child: Container(
-                      width: 150,
-                      padding: const EdgeInsets.all(8),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Expanded(
-                            flex: 2,
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(10),
-                              child: Image.network(
-                                data.imageUrl,
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                          ),
-                          const SizedBox(height: 5),
-                          Expanded(
-                            flex: 1,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  data.name,
-                                  style: const TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                  maxLines: 2,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                                const SizedBox(height: 5),
-                                Text(
-                                  data.description,
-                                  style: const TextStyle(
-                                    fontSize: 14,
-                                  ),
-                                  maxLines: 2,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
+                      Container(
+              width: 200, // Menentukan lebar gambar
+              height: 20, // Menentukan tinggi gambar
+              margin: EdgeInsets.only(right: 270), // Menentukan jarak kiri gambar dari tepi
+              child: Image.asset("assets/textfilter.png"),
+            ),
+          Card(
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  DropdownButtonFormField<String>(
+                    value: selectedDivisi.isNotEmpty ? selectedDivisi : null,
+                    items: listDivisi.map((divisi) {
+                      return DropdownMenuItem<String>(
+                        value: divisi['value'].toString(),
+                        child: Text(divisi['text'].toString()),
+                      );
+                    }).toList(),
+                    onChanged: (value) {
+                      setState(() {
+                        selectedDivisi = value ?? '';
+                        selectedArea = '';
+                        selectedGroupEq = '';
+                        selectedEquipment = '';
+
+                        listArea = [];
+                        listGroupEq = [];
+                        listEquipment = [];
+                      });
+                      if (selectedDivisi.isNotEmpty) {
+                        getOptionArea(selectedDivisi);
+                        fetchData4(selectedDivisi);
+                      }
+                    },
+                    decoration: const InputDecoration(
+                      labelText: 'Divisi',
+                      border: OutlineInputBorder(),
+                      contentPadding:
+                          EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                      isDense: true,
                     ),
                   ),
-                );
-              },
+                  const SizedBox(height: 16),
+                  DropdownButtonFormField<String>(
+                    value: selectedArea.isNotEmpty ? selectedArea : null,
+                    items: listArea.map((area) {
+                      return DropdownMenuItem<String>(
+                        value: area['value'].toString(),
+                        child: Text(area['text'].toString()),
+                      );
+                    }).toList(),
+                    onChanged: (value) {
+                      setState(() {
+                        selectedArea = value ?? '';
+                        selectedGroupEq = '';
+                        selectedEquipment = '';
+                        listGroupEq = [];
+                        listEquipment = [];
+                      });
+                      if (selectedArea.isNotEmpty) {
+                        getOptionGroupEq(selectedDivisi, selectedArea);
+                        fetchData3(selectedDivisi, selectedArea);
+                      }
+                    },
+                    decoration: const InputDecoration(
+                      labelText: 'Area',
+                      border: OutlineInputBorder(),
+                      contentPadding:
+                          EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                      isDense: true,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  DropdownButtonFormField<String>(
+                    value: selectedGroupEq.isNotEmpty ? selectedGroupEq : null,
+                    items: listGroupEq.map((groupEq) {
+                      return DropdownMenuItem<String>(
+                        value: groupEq['value'].toString(),
+                        child: Text(groupEq['text'].toString()),
+                      );
+                    }).toList(),
+                    onChanged: (value) {
+                      setState(() {
+                        selectedGroupEq = value ?? '';
+                        selectedEquipment = '';
+                        listEquipment = [];
+                      });
+                      if (selectedGroupEq.isNotEmpty) {
+                        getOptionEquipment(
+                            selectedDivisi, selectedArea, selectedGroupEq);
+                        fetchData2(
+                          selectedDivisi,
+                          selectedArea,
+                          selectedGroupEq,
+                        );
+                      }
+                    },
+                    decoration: const InputDecoration(
+                      labelText: 'Group Equipment',
+                      border: OutlineInputBorder(),
+                      contentPadding:
+                          EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                      isDense: true,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  DropdownButtonFormField<String>(
+                    value:
+                        selectedEquipment.isNotEmpty ? selectedEquipment : null,
+                    items: listEquipment.map((equipment) {
+                      return DropdownMenuItem<String>(
+                        value: equipment['value'].toString(),
+                        child: Text(equipment['text'].toString()),
+                      );
+                    }).toList(),
+                    onChanged: (value) {
+                      setState(() {
+                        selectedEquipment = value ?? '';
+                      });
+
+                      if (selectedEquipment.isNotEmpty) {
+                        fetchData(selectedDivisi, selectedArea, selectedGroupEq,
+                            selectedEquipment);
+                      }
+                    },
+                    decoration: const InputDecoration(
+                      labelText: 'Equipment',
+                      border: OutlineInputBorder(),
+                      contentPadding:
+                          EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                      isDense: true,
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ],
-        ),
+          ),
+          const SizedBox(height: 16),
+          Padding(
+            padding: const EdgeInsets.only(right: 240.0),
+            child: ElevatedButton(
+              onPressed: () {
+                selectedDivisi = '';
+                selectedArea = '';
+                selectedGroupEq = '';
+                selectedEquipment = '';
+
+                listArea = [];
+                listGroupEq = [];
+                listEquipment = [];
+                fetchAllData();
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.white,
+                foregroundColor: Colors.grey,
+                side: const BorderSide(color: Colors.grey),
+              ),
+              child: const Text(
+                'Reset Filter',
+                style: TextStyle(color: Colors.red),
+              ),
+            ),
+          ),
+          Card(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10.0),
+            ),
+            elevation: 3,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: TextField(
+                onChanged: onSearching,
+                decoration: InputDecoration(
+                  hintText: 'Cari Nama Disini',
+                  contentPadding:
+                      EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(height: 16),
+          GridView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              crossAxisSpacing: 8.0,
+              mainAxisSpacing: 8.0,
+            ),
+            itemCount: typeData.length,
+            itemBuilder: (context, index) {
+              final data = typeData[index];
+              return GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => DashboardUserShowType(
+                        imageUrl: data.imageUrl,
+                        name: data.name,
+                        description: data.description,
+                        content: data.content,
+                        videoUrl: data.videoUrl,
+                      ),
+                    ),
+                  );
+                },
+                child: Card(
+                  child: Container(
+                    width: 150,
+                    padding: const EdgeInsets.all(8),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          flex: 2,
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(10),
+                            child: Image.network(
+                              data.imageUrl,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 5),
+                        Expanded(
+                          flex: 1,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                data.name,
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              const SizedBox(height: 5),
+                              Text(
+                                data.description,
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                ),
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              );
+            },
+          ),
+        ],
       ),
-    );
+    ),
+  ],
+);
   }
+}
+class ShapeClipper extends CustomClipper<Path> {
+  @override
+  Path getClip(Size size) {
+    final path = Path();
+    path.lineTo(0, size.height - 25);
+    path.quadraticBezierTo(
+      size.width / 4, // Control point x
+      size.height, // Control point y
+      size.width / 2, // End point x
+      size.height, // End point y
+    );
+    path.quadraticBezierTo(
+      size.width * 3 / 4, // Control point x
+      size.height, // Control point y
+      size.width, // End point x
+      size.height - 25, // End point y
+    );
+    path.lineTo(size.width, 0);
+    path.close();
+    return path;
+  }
+
+  @override
+  bool shouldReclip(CustomClipper<Path> oldClipper) => false;
 }

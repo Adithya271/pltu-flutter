@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:pltu/User/page/home_user.dart';
+import 'User/page/splashscreen.dart';
 
 
 void main() {
@@ -27,7 +27,7 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: const HomePageUser(),
+      home: const SplashScreenPage(),
     );
   }
 }
