@@ -6,12 +6,14 @@ import 'package:pltu/User/page/dashboard_user_show_type.dart';
 class TypeData {
   final String imageUrl;
   final String name;
+  final String description;
   final String content;
   final String videoUrl;
 
   TypeData(
       {required this.imageUrl,
       required this.name,
+      required this.description,
       required this.content,
       required this.videoUrl});
 }
@@ -86,6 +88,7 @@ class _DashboardUserState extends State<DashboardUser> {
                 final imagePath = image['path'].toString();
                 final imageUrl = 'https://digitm.isoae.com/$imagePath';
                 final name = record['name'];
+                final description = record['description'];
                 final content = record['content'];
                 final video = videos[index];
                 final videoPath = video['path'].toString();
@@ -95,6 +98,7 @@ class _DashboardUserState extends State<DashboardUser> {
                   typeDataList.add(TypeData(
                     imageUrl: imageUrl,
                     name: name,
+                    description: description,
                     content: content,
                     videoUrl: videoUrl,
                   ));
@@ -159,6 +163,7 @@ class _DashboardUserState extends State<DashboardUser> {
                 final imagePath = image['path'].toString();
                 final imageUrl = 'https://digitm.isoae.com/$imagePath';
                 final name = record['name'];
+                final description = record['description'];
                 final content = record['content'];
                 final video = videos[index];
                 final videoPath = video['path'].toString();
@@ -166,6 +171,7 @@ class _DashboardUserState extends State<DashboardUser> {
                 typeDataList.add(TypeData(
                   imageUrl: imageUrl,
                   name: name,
+                  description: description,
                   content: content,
                   videoUrl: videoUrl,
                 ));
@@ -416,6 +422,7 @@ class _DashboardUserState extends State<DashboardUser> {
                 final imagePath = image['path'].toString();
                 final imageUrl = 'https://digitm.isoae.com/$imagePath';
                 final name = record['name'];
+                final description = record['description'];
                 final content = record['content'];
                 final video = videos[index];
                 final videoPath = video['path'].toString();
@@ -423,6 +430,7 @@ class _DashboardUserState extends State<DashboardUser> {
                 typeDataList.add(TypeData(
                     imageUrl: imageUrl,
                     name: name,
+                    description: description,
                     content: content,
                     videoUrl: videoUrl));
               }
@@ -489,6 +497,7 @@ class _DashboardUserState extends State<DashboardUser> {
                 final imagePath = image['path'].toString();
                 final imageUrl = 'https://digitm.isoae.com/$imagePath';
                 final name = record['name'];
+                final description = record['description'];
                 final content = record['content'];
                 final video = videos[index];
                 final videoPath = video['path'].toString();
@@ -496,6 +505,7 @@ class _DashboardUserState extends State<DashboardUser> {
                 typeDataList.add(TypeData(
                     imageUrl: imageUrl,
                     name: name,
+                    description: description,
                     content: content,
                     videoUrl: videoUrl));
               }
@@ -561,6 +571,7 @@ class _DashboardUserState extends State<DashboardUser> {
                 final imagePath = image['path'].toString();
                 final imageUrl = 'https://digitm.isoae.com/$imagePath';
                 final name = record['name'];
+                final description = record['description'];
                 final content = record['content'];
                 final video = videos[index];
                 final videoPath = video['path'].toString();
@@ -568,6 +579,7 @@ class _DashboardUserState extends State<DashboardUser> {
                 typeDataList.add(TypeData(
                     imageUrl: imageUrl,
                     name: name,
+                    description: description,
                     content: content,
                     videoUrl: videoUrl));
               }
@@ -633,6 +645,7 @@ class _DashboardUserState extends State<DashboardUser> {
                 final imagePath = image['path'].toString();
                 final imageUrl = 'https://digitm.isoae.com/$imagePath';
                 final name = record['name'];
+                final description = record['description'];
                 final content = record['content'];
                 final video = videos[index];
                 final videoPath = video['path'].toString();
@@ -640,6 +653,7 @@ class _DashboardUserState extends State<DashboardUser> {
                 typeDataList.add(TypeData(
                     imageUrl: imageUrl,
                     name: name,
+                    description: description,
                     content: content,
                     videoUrl: videoUrl));
               }
@@ -679,25 +693,13 @@ class _DashboardUserState extends State<DashboardUser> {
             const SizedBox(
               height: 10,
             ),
-            Container(// Ubah tinggi kartu sesuai keinginan Anda
-            width: 100,
-            height: 100,
-                child: Image.asset("assets/logopltu.png",)
+            const Padding(
+              padding: EdgeInsets.only(right: 230.0),
+              child: Text(
+                'Filter Data',
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
-              const SizedBox(height: 40,),
-                          Container(
-  alignment: Alignment.topLeft, // Mengatur posisi konten di dalam Container ke atas dan ke kanan
-  child: Text(
-    'Filter Data!',
-    textAlign: TextAlign.left, // Mengatur teks menjadi rata kanan
-    style: TextStyle(
-      fontSize: 20,
-      fontWeight: FontWeight.bold,
-    ),
-  ),
-),
-
-
+            ),
             const SizedBox(
               height: 10,
             ),
@@ -832,7 +834,7 @@ class _DashboardUserState extends State<DashboardUser> {
           
             const SizedBox(height: 16),
             Padding(
-              padding: const EdgeInsets.only(right: 230.0),
+              padding: const EdgeInsets.only(right: 240.0),
               child: ElevatedButton(
                 onPressed: () {
                   selectedDivisi = '';
@@ -895,6 +897,7 @@ class _DashboardUserState extends State<DashboardUser> {
                         builder: (context) => DashboardUserShowType(
                           imageUrl: data.imageUrl,
                           name: data.name,
+                          description: data.description,
                           content: data.content,
                           videoUrl: data.videoUrl,
                         ),
@@ -902,25 +905,51 @@ class _DashboardUserState extends State<DashboardUser> {
                     );
                   },
                   child: Card(
-                    child: Column(
-                      children: [
-                        Image.network(
-                          data.imageUrl,
-                          width: 150,
-                          height: 120,
-                          fit: BoxFit.cover,
-                        ),
-                        const SizedBox(height: 5),
-                        Text(
-                          data.name,
-                          style: const TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
+                    child: Container(
+                      width: 150,
+                      padding: const EdgeInsets.all(8),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(
+                            flex: 2,
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(10),
+                              child: Image.network(
+                                data.imageUrl,
+                                fit: BoxFit.cover,
+                              ),
+                            ),
                           ),
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ],
+                          const SizedBox(height: 5),
+                          Expanded(
+                            flex: 1,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  data.name,
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                                const SizedBox(height: 5),
+                                Text(
+                                  data.description,
+                                  style: const TextStyle(
+                                    fontSize: 14,
+                                  ),
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 );

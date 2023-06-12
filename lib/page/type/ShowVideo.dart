@@ -1,77 +1,31 @@
-import 'package:chewie/chewie.dart';
-import 'package:video_player/video_player.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_html/flutter_html.dart';
+import 'dart:convert';
+import 'package:video_player/video_player.dart';
+import 'package:chewie/chewie.dart';
 
-class DashboardUserShowType extends StatelessWidget {
-  final String imageUrl;
-  final String name;
-  final String description;
-  final String content;
+class ShowVideo extends StatelessWidget {
+  final String nama;
   final String videoUrl;
 
-  const DashboardUserShowType({
-    super.key,
-    required this.imageUrl,
-    required this.name,
-    required this.description,
-    required this.content,
-    required this.videoUrl,
-  });
+  const ShowVideo({Key? key, required this.nama, required this.videoUrl})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(name),
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            Image.network(
-              imageUrl,
-              width: 400,
-              height: 200,
-              fit: BoxFit.cover,
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            SizedBox(
-              width: 400,
-              height: 200,
-              child: AspectRatio(
-                aspectRatio: 1.0, // 1:1 aspect ratio
-                child: VideoPlayerWidget(
-                  videoUrl: videoUrl,
-                ),
-              ),
-            ),
-
-            const SizedBox(height: 16.0),
-            Html(
-              data: content,
-              style: {
-                'p': Style(fontSize: const FontSize(16.0)),
-                'img': Style(
-                  width: double.infinity,
-                  height: double.infinity,
-                  margin: const EdgeInsets.all(0),
-                  padding: const EdgeInsets.all(0),
-                ),
-                'iframe': Style(
-                  width: double.infinity,
-                  height: 200.0,
-                ),
-              },
-            ),
-
-            
-          ],
+        appBar: AppBar(
+          title: Text(nama),
         ),
-      ),
-    );
+        body: SizedBox(
+          width: 150,
+          height: 200,
+          child: AspectRatio(
+            aspectRatio: 1.0, // 1:1 aspect ratio
+            child: VideoPlayerWidget(
+              videoUrl: videoUrl,
+            ),
+          ),
+        ));
   }
 }
 
