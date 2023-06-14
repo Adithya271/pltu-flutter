@@ -8,14 +8,13 @@ class TypeData {
   final String name;
   final String description;
   final String content;
-  final String videoUrl;
 
-  TypeData(
-      {required this.imageUrl,
-      required this.name,
-      required this.description,
-      required this.content,
-      required this.videoUrl});
+  TypeData({
+    required this.imageUrl,
+    required this.name,
+    required this.description,
+    required this.content,
+  });
 }
 
 class DashboardUser extends StatefulWidget {
@@ -90,17 +89,13 @@ class _DashboardUserState extends State<DashboardUser> {
                 final name = record['name'];
                 final description = record['description'];
                 final content = record['content'];
-                final video = videos[index];
-                final videoPath = video['path'].toString();
-                final videoUrl = 'https://digitm.isoae.com/$videoPath';
-                // Filter the data based on the search value
+
                 if (name.toLowerCase().contains(searchValue.toLowerCase())) {
                   typeDataList.add(TypeData(
                     imageUrl: imageUrl,
                     name: name,
                     description: description,
                     content: content,
-                    videoUrl: videoUrl,
                   ));
                 }
               }
@@ -165,15 +160,12 @@ class _DashboardUserState extends State<DashboardUser> {
                 final name = record['name'];
                 final description = record['description'];
                 final content = record['content'];
-                final video = videos[index];
-                final videoPath = video['path'].toString();
-                final videoUrl = 'https://digitm.isoae.com/$videoPath';
+
                 typeDataList.add(TypeData(
                   imageUrl: imageUrl,
                   name: name,
                   description: description,
                   content: content,
-                  videoUrl: videoUrl,
                 ));
               }
 
@@ -414,7 +406,7 @@ class _DashboardUserState extends State<DashboardUser> {
             for (int i = 0; i < records.length; i++) {
               final record = records[i];
               final images = record['images'] as List<dynamic>;
-              final videos = record['videos'] as List<dynamic>;
+
               final typeDataList = <TypeData>[];
 
               for (int index = 0; index < images.length; index++) {
@@ -424,15 +416,13 @@ class _DashboardUserState extends State<DashboardUser> {
                 final name = record['name'];
                 final description = record['description'];
                 final content = record['content'];
-                final video = videos[index];
-                final videoPath = video['path'].toString();
-                final videoUrl = 'https://digitm.isoae.com/$videoPath';
+
                 typeDataList.add(TypeData(
-                    imageUrl: imageUrl,
-                    name: name,
-                    description: description,
-                    content: content,
-                    videoUrl: videoUrl));
+                  imageUrl: imageUrl,
+                  name: name,
+                  description: description,
+                  content: content,
+                ));
               }
 
               setState(() {
@@ -489,7 +479,7 @@ class _DashboardUserState extends State<DashboardUser> {
             for (int i = 0; i < records.length; i++) {
               final record = records[i];
               final images = record['images'] as List<dynamic>;
-              final videos = record['videos'] as List<dynamic>;
+
               final typeDataList = <TypeData>[];
 
               for (int index = 0; index < images.length; index++) {
@@ -499,15 +489,13 @@ class _DashboardUserState extends State<DashboardUser> {
                 final name = record['name'];
                 final description = record['description'];
                 final content = record['content'];
-                final video = videos[index];
-                final videoPath = video['path'].toString();
-                final videoUrl = 'https://digitm.isoae.com/$videoPath';
+
                 typeDataList.add(TypeData(
-                    imageUrl: imageUrl,
-                    name: name,
-                    description: description,
-                    content: content,
-                    videoUrl: videoUrl));
+                  imageUrl: imageUrl,
+                  name: name,
+                  description: description,
+                  content: content,
+                ));
               }
 
               setState(() {
@@ -563,7 +551,7 @@ class _DashboardUserState extends State<DashboardUser> {
             for (int i = 0; i < records.length; i++) {
               final record = records[i];
               final images = record['images'] as List<dynamic>;
-              final videos = record['videos'] as List<dynamic>;
+
               final typeDataList = <TypeData>[];
 
               for (int index = 0; index < images.length; index++) {
@@ -573,15 +561,13 @@ class _DashboardUserState extends State<DashboardUser> {
                 final name = record['name'];
                 final description = record['description'];
                 final content = record['content'];
-                final video = videos[index];
-                final videoPath = video['path'].toString();
-                final videoUrl = 'https://digitm.isoae.com/$videoPath';
+
                 typeDataList.add(TypeData(
-                    imageUrl: imageUrl,
-                    name: name,
-                    description: description,
-                    content: content,
-                    videoUrl: videoUrl));
+                  imageUrl: imageUrl,
+                  name: name,
+                  description: description,
+                  content: content,
+                ));
               }
 
               setState(() {
@@ -637,7 +623,7 @@ class _DashboardUserState extends State<DashboardUser> {
             for (int i = 0; i < records.length; i++) {
               final record = records[i];
               final images = record['images'] as List<dynamic>;
-              final videos = record['videos'] as List<dynamic>;
+
               final typeDataList = <TypeData>[];
 
               for (int index = 0; index < images.length; index++) {
@@ -647,15 +633,13 @@ class _DashboardUserState extends State<DashboardUser> {
                 final name = record['name'];
                 final description = record['description'];
                 final content = record['content'];
-                final video = videos[index];
-                final videoPath = video['path'].toString();
-                final videoUrl = 'https://digitm.isoae.com/$videoPath';
+
                 typeDataList.add(TypeData(
-                    imageUrl: imageUrl,
-                    name: name,
-                    description: description,
-                    content: content,
-                    videoUrl: videoUrl));
+                  imageUrl: imageUrl,
+                  name: name,
+                  description: description,
+                  content: content,
+                ));
               }
 
               setState(() {
@@ -879,7 +863,6 @@ class _DashboardUserState extends State<DashboardUser> {
                           name: data.name,
                           description: data.description,
                           content: data.content,
-                          videoUrl: data.videoUrl,
                         ),
                       ),
                     );
@@ -917,14 +900,6 @@ class _DashboardUserState extends State<DashboardUser> {
                                   overflow: TextOverflow.ellipsis,
                                 ),
                                 const SizedBox(height: 5),
-                                Text(
-                                  data.description,
-                                  style: const TextStyle(
-                                    fontSize: 14,
-                                  ),
-                                  maxLines: 2,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
                               ],
                             ),
                           ),

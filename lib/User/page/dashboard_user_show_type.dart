@@ -8,7 +8,6 @@ class DashboardUserShowType extends StatelessWidget {
   final String name;
   final String description;
   final String content;
-  final String videoUrl;
 
   const DashboardUserShowType({
     super.key,
@@ -16,7 +15,6 @@ class DashboardUserShowType extends StatelessWidget {
     required this.name,
     required this.description,
     required this.content,
-    required this.videoUrl,
   });
 
   @override
@@ -29,26 +27,6 @@ class DashboardUserShowType extends StatelessWidget {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            SizedBox(
-              width: 400,
-              height: 200,
-              child: AspectRatio(
-                aspectRatio: 1.0, // 1:1 aspect ratio
-                child: VideoPlayerWidget(
-                  videoUrl: videoUrl,
-                ),
-              ),
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            Image.network(
-              imageUrl,
-              width: 400,
-              height: 200,
-              fit: BoxFit.cover,
-            ),
-            const SizedBox(height: 16.0),
             Html(
               data: content,
               style: {
