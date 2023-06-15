@@ -79,7 +79,7 @@ class _DashboardUserState extends State<DashboardUser> {
             for (int i = 0; i < records.length; i++) {
               final record = records[i];
               final images = record['images'] as List<dynamic>;
-              final videos = record['videos'] as List<dynamic>;
+
               final typeDataList = <TypeData>[];
 
               for (int index = 0; index < images.length; index++) {
@@ -89,7 +89,9 @@ class _DashboardUserState extends State<DashboardUser> {
                 final name = record['name'];
                 final description = record['description'];
                 final content = record['content'];
-
+                
+                
+                // Filter the data based on the search value
                 if (name.toLowerCase().contains(searchValue.toLowerCase())) {
                   typeDataList.add(TypeData(
                     imageUrl: imageUrl,
@@ -150,7 +152,7 @@ class _DashboardUserState extends State<DashboardUser> {
             for (int i = 0; i < records.length; i++) {
               final record = records[i];
               final images = record['images'] as List<dynamic>;
-              final videos = record['videos'] as List<dynamic>;
+
               final typeDataList = <TypeData>[];
 
               for (int index = 0; index < images.length; index++) {
@@ -669,155 +671,188 @@ class _DashboardUserState extends State<DashboardUser> {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            const SizedBox(
-              height: 30,
-            ),
-            const Padding(
-              padding: EdgeInsets.only(right: 258.0),
-              child: Text(
-                'Filter Data',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+    return Stack(
+      children: [
+        SingleChildScrollView(
+          child: Column(
+            children: [
+              const SizedBox(
+                height: 30,
               ),
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            DropdownButtonFormField<String>(
-              value: selectedDivisi.isNotEmpty ? selectedDivisi : null,
-              items: listDivisi.map((divisi) {
-                return DropdownMenuItem<String>(
-                  value: divisi['value'].toString(),
-                  child: Text(divisi['text'].toString()),
-                );
-              }).toList(),
-              onChanged: (value) {
-                setState(() {
-                  selectedDivisi = value ?? '';
-                  selectedArea = '';
-                  selectedGroupEq = '';
-                  selectedEquipment = '';
+              Stack(
+                children: [
+                  Image.asset(
+                    "assets/logopltu.png",
+                    width: 100,
+                    height: 100,
+                  ),
+                ],
+              ),
+              const SizedBox(
+                height: 30,
+              ),
+              Container(
+                width: 200, // Menentukan lebar gambar
+                height: 50, // Menentukan tinggi gambar
+                margin: const EdgeInsets.only(
+                    right: 160), // Menentukan jarak kiri gambar dari tepi
+                child: Image.asset("assets/texttselamat.png"),
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              Container(
+                width: 200, // Menentukan lebar gambar
+                height: 20, // Menentukan tinggi gambar
+                margin: const EdgeInsets.only(
+                    right: 270), // Menentukan jarak kiri gambar dari tepi
+                child: Image.asset("assets/textfilter.png"),
+              ),
+              Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      DropdownButtonFormField<String>(
+                        value:
+                            selectedDivisi.isNotEmpty ? selectedDivisi : null,
+                        items: listDivisi.map((divisi) {
+                          return DropdownMenuItem<String>(
+                            value: divisi['value'].toString(),
+                            child: Text(divisi['text'].toString()),
+                          );
+                        }).toList(),
+                        onChanged: (value) {
+                          setState(() {
+                            selectedDivisi = value ?? '';
+                            selectedArea = '';
+                            selectedGroupEq = '';
+                            selectedEquipment = '';
 
-                  listArea = [];
-                  listGroupEq = [];
-                  listEquipment = [];
-                });
-                if (selectedDivisi.isNotEmpty) {
-                  getOptionArea(selectedDivisi);
-                  fetchData4(selectedDivisi);
-                }
-              },
-              decoration: const InputDecoration(
-                labelText: 'Divisi',
-                border: OutlineInputBorder(),
-                contentPadding:
-                    EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                isDense: true,
-              ),
-            ),
-            const SizedBox(height: 16),
-            DropdownButtonFormField<String>(
-              value: selectedArea.isNotEmpty ? selectedArea : null,
-              items: listArea.map((area) {
-                return DropdownMenuItem<String>(
-                  value: area['value'].toString(),
-                  child: Text(area['text'].toString()),
-                );
-              }).toList(),
-              onChanged: (value) {
-                setState(() {
-                  selectedArea = value ?? '';
-                  selectedGroupEq = '';
-                  selectedEquipment = '';
-                  listGroupEq = [];
-                  listEquipment = [];
-                });
-                if (selectedArea.isNotEmpty) {
-                  getOptionGroupEq(selectedDivisi, selectedArea);
-                  fetchData3(selectedDivisi, selectedArea);
-                }
-              },
-              decoration: const InputDecoration(
-                labelText: 'Area',
-                border: OutlineInputBorder(),
-                contentPadding:
-                    EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                isDense: true,
-              ),
-            ),
-            const SizedBox(height: 16),
-            DropdownButtonFormField<String>(
-              value: selectedGroupEq.isNotEmpty ? selectedGroupEq : null,
-              items: listGroupEq.map((groupEq) {
-                return DropdownMenuItem<String>(
-                  value: groupEq['value'].toString(),
-                  child: Text(groupEq['text'].toString()),
-                );
-              }).toList(),
-              onChanged: (value) {
-                setState(() {
-                  selectedGroupEq = value ?? '';
-                  selectedEquipment = '';
-                  listEquipment = [];
-                });
-                if (selectedGroupEq.isNotEmpty) {
-                  getOptionEquipment(
-                      selectedDivisi, selectedArea, selectedGroupEq);
-                  fetchData2(
-                    selectedDivisi,
-                    selectedArea,
-                    selectedGroupEq,
-                  );
-                }
-              },
-              decoration: const InputDecoration(
-                labelText: 'Group Equipment',
-                border: OutlineInputBorder(),
-                contentPadding:
-                    EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                isDense: true,
-              ),
-            ),
-            const SizedBox(height: 16),
-            DropdownButtonFormField<String>(
-              value: selectedEquipment.isNotEmpty ? selectedEquipment : null,
-              items: listEquipment.map((equipment) {
-                return DropdownMenuItem<String>(
-                  value: equipment['value'].toString(),
-                  child: Text(equipment['text'].toString()),
-                );
-              }).toList(),
-              onChanged: (value) {
-                setState(() {
-                  selectedEquipment = value ?? '';
-                });
+                            listArea = [];
+                            listGroupEq = [];
+                            listEquipment = [];
+                          });
+                          if (selectedDivisi.isNotEmpty) {
+                            getOptionArea(selectedDivisi);
+                            fetchData4(selectedDivisi);
+                          }
+                        },
+                        decoration: const InputDecoration(
+                          labelText: 'Divisi',
+                          border: OutlineInputBorder(),
+                          contentPadding: EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 10),
+                          isDense: true,
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      DropdownButtonFormField<String>(
+                        value: selectedArea.isNotEmpty ? selectedArea : null,
+                        items: listArea.map((area) {
+                          return DropdownMenuItem<String>(
+                            value: area['value'].toString(),
+                            child: Text(area['text'].toString()),
+                          );
+                        }).toList(),
+                        onChanged: (value) {
+                          setState(() {
+                            selectedArea = value ?? '';
+                            selectedGroupEq = '';
+                            selectedEquipment = '';
+                            listGroupEq = [];
+                            listEquipment = [];
+                          });
+                          if (selectedArea.isNotEmpty) {
+                            getOptionGroupEq(selectedDivisi, selectedArea);
+                            fetchData3(selectedDivisi, selectedArea);
+                          }
+                        },
+                        decoration: const InputDecoration(
+                          labelText: 'Area',
+                          border: OutlineInputBorder(),
+                          contentPadding: EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 10),
+                          isDense: true,
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      DropdownButtonFormField<String>(
+                        value:
+                            selectedGroupEq.isNotEmpty ? selectedGroupEq : null,
+                        items: listGroupEq.map((groupEq) {
+                          return DropdownMenuItem<String>(
+                            value: groupEq['value'].toString(),
+                            child: Text(groupEq['text'].toString()),
+                          );
+                        }).toList(),
+                        onChanged: (value) {
+                          setState(() {
+                            selectedGroupEq = value ?? '';
+                            selectedEquipment = '';
+                            listEquipment = [];
+                          });
+                          if (selectedGroupEq.isNotEmpty) {
+                            getOptionEquipment(
+                                selectedDivisi, selectedArea, selectedGroupEq);
+                            fetchData2(
+                              selectedDivisi,
+                              selectedArea,
+                              selectedGroupEq,
+                            );
+                          }
+                        },
+                        decoration: const InputDecoration(
+                          labelText: 'Group Equipment',
+                          border: OutlineInputBorder(),
+                          contentPadding: EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 10),
+                          isDense: true,
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      DropdownButtonFormField<String>(
+                        value: selectedEquipment.isNotEmpty
+                            ? selectedEquipment
+                            : null,
+                        items: listEquipment.map((equipment) {
+                          return DropdownMenuItem<String>(
+                            value: equipment['value'].toString(),
+                            child: Text(equipment['text'].toString()),
+                          );
+                        }).toList(),
+                        onChanged: (value) {
+                          setState(() {
+                            selectedEquipment = value ?? '';
+                          });
 
-                if (selectedEquipment.isNotEmpty) {
-                  fetchData(selectedDivisi, selectedArea, selectedGroupEq,
-                      selectedEquipment);
-                }
-              },
-              decoration: const InputDecoration(
-                labelText: 'Equipment',
-                border: OutlineInputBorder(),
-                contentPadding:
-                    EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                isDense: true,
+                          if (selectedEquipment.isNotEmpty) {
+                            fetchData(selectedDivisi, selectedArea,
+                                selectedGroupEq, selectedEquipment);
+                          }
+                        },
+                        decoration: const InputDecoration(
+                          labelText: 'Equipment',
+                          border: OutlineInputBorder(),
+                          contentPadding: EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 10),
+                          isDense: true,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ),
-            ),
-            const SizedBox(height: 16),
-            Padding(
-              padding: const EdgeInsets.only(right: 240.0),
-              child: ElevatedButton(
-                onPressed: () {
-                  selectedDivisi = '';
-                  selectedArea = '';
-                  selectedGroupEq = '';
-                  selectedEquipment = '';
+              const SizedBox(height: 16),
+              Padding(
+                padding: const EdgeInsets.only(right: 240.0),
+                child: ElevatedButton(
+                  onPressed: () {
+                    selectedDivisi = '';
+                    selectedArea = '';
+                    selectedGroupEq = '';
+                    selectedEquipment = '';
 
                   listArea = [];
                   listGroupEq = [];
@@ -863,6 +898,7 @@ class _DashboardUserState extends State<DashboardUser> {
                           name: data.name,
                           description: data.description,
                           content: data.content,
+                         
                         ),
                       ),
                     );
@@ -900,6 +936,14 @@ class _DashboardUserState extends State<DashboardUser> {
                                   overflow: TextOverflow.ellipsis,
                                 ),
                                 const SizedBox(height: 5),
+                                Text(
+                                  data.description,
+                                  style: const TextStyle(
+                                    fontSize: 14,
+                                  ),
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
                               ],
                             ),
                           ),
@@ -912,7 +956,33 @@ class _DashboardUserState extends State<DashboardUser> {
             ),
           ],
         ),
-      ),
+      ),],
     );
   }
+}
+
+class ShapeClipper extends CustomClipper<Path> {
+  @override
+  Path getClip(Size size) {
+    final path = Path();
+    path.lineTo(0, size.height - 25);
+    path.quadraticBezierTo(
+      size.width / 4, // Control point x
+      size.height, // Control point y
+      size.width / 2, // End point x
+      size.height, // End point y
+    );
+    path.quadraticBezierTo(
+      size.width * 3 / 4, // Control point x
+      size.height, // Control point y
+      size.width, // End point x
+      size.height - 25, // End point y
+    );
+    path.lineTo(size.width, 0);
+    path.close();
+    return path;
+  }
+
+  @override
+  bool shouldReclip(CustomClipper<Path> oldClipper) => false;
 }

@@ -92,5 +92,20 @@ class APIService {
   }
 
   //mengambil data user
+  static Future<Map<String, dynamic>> getUserData() async {
+    // Lakukan logika untuk mengambil data pengguna dari API
+    // Misalnya, melakukan permintaan HTTP ke endpoint yang sesuai
+    // dan mengembalikan data pengguna dalam bentuk Map
+
+    // Contoh implementasi sederhana:
+    final response = await http.get(Uri.parse('https://example.com/api/user'));
+
+    if (response.statusCode == 200) {
+      final jsonData = json.decode(response.body);
+      return jsonData['data'] as Map<String, dynamic>;
+    } else {
+      throw Exception('Failed to get user data');
+    }
+  }
   
 }

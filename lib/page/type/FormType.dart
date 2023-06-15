@@ -511,7 +511,8 @@ class FormTypeState extends State<FormType> {
         await ImagePicker().pickMultiImage(imageQuality: 50);
     setState(() {
       _pickedImages =
-          pickedFiles.map((file) => PickedFile(file.path)).toList() ?? [];
+          pickedFiles.map((file) => PickedFile(file.path)).toList()
+          ;
       formData['image'] = _pickedImages.map((pickedImage) {
         var file = File(pickedImage.path);
         var fileName = file.path.split('/').last;
