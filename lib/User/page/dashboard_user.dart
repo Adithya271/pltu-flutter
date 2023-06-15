@@ -89,8 +89,7 @@ class _DashboardUserState extends State<DashboardUser> {
                 final name = record['name'];
                 final description = record['description'];
                 final content = record['content'];
-                
-                
+
                 // Filter the data based on the search value
                 if (name.toLowerCase().contains(searchValue.toLowerCase())) {
                   typeDataList.add(TypeData(
@@ -408,7 +407,7 @@ class _DashboardUserState extends State<DashboardUser> {
             for (int i = 0; i < records.length; i++) {
               final record = records[i];
               final images = record['images'] as List<dynamic>;
-
+              final videos = record['videos'] as List<dynamic>;
               final typeDataList = <TypeData>[];
 
               for (int index = 0; index < images.length; index++) {
@@ -481,7 +480,7 @@ class _DashboardUserState extends State<DashboardUser> {
             for (int i = 0; i < records.length; i++) {
               final record = records[i];
               final images = record['images'] as List<dynamic>;
-
+              final videos = record['videos'] as List<dynamic>;
               final typeDataList = <TypeData>[];
 
               for (int index = 0; index < images.length; index++) {
@@ -854,109 +853,127 @@ class _DashboardUserState extends State<DashboardUser> {
                     selectedGroupEq = '';
                     selectedEquipment = '';
 
-                  listArea = [];
-                  listGroupEq = [];
-                  listEquipment = [];
-                  fetchAllData();
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.white,
-                  foregroundColor: Colors.grey,
-                  side: const BorderSide(color: Colors.grey),
-                ),
-                child: const Text(
-                  'Reset Filter',
-                  style: TextStyle(color: Colors.red),
-                ),
-              ),
-            ),
-            TextField(
-              onChanged: onSearching,
-              decoration: const InputDecoration(
-                hintText: 'Cari Nama Disini',
-              ),
-            ),
-            const SizedBox(height: 16),
-            GridView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                crossAxisSpacing: 8.0,
-                mainAxisSpacing: 8.0,
-              ),
-              itemCount: typeData.length,
-              itemBuilder: (context, index) {
-                final data = typeData[index];
-                return GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => DashboardUserShowType(
-                          imageUrl: data.imageUrl,
-                          name: data.name,
-                          description: data.description,
-                          content: data.content,
-                         
-                        ),
-                      ),
-                    );
+                    listArea = [];
+                    listGroupEq = [];
+                    listEquipment = [];
+                    fetchAllData();
                   },
-                  child: Card(
-                    child: Container(
-                      width: 150,
-                      padding: const EdgeInsets.all(8),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Expanded(
-                            flex: 2,
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(10),
-                              child: Image.network(
-                                data.imageUrl,
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                          ),
-                          const SizedBox(height: 5),
-                          Expanded(
-                            flex: 1,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  data.name,
-                                  style: const TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                  maxLines: 2,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                                const SizedBox(height: 5),
-                                Text(
-                                  data.description,
-                                  style: const TextStyle(
-                                    fontSize: 14,
-                                  ),
-                                  maxLines: 2,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.white,
+                    foregroundColor: Colors.grey,
+                    side: const BorderSide(color: Colors.grey),
+                  ),
+                  child: const Text(
+                    'Reset Filter',
+                    style: TextStyle(color: Colors.red),
+                  ),
+                ),
+              ),
+              Card(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                elevation: 3,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: TextField(
+                    onChanged: onSearching,
+                    decoration: InputDecoration(
+                      hintText: 'Cari Nama Disini',
+                      contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 10),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8.0),
                       ),
                     ),
                   ),
-                );
-              },
-            ),
-          ],
+                ),
+              ),
+              const SizedBox(height: 16),
+              GridView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  crossAxisSpacing: 8.0,
+                  mainAxisSpacing: 8.0,
+                ),
+                itemCount: typeData.length,
+                itemBuilder: (context, index) {
+                  final data = typeData[index];
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => DashboardUserShowType(
+                            imageUrl: data.imageUrl,
+                            name: data.name,
+                            description: data.description,
+                            content: data.content,
+                          ),
+                        ),
+                      );
+                    },
+                    child: Card(
+                      child: Container(
+                        width: 150,
+                        padding: const EdgeInsets.all(8),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Expanded(
+                              flex: 2,
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(10),
+                                child: Image.network(
+                                  data.imageUrl,
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 5),
+                            Expanded(
+                              flex: 1,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      data.name,
+                                      style: const TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 5),
+                                  Expanded(
+                                    child: Text(
+                                      data.description,
+                                      style: const TextStyle(
+                                        fontSize: 14,
+                                      ),
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ],
+          ),
         ),
-      ),],
+      ],
     );
   }
 }
