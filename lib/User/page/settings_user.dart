@@ -14,12 +14,12 @@ class SettingsUser extends StatelessWidget {
           child: ClipPath(
             clipper: ShapeClipper(),
             child: Container(
-              width: 400, // Ubah lebar container sesuai keinginan Anda
+              width: 400, //
               height: 250,
               color: Colors.blue,
               child: Center(
                 child: Image.asset(
-                  'assets/grup1.png', // Ganti dengan path gambar Anda
+                  'assets/grup1.png',
                   width: 200,
                   height: 190,
                 ),
@@ -28,22 +28,22 @@ class SettingsUser extends StatelessWidget {
           ),
         ),
         Positioned(
-  top: 10, // Koordinat Y dari bagian atas
-  right: 15, // Koordinat X dari bagian kanan
-  child: GestureDetector(
-    onTap: () {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => SignIn()),
-      );
-    },
-    child: Image.asset(
-      'assets/logopltu.png', // Ganti dengan path gambar logo PLTU Anda
-      width: 30,
-      height: 30,
-    ),
-  ),
-),
+          top: 10, // Koordinat Y dari bagian atas
+          right: 15, // Koordinat X dari bagian kanan
+          child: GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const SignIn()),
+              );
+            },
+            child: Image.asset(
+              'assets/logopltu.png', // Ganti dengan path gambar logo PLTU Anda
+              width: 30,
+              height: 30,
+            ),
+          ),
+        ),
         Positioned(
           top: 210, // Koordinat Y dari bagian atas
           left: 100, // Koordinat X dari bagian kiri
@@ -52,13 +52,13 @@ class SettingsUser extends StatelessWidget {
         Positioned(
           top: 280, // Koordinat Y dari bagian atas
           left: 35, // Koordinat X dari bagian kiri
-          child: Container(
+          child: SizedBox(
             width: 300,
             child: RichText(
               textAlign: TextAlign.left,
               text: TextSpan(
                 style: DefaultTextStyle.of(context).style,
-                children: [
+                children: const [
                   TextSpan(
                     text: 'PT.ASLI ISOAE SOLUSINE',
                     style: TextStyle(fontWeight: FontWeight.bold),
@@ -71,13 +71,13 @@ class SettingsUser extends StatelessWidget {
         Positioned(
           top: 308, // Koordinat Y dari bagian atas
           left: 40, // Koordinat X dari bagian kiri
-          child: Container(
+          child: SizedBox(
             width: 300,
             child: RichText(
               textAlign: TextAlign.left,
               text: TextSpan(
                 style: DefaultTextStyle.of(context).style,
-                children: [
+                children: const [
                   TextSpan(
                     text:
                         'Kami mengubah permintaan klien tentang desain & pengembangan web menjadi karya nyata. Dikemas dengan pengalaman 10 tahun dalam mengembangkan situs web,',
@@ -92,44 +92,45 @@ class SettingsUser extends StatelessWidget {
           ),
         ),
         Positioned(
-  top: 470, // Koordinat Y dari bagian atas
-  left: 40, // Koordinat X dari bagian kiri
-  child: Container(
-    width: 250,
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        RichText(
-          textAlign: TextAlign.left,
-          text: TextSpan(
-            style: DefaultTextStyle.of(context).style,
-            children: [
-              TextSpan(
-                text: 'Website',
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-            ],
+          top: 470, // Koordinat Y dari bagian atas
+          left: 40, // Koordinat X dari bagian kiri
+          child: SizedBox(
+            width: 250,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                RichText(
+                  textAlign: TextAlign.left,
+                  text: TextSpan(
+                    style: DefaultTextStyle.of(context).style,
+                    children: const [
+                      TextSpan(
+                        text: 'Website',
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(
+                    height: 1), // Jarak antara teks "Website" dan teks URL
+                Text(
+                  'https://isoae.id/',
+                  style: DefaultTextStyle.of(context).style,
+                ),
+              ],
+            ),
           ),
         ),
-        SizedBox(height: 1), // Jarak antara teks "Website" dan teks URL
-        Text(
-          'https://isoae.id/',
-          style: DefaultTextStyle.of(context).style,
-        ),
-      ],
-    ),
-  ),
-),
-Positioned(
+        Positioned(
           top: 308, // Koordinat Y dari bagian atas
           left: 40, // Koordinat X dari bagian kiri
-          child: Container(
+          child: SizedBox(
             width: 300,
             child: RichText(
               textAlign: TextAlign.left,
               text: TextSpan(
                 style: DefaultTextStyle.of(context).style,
-                children: [
+                children: const [
                   TextSpan(
                     text:
                         'Kami mengubah permintaan klien tentang desain & pengembangan web menjadi karya nyata. Dikemas dengan pengalaman 10 tahun dalam mengembangkan situs web,',
@@ -144,39 +145,41 @@ Positioned(
           ),
         ),
         Positioned(
-  top: 515, // Koordinat Y dari bagian atas
-  left: 40, // Koordinat X dari bagian kiri
-  child: Container(
-    width: 250,
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        RichText(
-          textAlign: TextAlign.left,
-          text: TextSpan(
-            style: DefaultTextStyle.of(context).style,
-            children: [
-              TextSpan(
-                text: 'Telepon',
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-            ],
+          top: 515, // Koordinat Y dari bagian atas
+          left: 40, // Koordinat X dari bagian kiri
+          child: SizedBox(
+            width: 250,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                RichText(
+                  textAlign: TextAlign.left,
+                  text: TextSpan(
+                    style: DefaultTextStyle.of(context).style,
+                    children: const [
+                      TextSpan(
+                        text: 'Telepon',
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(
+                    height: 1), // Jarak antara teks "Website" dan teks URL
+                Text(
+                  '021-75923000',
+                  style: DefaultTextStyle.of(context).style,
+                ),
+              ],
+            ),
           ),
         ),
-        SizedBox(height: 1), // Jarak antara teks "Website" dan teks URL
-        Text(
-          '021-75923000',
-          style: DefaultTextStyle.of(context).style,
-        ),
-      ],
-    ),
-  ),
-),
         // Tambahkan widget lainnya di bawah atau di atas gambar dan teks
       ],
     );
   }
 }
+
 class ShapeClipper extends CustomClipper<Path> {
   @override
   Path getClip(Size size) {

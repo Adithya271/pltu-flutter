@@ -57,7 +57,7 @@ class _SignInState extends State<SignIn> {
     print('Login: ${loginResult["success"]}');
 
     try {
-  if (loginResult['success']) {
+      if (loginResult['success']) {
         // Login successful
         if (loginResult['userId'] == 1) {
           // UserId is 1, login success
@@ -70,44 +70,44 @@ class _SignInState extends State<SignIn> {
             MaterialPageRoute(builder: (context) => const HomePage()),
           );
         } else {
-      // UserId is not 1, login failed
-      showDialog(
-        context: context,
-        builder: (ctx) => AlertDialog(
-          title: const Text('Login Failed'),
-          content: const Text('Anda bukan Admin'),
-          actions: [
-            TextButton(
-              child: const Text('OK'),
-              onPressed: () {
-                Navigator.of(ctx).pop();
-              },
+          // UserId is not 1, login failed
+          showDialog(
+            context: context,
+            builder: (ctx) => AlertDialog(
+              title: const Text('Login Failed'),
+              content: const Text('Anda bukan Admin'),
+              actions: [
+                TextButton(
+                  child: const Text('OK'),
+                  onPressed: () {
+                    Navigator.of(ctx).pop();
+                  },
+                ),
+              ],
             ),
-          ],
-        ),
-      );
-    }
-  } else {
-    // Login failed
-    final errorMessage = loginResult['message'] ?? 'Email atau password salah';
-    showDialog(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('Login Failed'),
-        content: Text(errorMessage),
-        actions: [
-          TextButton(
-            child: const Text('OK'),
-            onPressed: () {
-              Navigator.of(ctx).pop();
-            },
+          );
+        }
+      } else {
+        // Login failed
+        final errorMessage =
+            loginResult['message'] ?? 'Email atau password salah';
+        showDialog(
+          context: context,
+          builder: (ctx) => AlertDialog(
+            title: const Text('Login Failed'),
+            content: Text(errorMessage),
+            actions: [
+              TextButton(
+                child: const Text('OK'),
+                onPressed: () {
+                  Navigator.of(ctx).pop();
+                },
+              ),
+            ],
           ),
-        ],
-      ),
-    );
-  }
-} 
- on FormatException {
+        );
+      }
+    } on FormatException {
       // FormatException occurred
       showDialog(
         context: context,
@@ -145,152 +145,126 @@ class _SignInState extends State<SignIn> {
   }
 
   @override
-Widget build(BuildContext context) {
-  return Scaffold(
-    backgroundColor: Colors.blue[200],
-    resizeToAvoidBottomInset: false,
-    body: Stack(
-      children: [
-        Positioned(
-          top: 30,
-          left: 10,
-          child: IconButton(
-            icon: const Icon(Icons.arrow_back),
-            onPressed: () {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const HomePageUser()),
-            );
-          }
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.blue[200],
+      resizeToAvoidBottomInset: false,
+      body: Stack(
+        children: [
+          Positioned(
+            top: 30,
+            left: 10,
+            child: IconButton(
+                icon: const Icon(Icons.arrow_back),
+                onPressed: () {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const HomePageUser()),
+                  );
+                }),
           ),
-        ),
-        Positioned(
-          top: 90,
-          left: 120,
-          child: Image.asset(
-            'assets/txtlogin.png', // Ganti dengan path yang sesuai dengan lokasi file txtlogin.png di dalam folder assets
-            width: 100,
-            height: 100,
-          ),
-        ),
-        Positioned(
-          top: 200,
-          left: 40,
-          right: 40,
-          child: Container(
-            width: 300, // Atur lebar Card sesuai keinginan
-            height: 300, // Atur tinggi Card sesuai keinginan
-            child: Card(
-              elevation: 4,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(15),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            Image.asset(
-              'assets/grup3.png', // Ganti dengan path yang sesuai dengan lokasi file gambar email_icon.png di dalam folder assets
-              width: 80,
-              height: 20,
+          Positioned(
+            top: 90,
+            left: 120,
+            child: Image.asset(
+              'assets/txtlogin.png', // Ganti dengan path yang sesuai dengan lokasi file txtlogin.png di dalam folder assets
+              width: 100,
+              height: 100,
             ),
-            const SizedBox(height: 10),
-            TextField(
-                controller: _emailController,
-                decoration: InputDecoration(
-                  labelText: 'Email',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(15),
-                  ),
-                  errorText: _emailErrorText.isNotEmpty ? _emailErrorText : null,
-                  prefixIcon: Icon(Icons.email), // Tambahkan ikon email di sini
-                ),
-              ),
-
-            const SizedBox(height: 10),
-            TextField(
-              controller: _passwordController,
-              obscureText: true,
-              decoration: InputDecoration(
-                labelText: 'Password',
-                border: OutlineInputBorder(
+          ),
+          Positioned(
+            top: 200,
+            left: 40,
+            right: 40,
+            child: SizedBox(
+              width: 300, // Atur lebar Card sesuai keinginan
+              height: 300, // Atur tinggi Card sesuai keinginan
+              child: Card(
+                elevation: 4,
+                shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(15),
                 ),
-                errorText: _passwordErrorText.isNotEmpty ? _passwordErrorText : null,
-                prefixIcon: Icon(Icons.key)
-              ),
-            ),
-            const SizedBox(height: 40),
-            SizedBox(
-              height: 40, // Atur tinggi ElevatedButton sesuai keinginan
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: () {
-                  _login(); // Tambahkan fungsi yang akan dijalankan ketika tombol "Login" ditekan
-                },
-                child: const Text('Login'),
-              ),
-            ),
-            const SizedBox(height: 10),
-            Align(
-  alignment: Alignment.center,
-  child: GestureDetector(
-    onTap: () {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => SignUp()),
-      );
-    },
-    child: InkWell(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => SignUp()),
-        );
-      },
-      splashColor: Colors.blue, // Atur warna efek ketika diklik
-      child: Text(
-        'Daftar disini',
-        style: TextStyle(
-          decoration: TextDecoration.underline,
-          color: Colors.black, // Atur warna teks
-        ),
-      ),
-    ),
-  ),
-),
-
-          ],
-        ),
-      ),
-    ),
-  ),
-),
-
-
-        Positioned(
-          bottom: 0,
-          left: 0,
-          right: 0,
-          child: Align(
-            alignment: Alignment.bottomCenter,
-            child: Container(
-              height: 180,
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage('assets/bgbuild.png'),
-                  fit: BoxFit.cover,
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    children: [
+                      Image.asset(
+                        'assets/grup3.png', // Ganti dengan path yang sesuai dengan lokasi file gambar email_icon.png di dalam folder assets
+                        width: 80,
+                        height: 20,
+                      ),
+                      const SizedBox(height: 10),
+                      TextField(
+                        controller: _emailController,
+                        decoration: InputDecoration(
+                          labelText: 'Email',
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                          errorText: _emailErrorText.isNotEmpty
+                              ? _emailErrorText
+                              : null,
+                          prefixIcon: const Icon(
+                              Icons.email), // Tambahkan ikon email di sini
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      TextField(
+                        controller: _passwordController,
+                        obscureText: true,
+                        decoration: InputDecoration(
+                            labelText: 'Password',
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                            errorText: _passwordErrorText.isNotEmpty
+                                ? _passwordErrorText
+                                : null,
+                            prefixIcon: const Icon(Icons.key)),
+                      ),
+                      const SizedBox(height: 40),
+                      SizedBox(
+                        height:
+                            40, // Atur tinggi ElevatedButton sesuai keinginan
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            _login(); // Tambahkan fungsi yang akan dijalankan ketika tombol "Login" ditekan
+                          },
+                          child: const Text('Login'),
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                    ],
+                  ),
                 ),
               ),
             ),
           ),
-        ),
-      ],
-    ),
-  );
+          Positioned(
+            bottom: 0,
+            left: 0,
+            right: 0,
+            child: Align(
+              alignment: Alignment.bottomCenter,
+              child: Container(
+                height: 180,
+                decoration: const BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage('assets/bgbuild.png'),
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }
 
-}
 class WaveClipper extends CustomClipper<Path> {
   @override
   Path getClip(Size size) {
@@ -298,9 +272,10 @@ class WaveClipper extends CustomClipper<Path> {
     path.lineTo(0, size.height);
     path.lineTo(size.width, size.height);
     path.lineTo(size.width, 0);
-    path.quadraticBezierTo(size.width * 0.8, 0, size.width * 0.7, size.height * 0.15);
     path.quadraticBezierTo(
-        size.width * 0.6, size.height * 0.3, size.width * 0.4, size.height * 0.3);
+        size.width * 0.8, 0, size.width * 0.7, size.height * 0.15);
+    path.quadraticBezierTo(size.width * 0.6, size.height * 0.3,
+        size.width * 0.4, size.height * 0.3);
     path.quadraticBezierTo(
         size.width * 0.2, size.height * 0.3, 0, size.height * 0.5);
     path.close();
