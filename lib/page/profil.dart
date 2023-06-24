@@ -57,7 +57,7 @@ class _ProfilPageState extends State<ProfilPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Text('Profile Page'),
+            const Text('Halo Admin'),
             ElevatedButton(
               onPressed: _logout,
               child: const Text('Logout'),

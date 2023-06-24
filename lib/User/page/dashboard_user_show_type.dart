@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_html/flutter_html.dart';
+import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart';
+import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 class DashboardUserShowType extends StatelessWidget {
   final String imageUrl;
@@ -8,12 +9,12 @@ class DashboardUserShowType extends StatelessWidget {
   final String content;
 
   const DashboardUserShowType({
-    super.key,
+    Key? key,
     required this.imageUrl,
     required this.name,
     required this.description,
     required this.content,
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -25,20 +26,29 @@ class DashboardUserShowType extends StatelessWidget {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            Html(
-              data: content,
-              style: {
-                'p': Style(fontSize: const FontSize(16.0)),
-                'img': Style(
-                  width: double.infinity,
-                  height: double.infinity,
-                  margin: const EdgeInsets.all(0),
-                  padding: const EdgeInsets.all(0),
-                ),
-                'iframe': Style(
-                  width: double.infinity,
-                  height: 200.0,
-                ),
+            HtmlWidget(
+              content,
+              textStyle: const TextStyle(fontSize: 16.0),
+              customWidgetBuilder: (element) {
+                if (element.localName == 'iframe' &&
+                    element.attributes['src'] != null &&
+                    element.attributes['src']!.contains('youtube.com')) {
+                  final videoUrl = element.attributes['src']!;
+                  final youtubeId = YoutubePlayer.convertUrlToId(videoUrl);
+                  if (youtubeId != null) {
+                    return YoutubePlayer(
+                      controller: YoutubePlayerController(
+                        initialVideoId: youtubeId,
+                        flags: const YoutubePlayerFlags(
+                          autoPlay: false,
+                          mute: false,
+                        ),
+                      ),
+                      showVideoProgressIndicator: true,
+                    );
+                  }
+                }
+                return null;
               },
             ),
           ],

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pltu/page/dashboard.dart';
 import 'package:pltu/page/divisi/BrowseDivisi.dart';
 import 'package:pltu/page/equipment/BrowseEquipment.dart';
 import 'package:pltu/page/groupEquipment/BrowseGroupEquipment.dart';
@@ -6,7 +7,6 @@ import 'package:pltu/page/profil.dart';
 import 'package:pltu/page/sidebar.dart';
 import 'package:pltu/page/type/BrowseType.dart';
 import 'area/BrowseArea.dart';
-import 'dashboard.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);

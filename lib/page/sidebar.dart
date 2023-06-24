@@ -29,8 +29,8 @@ class SidebarMenu extends StatelessWidget {
             ),
           ),
           ListTile(
-            leading: const Icon(Icons.dashboard),
-            title: const Text('Dashboard'),
+            leading: const Icon(Icons.home),
+            title: const Text('Home'),
             onTap: () {
               onSidebarItemTapped(0);
             },
@@ -87,7 +87,6 @@ class SidebarMenu extends StatelessWidget {
             },
             selected: selectedIndex == 6,
           ),
-          
         ],
       ),
     );
