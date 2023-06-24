@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-// import 'package:flutter_html/flutter_html.dart';
+import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart';
+import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 class ShowContent extends StatelessWidget {
   final String nama;
@@ -16,22 +17,38 @@ class ShowContent extends StatelessWidget {
       ),
       body: SingleChildScrollView(
         controller: ScrollController(),
-        // child: Html(
-        //   data: content,
-        //   style: {
-        //     'p': Style(fontSize: const FontSize(16.0)),
-        //     'img': Style(
-        //       width: double.infinity,
-        //       height: double.infinity,
-        //       margin: const EdgeInsets.all(0),
-        //       padding: const EdgeInsets.all(0),
-        //     ),
-        //     'iframe': Style(
-        //       width: double.infinity,
-        //       height: 200.0,
-        //     ),
-        //   },
-        // ),
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            children: [
+              HtmlWidget(
+                content,
+                textStyle: const TextStyle(fontSize: 16.0),
+                customWidgetBuilder: (element) {
+                  if (element.localName == 'iframe' &&
+                      element.attributes['src'] != null &&
+                      element.attributes['src']!.contains('youtube.com')) {
+                    final videoUrl = element.attributes['src']!;
+                    final youtubeId = YoutubePlayer.convertUrlToId(videoUrl);
+                    if (youtubeId != null) {
+                      return YoutubePlayer(
+                        controller: YoutubePlayerController(
+                          initialVideoId: youtubeId,
+                          flags: const YoutubePlayerFlags(
+                            autoPlay: false,
+                            mute: false,
+                          ),
+                        ),
+                        showVideoProgressIndicator: true,
+                      );
+                    }
+                  }
+                  return null;
+                },
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

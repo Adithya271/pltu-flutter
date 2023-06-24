@@ -1,12 +1,8 @@
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:pltu/page/profil.dart';
 import 'package:pltu/services/api_services.dart';
 import 'package:email_validator/email_validator.dart';
-import 'package:pltu/signup_login/sign_up.dart';
 
 import '../User/page/home_user.dart';
-import '../User/page/settings_user.dart';
 import '../page/home.dart';
 
 class SignIn extends StatefulWidget {
@@ -58,13 +54,13 @@ class _SignInState extends State<SignIn> {
 
     try {
       if (loginResult['success']) {
-        // Login successful
-        if (loginResult['userId'] == 1) {
-          // UserId is 1, login success
+        // Login successf
+        if (loginResult['roleId'] == 1) {
+          // UserId  1, login success
           // Print record data
           print('Login Result:[success] $loginResult');
 
-          // Navigate to the HomePage
+          // ke HomePage
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(builder: (context) => const HomePage()),

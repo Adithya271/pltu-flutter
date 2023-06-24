@@ -27,47 +27,14 @@ class APIService {
       // Login successful
       token = responseData.data!.token!.accessToken!;
       final userId = responseData.data!.record!.id;
-      return {'success': true, 'token': token, 'userId': userId};
+      final RoleId = responseData.data!.record!.roleId;
+      return {'success': true, 'token': token, 'userId': userId,
+        'roleId': RoleId
+      };
     } else {
       // Login failed
       final errorMessage = responseData.responStatus!.message;
 
-      return {'success': false, 'message': errorMessage};
-    }
-  }
-
-  //signup
-  static Future<Map<String, dynamic>> register(
-      String email, String password, String name) async {
-    final apiUrl = Uri.parse('$baseUrl/register');
-
-    final response = await http.post(
-      apiUrl,
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer $token'
-      },
-      body: json.encode({
-        'email': email,
-        'password': password,
-        'name': name,
-      }),
-    );
-
-    print('Response Body: ${response.body}');
-    print('Response Status Code: ${response.statusCode}');
-
-    if (response.statusCode == 200) {
-      try {
-        final responseData = jsonDecode(response.body);
-        final userId = responseData['id'];
-        return {'success': true};
-      } catch (e) {
-        print('Error parsing JSON: $e');
-        return {'success': false, 'message': 'Error parsing JSON'};
-      }
-    } else {
-      final errorMessage = jsonDecode(response.body)['message'];
       return {'success': false, 'message': errorMessage};
     }
   }
@@ -90,22 +57,4 @@ class APIService {
       print('Logout failed');
     }
   }
-
-  //mengambil data user
-  static Future<Map<String, dynamic>> getUserData() async {
-    // Lakukan logika untuk mengambil data pengguna dari API
-    // Misalnya, melakukan permintaan HTTP ke endpoint yang sesuai
-    // dan mengembalikan data pengguna dalam bentuk Map
-
-    // Contoh implementasi sederhana:
-    final response = await http.get(Uri.parse('https://example.com/api/user'));
-
-    if (response.statusCode == 200) {
-      final jsonData = json.decode(response.body);
-      return jsonData['data'] as Map<String, dynamic>;
-    } else {
-      throw Exception('Failed to get user data');
-    }
-  }
-  
 }
