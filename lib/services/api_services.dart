@@ -27,10 +27,7 @@ class APIService {
       // Login successful
       token = responseData.data!.token!.accessToken!;
       final userId = responseData.data!.record!.id;
-      final RoleId = responseData.data!.record!.roleId;
-      return {'success': true, 'token': token, 'userId': userId,
-        'roleId': RoleId
-      };
+      return {'success': true, 'token': token, 'userId': userId};
     } else {
       // Login failed
       final errorMessage = responseData.responStatus!.message;

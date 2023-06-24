@@ -54,53 +54,10 @@ class _SignInState extends State<SignIn> {
 
     try {
       if (loginResult['success']) {
-        // Login successf
-        if (loginResult['roleId'] == 1) {
-          // UserId  1, login success
-          // Print record data
-          print('Login Result:[success] $loginResult');
-
-          // ke HomePage
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => const HomePage()),
-          );
-        } else {
-          // UserId is not 1, login failed
-          showDialog(
-            context: context,
-            builder: (ctx) => AlertDialog(
-              title: const Text('Login Failed'),
-              content: const Text('Anda bukan Admin'),
-              actions: [
-                TextButton(
-                  child: const Text('OK'),
-                  onPressed: () {
-                    Navigator.of(ctx).pop();
-                  },
-                ),
-              ],
-            ),
-          );
-        }
-      } else {
-        // Login failed
-        final errorMessage =
-            loginResult['message'] ?? 'Email atau password salah';
-        showDialog(
-          context: context,
-          builder: (ctx) => AlertDialog(
-            title: const Text('Login Failed'),
-            content: Text(errorMessage),
-            actions: [
-              TextButton(
-                child: const Text('OK'),
-                onPressed: () {
-                  Navigator.of(ctx).pop();
-                },
-              ),
-            ],
-          ),
+        // ke HomePage
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const HomePage()),
         );
       }
     } on FormatException {

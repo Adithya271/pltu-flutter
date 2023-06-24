@@ -6,15 +6,15 @@ class LoginRespon {
 
   LoginRespon.fromJson(Map<String, dynamic> json) {
     responStatus = json['respon_status'] != null
-        ? new ResponStatus.fromJson(json['respon_status'])
+        ? ResponStatus.fromJson(json['respon_status'])
         : null;
-    data = json['data'] != null ? new Data.fromJson(json['data']) : null;
+    data = json['data'] != null ? Data.fromJson(json['data']) : null;
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    if (this.responStatus != null) {
-      data['respon_status'] = this.responStatus!.toJson();
+    final Map<String, dynamic> data = <String, dynamic>{};
+    if (responStatus != null) {
+      data['respon_status'] = responStatus!.toJson();
     }
     if (this.data != null) {
       data['data'] = this.data!.toJson();
@@ -37,10 +37,10 @@ class ResponStatus {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['status'] = this.status;
-    data['code'] = this.code;
-    data['message'] = this.message; 
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['status'] = status;
+    data['code'] = code;
+    data['message'] = message;
     return data;
   }
 }
@@ -52,18 +52,17 @@ class Data {
   Data({this.record, this.token});
 
   Data.fromJson(Map<String, dynamic> json) {
-    record =
-        json['record'] != null ? new Record.fromJson(json['record']) : null;
-    token = json['token'] != null ? new Token.fromJson(json['token']) : null;
+    record = json['record'] != null ? Record.fromJson(json['record']) : null;
+    token = json['token'] != null ? Token.fromJson(json['token']) : null;
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    if (this.record != null) {
-      data['record'] = this.record!.toJson();
+    final Map<String, dynamic> data = Map<String, dynamic>();
+    if (record != null) {
+      data['record'] = record!.toJson();
     }
-    if (this.token != null) {
-      data['token'] = this.token!.toJson();
+    if (token != null) {
+      data['token'] = token!.toJson();
     }
     return data;
   }
@@ -75,8 +74,8 @@ class Record {
   String? email;
   int? roleId;
   String? emailVerifiedAt;
-  Null? createdAt;
-  Null? updatedAt;
+  String? createdAt;
+  String? updatedAt;
   Role? role;
 
   Record(
@@ -97,20 +96,20 @@ class Record {
     emailVerifiedAt = json['email_verified_at'];
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
-    role = json['role'] != null ? new Role.fromJson(json['role']) : null;
+    role = json['role'] != null ? Role.fromJson(json['role']) : null;
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['name'] = this.name;
-    data['email'] = this.email;
-    data['role_id'] = this.roleId;
-    data['email_verified_at'] = this.emailVerifiedAt;
-    data['created_at'] = this.createdAt;
-    data['updated_at'] = this.updatedAt;
-    if (this.role != null) {
-      data['role'] = this.role!.toJson();
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['name'] = name;
+    data['email'] = email;
+    data['role_id'] = roleId;
+    data['email_verified_at'] = emailVerifiedAt;
+    data['created_at'] = createdAt;
+    data['updated_at'] = updatedAt;
+    if (role != null) {
+      data['role'] = role!.toJson();
     }
     return data;
   }
@@ -134,12 +133,12 @@ class Role {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['name'] = this.name;
-    data['description'] = this.description;
-    data['created_at'] = this.createdAt;
-    data['updated_at'] = this.updatedAt;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['name'] = name;
+    data['description'] = description;
+    data['created_at'] = createdAt;
+    data['updated_at'] = updatedAt;
     return data;
   }
 }
@@ -158,10 +157,10 @@ class Token {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['access_token'] = this.accessToken;
-    data['token_type'] = this.tokenType;
-    data['expires_in'] = this.expiresIn;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['access_token'] = accessToken;
+    data['token_type'] = tokenType;
+    data['expires_in'] = expiresIn;
     return data;
   }
 }
